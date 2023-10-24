@@ -1,7 +1,7 @@
 import { Col, Row } from "antd";
 import React from "react";
 import { Link } from "react-router-dom";
-import logo from "../../assets/logo/logo_KOLgo-removebg.svg";
+import logo from "../../assets/logo/LogoPage.png";
 import fb from "../../assets/icon/icon-facebook.png";
 import yt from "../../assets/icon/icon-youtube.png";
 import isg from "../../assets/icon/icon-intagram.png";

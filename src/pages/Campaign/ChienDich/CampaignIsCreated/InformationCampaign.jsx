@@ -56,7 +56,7 @@ const InformationCampaign = (props) => {
                                 </div>
                             ))}
                         </Descriptions.Item>
-                        <Descriptions.Item label="KOL tham gia" span={3}>
+                        <Descriptions.Item label="PGT tham gia" span={3}>
                             {props.campaign?.kols.map((kol, index) => (
                                 <div key={index}>
                                     <Link key={kol.id} to={`/detail/kol/:${kol.id}`} > {kol.firstName} {kol.lastName}</Link> ,

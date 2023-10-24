@@ -18,7 +18,7 @@ const OutStanding = () => {
 
   const columns = [
     {
-      title: "Tên KOL",
+      title: "Tên PGT",
       dataIndex: "tenKOL",
       key: "tenKOL",
       render: (text) => <div className="text-data">{text}</div>,

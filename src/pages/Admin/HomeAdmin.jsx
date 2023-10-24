@@ -15,6 +15,7 @@ import classes from './HomeAdmin.module.css'
 import AccountKOL from './Options/Kols/AccountKOL';
 import Statistical from "./Options/Statistical/Statistical";
 import Title from "antd/es/typography/Title";
+import RequestPGT from "./Options/RequestKOL/RequestPGT";
 
 
 const { Sider } = Layout;
@@ -55,7 +56,7 @@ const HomeAdmin = () => {
             <Menu.SubMenu className="submenu" key="sub1" title="Tài Khoản">
               {/* <Menu.Item key="1">Enterprises</Menu.Item> */}
               <Menu.Item key="1">Người dùng</Menu.Item>
-              <Menu.Item key="2">KOL</Menu.Item>
+              <Menu.Item key="2">PGT</Menu.Item>
             </Menu.SubMenu>
             <Menu.Item key="4">Quản lý lượt thuê</Menu.Item>
             {/* <Menu.SubMenu className="submenu" key="sub2" title="Combo">
@@ -65,7 +66,8 @@ const HomeAdmin = () => {
             {/* <Menu.Item key="5">Chiến Dịch</Menu.Item> */}
             <Menu.Item key="7">Nổi Bật</Menu.Item>
             <Menu.Item key="8">Lĩnh vực </Menu.Item>
-            <Menu.Item key="9">Thống kê</Menu.Item>
+            <Menu.Item key="9">Yêu cầu PGT</Menu.Item>
+            <Menu.Item key="10">Thống kê</Menu.Item>
             <Button
               onClick={logoutHandler}
               className={classes['btn-logout']}
@@ -84,7 +86,8 @@ const HomeAdmin = () => {
             {/* {selectedMenuItem === "5" && <Campaign />} */}
             {selectedMenuItem === "7" && <ListCombo />}
             {selectedMenuItem === "8" && <Fields />}
-            {selectedMenuItem === "9" && <Statistical />}
+            {selectedMenuItem === "9" && <RequestPGT />}
+            {selectedMenuItem === "10" && <Statistical />}
           </Layout.Content>
         </Layout>
       </Layout>

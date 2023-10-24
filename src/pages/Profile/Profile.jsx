@@ -7,7 +7,7 @@ import Footer from "../../components/Footer/Footer";
 
 const Profile = () => {
   const [changeContent, setChangeContent] = useState({});
-
+  console.log(changeContent);
   const user = JSON.parse(localStorage.getItem("user"));
 
   const onChangeContentHandler = (data) => {
@@ -16,20 +16,20 @@ const Profile = () => {
 
   return (
     <>
-      <div style={{ padding: "65px 50px", backgroundColor: "#fff" }}>
+      <div style={{ width: '100%', backgroundColor: "#fff" }}>
         <Row>
-          <Col span={6}>
+          <Col span={4}>
             <MenuProfile
+              style={{marginTop: '-64px'}}
               user={user}
               onChangeContentHandler={onChangeContentHandler}
             />
           </Col>
-          <Col span={18}>
+          <Col span={20}>
             <SubContext user={user} changeContent={changeContent} />
           </Col>
         </Row>
       </div>
-      <Footer />
     </>
   );
 };

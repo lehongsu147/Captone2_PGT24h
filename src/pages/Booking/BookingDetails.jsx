@@ -54,9 +54,9 @@ const BookingDetails = () => {
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
-    getBookingByBookingId(id).then((res) => {
-      setBooking(res);
-    });
+    // getBookingByBookingId(id).then((res) => {
+    //   setBooking(res);
+    // });
   }, []);
 
   const handlePayment = () => {
@@ -153,8 +153,8 @@ const BookingDetails = () => {
     <>
       <div className={classes["modal-booking-detail"]}>
         {contextHolder}
-        <Descriptions title="Thông tin KOL">
-          <Descriptions.Item label="Tên KOL" span={3}>
+        <Descriptions title="Thông tin PGT">
+          <Descriptions.Item label="Tên PGT" span={3}>
             {booking.kol?.firstName} {booking.kol?.lastName}
           </Descriptions.Item>
 
@@ -233,7 +233,7 @@ const BookingDetails = () => {
           )}
           {booking.status === BookingStatus.REJECTED && (
             <Descriptions.Item label="Trạng thái" span={3}>
-              KOL từ chối yêu cầu
+              PGT từ chối yêu cầu
             </Descriptions.Item>
           )}
           {booking.status === BookingStatus.PAID && (

@@ -40,7 +40,7 @@ const HistoryBooking = () => {
       ),
     },
     {
-      title: "Tên KOL",
+      title: "Tên PGT",
       dataIndex: "tenKOL",
       width: 140,
       align: 'left',

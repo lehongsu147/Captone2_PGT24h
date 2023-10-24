@@ -4,7 +4,7 @@ import { forgotPassword } from '../../services/authentication'
 
 import ButtonFull from '../../components/UI/Button/ButtonFull';
 import Modals from "../../components/UI/Modal/Modals";
-import logo from "../../assets/logo/logo_KOLgo-removebg.svg";
+import logo from "../../assets/logo/LogoPage.png";
 
 const ForgotPassword = () => {
     const [userInput, setUserInput] = useState({

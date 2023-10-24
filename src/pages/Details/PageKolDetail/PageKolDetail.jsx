@@ -11,135 +11,14 @@ import { BackTop, Button, Image, Pagination, Tabs } from 'antd';
 import Avatar from "../../../components/Avatar/Avatar";
 import StarRating from "../../../components/start-rating/StarRating";
 import BookingCreate from "../../Booking/BookingCreate";
+import Temp from "../../../utils/temp";
 
-
-const GameList = [
-  {
-    id: 1,
-    name: 'Hát',
-    background: 'https://files.playerduo.net/production/game_backgrounds/715867c6-698f-411a-b4f9-1e9093130b60__90279220-37c9-11ed-838c-b120e70abb59__game_backgrounds.jpg',
-  },
-  {
-    id: 2,
-    name: 'Tâm Sự',
-    background: 'https://files.playerduo.net/production/game_backgrounds/715867c6-698f-411a-b4f9-1e9093130b60__8b5d5fe0-37c9-11ed-838c-b120e70abb59__game_backgrounds.jpg',
-  },
-  {
-    id: 3,
-    name: 'Liên Minh Huyền Thoại',
-    background: 'https://files.playerduo.net/production/game_backgrounds/715867c6-698f-411a-b4f9-1e9093130b60__c51b21f0-37c8-11ed-838c-b120e70abb59__game_backgrounds.jpg',
-  },
-  {
-    id: 4,
-    name: 'Proop And Seek',
-    background: 'https://files.playerduo.net/production/game_backgrounds/715867c6-698f-411a-b4f9-1e9093130b60__90279220-37c9-11ed-838c-b120e70abb59__game_backgrounds.jpg',
-  },
-  {
-    id: 5,
-    name: 'ARK',
-    background: 'https://files.playerduo.net/production/game_backgrounds/715867c6-698f-411a-b4f9-1e9093130b60__90279220-37c9-11ed-838c-b120e70abb59__game_backgrounds.jpg',
-  },
-  {
-    id: 6,
-    name: 'Among Us',
-    background: 'https://files.playerduo.net/production/game_backgrounds/715867c6-698f-411a-b4f9-1e9093130b60__90279220-37c9-11ed-838c-b120e70abb59__game_backgrounds.jpg',
-  },
-  {
-    id: 7,
-    name: 'Business Tour',
-    background: 'https://files.playerduo.net/production/game_backgrounds/715867c6-698f-411a-b4f9-1e9093130b60__90279220-37c9-11ed-838c-b120e70abb59__game_backgrounds.jpg',
-  },
-  {
-    id: 8,
-    name: 'GTA V',
-    background: 'https://files.playerduo.net/production/game_backgrounds/715867c6-698f-411a-b4f9-1e9093130b60__820ede00-37c9-11ed-838c-b120e70abb59__game_backgrounds.jpg',
-  },
-  {
-    id: 9,
-    name: 'Farm Togethe',
-    background: 'https://files.playerduo.net/production/game_backgrounds/715867c6-698f-411a-b4f9-1e9093130b60__90279220-37c9-11ed-838c-b120e70abb59__game_backgrounds.jpg',
-  },
-]
-
-const FeedBack = [
-  {
-    avatar: null,
-    userName: 'Pin',
-    star: 2,
-    timeRental: '60',
-    date: '08:18:48 18/6/2023',
-    comment: 'Với anh, hạnh phúc lớn nhất là khi em bên người khác .....Nhưng gọi thầm tên anh',
-  },
-  {
-    avatar: 'https://files.playerduo.net/production/images/avatar27.png',
-    userName: 'Dề Mi',
-    star: 3,
-    timeRental: '61',
-    date: '04:37:32 6/6/2023',
-    comment: 'thời buổi hiện đại dùng tới 720 rồi',
-  },
-  {
-    avatar: null,
-    userName: 'Khoa',
-    star: 3,
-    timeRental: '62',
-    date: '08:18:48 18/6/2023',
-    comment: 'Giọng dễ thương, chơi game hay. Đặc biệt hát rất hay nha. Recommend bạn này nha mọi người.'
-  },
-  {
-    avatar: 'https://files.playerduo.net/production/images/b754fb2e-f91c-434f-8c36-89be33f224df__b3cd0380-66c5-11eb-b791-7d65823da7b3__page_avatar.jpg',
-    userName: 'Pin',
-    star: 3,
-    timeRental: '30',
-    date: '08:18:48 18/6/2023',
-    comment: 'Với anh, hạnh phúc lớn nhất là khi em bên người khác .....Nhưng gọi thầm tên anh',
-  },
-  {
-    avatar: 'https://files.playerduo.net/production/images/b754fb2e-f91c-434f-8c36-89be33f224df__b3cd0380-66c5-11eb-b791-7d65823da7b3__page_avatar.jpg',
-    userName: 'Pin',
-    star: 3,
-    timeRental: '30',
-    date: '08:18:48 18/6/2023',
-    comment: 'Với anh, hạnh phúc lớn nhất là khi em bên người khác .....Nhưng gọi thầm tên anh',
-  },
-  {
-    avatar: 'https://files.playerduo.net/production/images/b754fb2e-f91c-434f-8c36-89be33f224df__b3cd0380-66c5-11eb-b791-7d65823da7b3__page_avatar.jpg',
-    userName: 'Pin',
-    star: 3,
-    timeRental: '30',
-    date: '08:18:48 18/6/2023',
-    comment: 'Với anh, hạnh phúc lớn nhất là khi em bên người khác .....Nhưng gọi thầm tên anh',
-  },
-  {
-    avatar: 'https://files.playerduo.net/production/images/b754fb2e-f91c-434f-8c36-89be33f224df__b3cd0380-66c5-11eb-b791-7d65823da7b3__page_avatar.jpg',
-    userName: 'Pin',
-    star: 3,
-    timeRental: '30',
-    date: '08:18:48 18/6/2023',
-    comment: 'Với anh, hạnh phúc lớn nhất là khi em bên người khác .....Nhưng gọi thầm tên anh',
-  },
-  {
-    avatar: 'https://files.playerduo.net/production/images/b754fb2e-f91c-434f-8c36-89be33f224df__b3cd0380-66c5-11eb-b791-7d65823da7b3__page_avatar.jpg',
-    userName: 'Pin',
-    star: 3,
-    timeRental: '30',
-    date: '08:18:48 18/6/2023',
-    comment: 'Với anh, hạnh phúc lớn nhất là khi em bên người khác .....Nhưng gọi thầm tên anh',
-  },
-  {
-    avatar: 'https://files.playerduo.net/production/images/b754fb2e-f91c-434f-8c36-89be33f224df__b3cd0380-66c5-11eb-b791-7d65823da7b3__page_avatar.jpg',
-    userName: 'Pin',
-    star: 3,
-    timeRental: '30',
-    date: '08:18:48 18/6/2023',
-    comment: 'Với anh, hạnh phúc lớn nhất là khi em bên người khác .....Nhưng gọi thầm tên anh',
-  },
-]
 const PageKOLDetail = () => {
   const { user, setUser } = useContext(AuthContext);
 
   const { id } = useParams();
   const [kolInfo, setKolInfo] = useState();
+  console.log("🚀 ~ file: PageKolDetail.jsx:21 ~ PageKOLDetail ~ kolInfo:", kolInfo)
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const [status, setStatus] = useState("");
@@ -151,62 +30,7 @@ const PageKOLDetail = () => {
 
 
   useEffect(() => {
-    setKolInfo(
-      {
-        kol: {
-          firstName: 'Gấmmm',
-          avatar: "https://playerduo.net/api/upload-service/images/dcfc2d0b-f15a-4348-b3f8-28400a0e0ff9__85153e20-341a-11ee-a657-a54d6be1d46a__player_album.jpg",
-          photoList: [
-            {
-              avatarLink: "https://playerduo.net/api/upload-service/images/dcfc2d0b-f15a-4348-b3f8-28400a0e0ff9__c06e9ef0-6415-11ee-bec4-f929e725acab__player_album.jpg",
-            },
-            {
-              avatarLink: "https://playerduo.net/api/upload-service/images/dcfc2d0b-f15a-4348-b3f8-28400a0e0ff9__6c1c9630-611e-11ee-bec4-f929e725acab__player_album.jpg"
-            },
-            {
-              avatarLink: "https://playerduo.net/api/upload-service/images/dcfc2d0b-f15a-4348-b3f8-28400a0e0ff9__c80a7d90-a490-11ed-a19f-23a3b10d190e__player_album.jpg",
-            },
-            {
-              avatarLink: "https://playerduo.net/api/upload-service/images/dcfc2d0b-f15a-4348-b3f8-28400a0e0ff9__aede2c90-68c7-11ed-838c-b120e70abb59__player_album.jpg"
-            },
-            {
-              avatarLink: "https://playerduo.net/api/upload-service/images/dcfc2d0b-f15a-4348-b3f8-28400a0e0ff9__26cf82a0-681c-11ed-838c-b120e70abb59__player_album.jpg"
-            },
-            {
-              avatarLink: "https://playerduo.net/api/upload-service/images/dcfc2d0b-f15a-4348-b3f8-28400a0e0ff9__cce51140-5dc8-11ed-838c-b120e70abb59__player_album.jpg"
-            },
-            {
-              avatarLink: "https://playerduo.net/api/upload-service/images/dcfc2d0b-f15a-4348-b3f8-28400a0e0ff9__f10966a0-50c4-11ec-911d-399f024e5d9b__player_album.jpg"
-            },
-            {
-              avatarLink: "https://playerduo.net/api/upload-service/images/dcfc2d0b-f15a-4348-b3f8-28400a0e0ff9__62902920-3b9a-11ec-8946-d727b5c174c4__player_album.jpg"
-            },
-          ],
-          lastName: 'Kami',
-          price: '99000',
-          id: 'gamrach',
-          postPrice: 'không chảnh',
-          videoPrice: 'https://youtu.be/WAg0jKqgmuI',
-          introduction: `Hello mình là Mẫn
-          🌸 Giọng miền nam, chơi mic nhà không ồn
-          🌸 Lần đầu gặp gỡ rất vui được làm quen!
-          🌸 Chơi game từ 11h đêm đổ đi thì thuê giúp tớ 65k/giờ (thuê 2h giúp tớ nhé). Chơi đêm hơi mất sức!
-          🌸 Rent hoặc donate, thanh toán trước giúp em. Đã từng bị user lạ có, quen biết có thanh toán sau không trả, mà tính tớ ngại mất lòng nên mọi người thông cảm tự làm trước giúp tớ. Tớ sẽ tính từ lúc game chạy nên mọi người yên tâm không có nhận duo liền mà không hỏi đâu ạ!
-          🌸 KHÔNG NHẬN CHƠI NỢ DÙ LÀ KHÁCH QUEN.
-          🌸 Mình có thể chơi:
-          🍄 LMHT: mình có thể đi lane AD, SP, MID (gà nhưng đủ tự lo cho mình), riêng lane JUNG and TOP thì xin ôm trụ chờ gank. Nhận từ rank đất đoàn tới bạch kim đoàn <3
-          🍄 PUBG MOBILE: đi làm y tá, nhặt full đồ trong ba lô chơi trên điện thoại ạ
-          🍄 TFT: Xin top 8 của user. Chơi bản VN, NA
-          🍄 Prop and seek: gà mới tập chơi
-          🍄 Tốc chiến: đánh normal thôi ạ
-          🍄 Liên quân: đánh normal luôn ạ
-          🍄 Valorant: Sau khi mày mò tìm hiểu, em nhận rank đồng bạc :v
-          🍄 PUBG PC: biết nhặt đồ, biết bắn đồng đội, biết năn nỉ địch bắn đồng đội trừ mình ra và biết "báo" đồng đội! ĐIỀU QUAN TRỌNG NHẤT KHÔNG BIẾT: KHÔNG BIẾT BẮN ĐỊCH!`
-        },
-        bookings: [],
-        campaigns: [],
-      }
-    );
+    setKolInfo(Temp.UserPGT );
     // getKol(id).then((res) => {
     //   // setKol(res);
 
@@ -216,12 +40,13 @@ const PageKOLDetail = () => {
   }, []);
 
   useEffect(() => {
-    document.title = `PGT24h | ${kolInfo?.kol?.firstName} ${kolInfo?.kol?.lastName}`;
-
+    if (kolInfo) {
+      document.title = `PGT24h | ${kolInfo?.firstName} ${kolInfo?.lastName}`;
+    }
     return () => {
       document.title = "PGT24h";
     };
-  }, [kolInfo?.kol?.id]);
+  }, [kolInfo?.id]);
 
   const checkStatus = (bookings, user, kol) => {
     if (!user) {
@@ -249,6 +74,9 @@ const PageKOLDetail = () => {
   };
 
   const bookingHandler = () => {
+    if ( !user ){
+      navigate('/login');
+    }
     setOpen(true);
   };
   const hanleClickChat = () => {
@@ -271,7 +99,7 @@ const PageKOLDetail = () => {
   const renderCategopryGame = () => {
     return (
       <>
-        {GameList?.map((item, index) => (
+        {Temp?.GameList?.map((item, index) => (
           <CardType
             key={index}
             id={item.id}
@@ -292,7 +120,7 @@ const PageKOLDetail = () => {
     }
     return (
       <>
-        {FeedBack?.map((item, index) => (
+        {Temp?.FeedBack?.map((item, index) => (
           <Feedback
             key={index}
             avatar={item?.avatar}
@@ -323,7 +151,7 @@ const PageKOLDetail = () => {
     {
       key: '1',
       label: 'Giới thiệu',
-      children: <IntroduceKOL introduction={kolInfo?.kol?.introduction} />,
+      children: <IntroduceKOL introduction={kolInfo?.introduction} />,
     },
     {
       key: '2',
@@ -332,12 +160,13 @@ const PageKOLDetail = () => {
     },
   ];
 
+
   return (
     <>
       <main className={styles["main-details"]} >
         {kolInfo && (
           <BookingCreate
-            kol={kolInfo.kol}
+            kol={kolInfo}
             onCancelOpenHandler={onCancelOpenHandler}
             open={open}
           />
@@ -350,8 +179,8 @@ const PageKOLDetail = () => {
             <div className={styles.stickyProfile}>
               <div className={styles.profileContainer}>
                 <Avatar
-                  avatar={kolInfo?.kol?.avatar ?? ''}
-                  photoList={kolInfo?.kol?.photoList ?? ''}
+                  avatar={kolInfo?.avatar ?? ''}
+                  photoList={kolInfo?.photoList ?? ''}
                 />
               </div>
 
@@ -369,7 +198,7 @@ const PageKOLDetail = () => {
           <div className={styles.info}>
             <div className={styles.profileInfo}>
               <div className={styles.title}>
-                <span className={` ${styles.userName}  `} >{kolInfo?.kol?.firstName} {kolInfo?.kol?.lastName}  </span>
+                <span className={` ${styles.userName}  `} >{kolInfo?.firstName} {kolInfo?.lastName}  </span>
                 <buton className={` ${styles.buttonFollow}  `} >Theo dõi </buton>
               </div>
 

@@ -117,49 +117,6 @@ export default class Constants {
     ];
 
 
-    static dataMes = [
-        {
-            id: 1,
-            userSend: true,
-            content: 'Xin chào! Tôi đang tìm một KOL để quảng cáo sản phẩm của tôi. Bạn có thể giới thiệu cho tôi một số lựa chọn phù hợp không? '
-        },
-        {
-            id: 2,
-            userSend: false,
-            content: 'Chào bạn! Tất nhiên, tôi sẽ cần một số thông tin cụ thể về sản phẩm của bạn và mục tiêu của chiến dịch quảng cáo. Bạn có thể cho tôi biết thêm về điều đó không?'
-        },
-        {
-            id: 3,
-            userSend: true,
-            content: 'Sản phẩm của tôi là một dòng mỹ phẩm tự nhiên và chúng tôi muốn tạo sự nhận diện thương hiệu mạnh mẽ. Mục tiêu của chúng tôi là tiếp cận một đối tượng khách hàng trẻ tuổi thông qua mạng xã hội. Bạn có thể giới thiệu cho tôi một KOL có đối tượng khán giả tương tự không?'
-        },
-        {
-            id: 4,
-            userSend: true,
-            content: 'Dạ, tôi có một số lựa chọn cho bạn.'
-        },
-        {
-            id: 5,
-            userSend: false,
-            content: 'Rất tốt! Xin hãy làm như vậy. Bạn có thể cho tôi biết về mức giá dự kiến và thời gian tiếp cận của KOL này không?'
-        },
-        {
-            id: 6,
-            userSend: false,
-            content: 'Chào bạn! Tất nhiên, tôi sẽ cần một số thông tin cụ thể về sản phẩm của bạn và mục tiêu của chiến dịch quảng cáo. Bạn có thể cho tôi biết thêm về điều đó không?'
-        },
-        {
-            id: 7,
-            userSend: true,
-            content: 'Sản phẩm của tôi là một dòng mỹ phẩm tự nhiên và chúng tôi muốn tạo sự nhận diện thương hiệu mạnh mẽ. Mục tiêu của chúng tôi là tiếp cận một đối tượng khách hàng trẻ tuổi thông qua mạng xã hội. Bạn có thể giới thiệu cho tôi một KOL có đối tượng khán giả tương tự không?'
-        },
-        {
-            id: 8,
-            userSend: true,
-            content: 'Dạ, tôi có một số lựa chọn cho bạn.'
-        },
-    ]
-
     static dataTableKol = [
         {
             key: 1,

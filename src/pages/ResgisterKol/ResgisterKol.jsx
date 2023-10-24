@@ -5,153 +5,73 @@ import { formatDate } from "../../services/DateTimeUtil";
 import { createBooking } from "../../services/BookingService";
 import { BookingStatus } from "../../utils/Enums";
 
-import classes from "./ResgisterKol.module.css";
-import { MessageContext } from "../../context/Message.context";
-import { Modal, DatePicker, Form, Select, Button, Input, TimePicker, Space, Row, Col } from "antd";
-import { Option } from "antd/es/mentions";
-import TextArea from "antd/es/input/TextArea";
-import { convertStringToNumber, getDate } from '../../utils/Utils';
-import { toast } from "react-toastify";
+import styles from "./ResgisterKol.module.css";
+import { Card, Avatar, Col, Row, Input, Button } from "antd";
 import Constants from "../../utils/constants";
+import Meta from "antd/es/card/Meta";
+import Temp from "../../utils/temp";
+import TextArea from "antd/es/input/TextArea";
+import { toast } from "react-toastify";
 
 const ResgisterKol = (props) => {
+  const [selectedCards, setSelectedCards] = useState([]);
 
+  const handleCardClick = (cardId) => {
+    const cardIndex = selectedCards.indexOf(cardId);
 
+    if (cardIndex === -1) {
+      setSelectedCards([...selectedCards, cardId]);
+    } else {
+      const updatedSelectedCards = [...selectedCards];
+      updatedSelectedCards.splice(cardIndex, 1);
+      setSelectedCards(updatedSelectedCards);
+    }
+  };
+  const navigate =useNavigate();
+  function onSubmit(){
+    toast.success('Gửi yêu cầu thành công, vui lòng chờ admin xác nhận yêu cầu')
+    navigate('/home');
+  }
   return (
     <div>
-      <Row>
-        <Col span={20}>
-          <Row>
-            <Col span={12}  >
-              <div className={classes.formInfo}>
-                <Row>
-                  <span>Họ:</span>
-                </Row>
-                <Row>
-                  <input
-                    placeholder="Họ của bạn"
-                    className={classes['modal-update-col-input']}
-                    name="firstname"
-                  />
-                </Row>
-              </div>
-
-              <div className={classes.formInfo}>
-                <Row>
-                  <span>Tên tài khoản:</span>
-                </Row>
-                <Row>
-                  <input
-                    placeholder="Tên tài khoản"
-                    className={classes['modal-update-col-input']}
-                    name="username"
-                  />
-                </Row>
-              </div>
-
-              <div className={classes.formInfo}>
-                <Row>
-                  <span>Giới tính:</span>
-                </Row>
-                <Row>
-                  <Select
-                    placeholder="Giới tính"
-                    defaultValue={'Nữ'}
+      <main className={styles["main-details"]} >
+        <div
+          className={`${styles["container"]}  `}
+        >
+          <h1> Chọn lĩnh vực bạn  muốn tham gia</h1>
+          <div className={styles.listCard}>
+            <Row>
+              {Temp.GameList?.map((item) => (
+                <Col span={8}>
+                  <Card
                     style={{
-                      width: "100%",
+                      width: 300,
+                      marginTop: 16,
+                      border: selectedCards.includes(item.id) ? "2px solid #ff7421" : "none",
                     }}
-                    options={Constants.optionSex}
-                  />
-                </Row>
-              </div>
-
-              <div className={classes.formInfo}>
-                <Row>
-                  <span>Số điện thoại:</span>
-                </Row>
-                <Row>
-                  <input
-                    placeholder="Số điện thoại"
-                    className={classes['modal-update-col-input']}
-                    name="phone"
-                  />
-                </Row>
-              </div>
-
-              <div className={classes.formInfo}>
-                <Row >
-                  <span>Tỉnh/Thành phố:</span>
-                </Row>
-                <Row>
-                  <Select
-                    style={{
-                      width: "100%",
-                    }}
-                    options={Constants.vietnamProvinces}
-                  />
-                </Row>
-              </div>
-
-            </Col>
-            <Col span={12}>
-              <div className={classes.formInfo}>
-                <Row>
-                  <span>Tên:</span>
-                </Row>
-                <Row>
-                  <input
-                    placeholder="Tên của bạn"
-                    className={classes['modal-update-col-input']}
-                    name="lastname"
-                  />
-                </Row>
-              </div>
-              <div className={classes.formInfo}>
-                <Row>
-                  <span>Email:</span>
-                </Row>
-                <Row>
-                  <input
-                    placeholder="Email"
-                    className={classes['modal-update-col-input']}
-                    name="email"
-                  />
-                </Row>
-              </div>
-
-              <div className={classes.formInfo}>
-                <Row>
-                  <span>Địa chỉ cụ thể:</span>
-                </Row>
-                <Row>
-                  <input
-                    placeholder="Địa chỉ cụ thể"
-                    className={classes['modal-update-col-input']}
-                    name="addressDetails"
-                  />
-                </Row>
-              </div>
-
-
-
-              <div className={classes.formInfo}>
-                <Row>
-                  <span>Trạng thái:</span>
-                </Row>
-                <Row>
-                  <Select
-                    style={{
-                      width: "100%",
-                    }}
-                    placeholder="Chọn trạng thái"
-                    options={Constants.optionStatus}
-                  />
-                </Row>
-              </div>
-            </Col>
-          </Row>
-        </Col>
-      </Row>
+                    onClick={() => handleCardClick(item.id)}
+                  >
+                    <Meta
+                      avatar={<Avatar src={item?.background} />}
+                      title={item?.name}
+                    />
+                  </Card>
+                </Col>
+              ))}
+            </Row>
+          </div>
+          <h1>Thêm lĩnh vực mới</h1>
+          <div className={styles.addCategory}>
+            <Input placeholder="Nhập tên lĩnh vực" />
+            <TextArea placeholder="Giải thích về lĩnh vực mới này ..."/>
+          </div>
+          <h1>Giá thuê mỗi giờ</h1>
+          <div className={styles.addCategory}>
+            <Input placeholder="Nhập số tiền" />
+          </div>
+          <Button type='primary' onClick={onSubmit} className={styles.btnSubmit}>Gửi yêu cầu</Button>
+        </div>
+      </main>
     </div>
   );
 };

@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom'
 const NotAdmin = () => {
     const navigate = useNavigate()
     return (
-        <Result
+           <Result
             status="warning"
             title="Bạn không phải là ADMIN."
             extra={

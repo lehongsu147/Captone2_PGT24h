@@ -225,7 +225,7 @@ const ModalUpdate = ({ openUpdate, onCloseUpdateModalHandler, data, type = 'user
                                     </Row>
                                 </div>
 
-                                {type === 'KOL' && <>
+                                {type === 'PGT' && <>
 
                                 </>}
                             </Col>
@@ -274,7 +274,7 @@ const ModalUpdate = ({ openUpdate, onCloseUpdateModalHandler, data, type = 'user
                                     </Row>
                                 </div>
 
-                                {type == 'KOL' && <div className={classes.formInfo}>
+                                {type == 'PGT' && <div className={classes.formInfo}>
                                     <Row>
                                         <span>Lĩnh vực:</span>
                                     </Row>

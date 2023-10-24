@@ -9,7 +9,7 @@ import { EyeTwoTone, EyeInvisibleOutlined } from '@ant-design/icons'
 
 import ButtonFull from '../../components/UI/Button/ButtonFull';
 import Modals from "../../components/UI/Modal/Modals";
-import logo from "../../assets/logo/logo_KOLgo-removebg.svg";
+import logo from "../../assets/logo/LogoPage.png";
 
 const ResetPassword = () => {
     const navigate = useNavigate();

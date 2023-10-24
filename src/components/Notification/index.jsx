@@ -7,6 +7,7 @@ import NotiItem from "./NotiItem";
 import { useContext } from "react";
 import { MessageContext } from "../../context/Message.context";
 import { convertStringToDateTime } from "../../services/DateTimeUtil";
+import Temp from "../../utils/temp";
 
 export default function Notification() {
   const { notifications } = useContext(MessageContext);
@@ -27,12 +28,13 @@ export default function Notification() {
         convertStringToDateTime(b.timestamp).getTime() -
         convertStringToDateTime(a.timestamp).getTime()
     );
+
+  
   return (
     <>
       <div
-        className={`${classes["noti-button"]} ${
-          notiActive ? classes["active"] : ""
-        }`}
+        className={`${classes["noti-button"]} ${notiActive ? classes["active"] : ""
+          }`}
         onClick={handlerActive}
       >
         <BellOutlined className={classes["icon-noti"]} />
@@ -61,10 +63,10 @@ export default function Notification() {
               Chưa đọc
             </Col>
           </Row>
-          {notifications?.length === 0 && (
+          {/* {notifications?.length === 0 && (
             <p className={classes["noti-mgs"]}>Không có thông báo</p>
-          )}
-          <ul>
+          )} */}
+          {/* <ul>
             {notifications?.length > 0 &&
               tab &&
               sortedNotifications(notifications).map((noti) => (
@@ -79,7 +81,8 @@ export default function Notification() {
             {notifications?.length > 0 && !tab && unreadNoti.length === 0 && (
               <p className={classes["noti-mgs"]}>Không có thông báo</p>
             )}
-          </ul>
+          </ul> */}
+          <NotiItem noti={Temp.notiinfo} />
         </div>
       )}
     </>

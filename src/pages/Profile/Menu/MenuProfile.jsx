@@ -4,6 +4,7 @@ import {
   SettingOutlined,
   ClockCircleOutlined,
   HistoryOutlined,
+  PicRightOutlined,
 } from "@ant-design/icons";
 import { Menu } from "antd";
 
@@ -18,21 +19,25 @@ function getItem(label, key, icon, children, type) {
     type,
   };
 }
-const item = [
-  getItem("Thông tin cá nhân", "1", <UserOutlined />),
-  getItem("Cài đặt tài khoản", "2", <SettingOutlined />, [
-    getItem("Email", "sub1"),
-    getItem("Tài khoản và mật khẩu", "sub2"),
-  ]),
-  getItem("Lịch sử hoạt động", "3", <ClockCircleOutlined />),
-  getItem("Lịch sử thanh toán", "4", <HistoryOutlined />),
-];
 
 const MenuProfile = (props) => {
   const onClick = (e) => {
     props.onChangeContentHandler(e.key);
   };
-
+  let item = [
+    getItem("Thông tin cá nhân", "1", <UserOutlined />),
+    getItem("Cài đặt tài khoản", "2", <SettingOutlined />, [
+      getItem("Email", "sub1"),
+      getItem("Tài khoản và mật khẩu", "sub2"),
+    ]),
+    getItem("Lịch sử booking", "3", <ClockCircleOutlined />),
+    getItem("Ví & Lịch sử thanh toán", "4", <HistoryOutlined />),
+  ];
+  if (props?.user.role === 2) {
+    item = item.concat(
+      getItem("Yêu cầu booking", "5", <PicRightOutlined />),
+    )
+  }
   return (
     <Menu
       className={classes.menu}

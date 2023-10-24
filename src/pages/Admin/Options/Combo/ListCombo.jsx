@@ -196,7 +196,7 @@ const ListCombo = () => {
             />
           </div>
           <div className="child-input">
-            <label>Thành Viên KOL:</label>
+            <label>Thành Viên PGT:</label>
             <Select
               mode="tags"
               style={{

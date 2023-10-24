@@ -25,7 +25,7 @@ const InformationCampaign = (props) => {
 
     useEffect(() => {
         if (userCtx.user) {
-            if (userCtx.user?.role === 'KOL') {
+            if (userCtx.user?.role === 'PGT') {
                 const find = campaign?.kols.find(kol => kol.id === userCtx.idRole)
                 if (find) { setJoined("JOINED") }
                 else setJoined("NOTJOIN")
@@ -110,7 +110,7 @@ const InformationCampaign = (props) => {
                                 </div>
                             ))}
                         </Descriptions.Item>
-                        <Descriptions.Item label="KOL tham gia" span={3}>
+                        <Descriptions.Item label="PGT tham gia" span={3}>
                             {campaign?.kols.map((kol, index) => (
                                 <div key={index}>
                                     <Link key={kol.id} to={`/detail/kol/:${kol.id}`} > {kol.firstName} {kol.lastName}</Link> ,

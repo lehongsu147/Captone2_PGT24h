@@ -28,10 +28,8 @@ const BookingCreate = (props) => {
     description: "",
   });
 
-
-
   const handleBooking = () => {
-    toast.success('Đã tạo lượt booking thành công')
+    toast.success('Tạo lượt booking thành công, PGT sẽ phàn hồi lại trong 5 phút.')
     props.onCancelOpenHandler();
     // booking.timestamp = formatDate(new Date());
     // setBooking({ ...booking });

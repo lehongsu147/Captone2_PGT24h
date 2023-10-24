@@ -7,14 +7,12 @@
 .logo-wrap {
   display: flex;
   position: relative;
-  background-color: white;
-  border-radius: 50px;
-  width: 50px;
-  height: 50px;
+  width: 150px;
+  height: 100px;
 }
 
 .logo {
-  width: 100%;
+  width: 80%;
 }
 
 .logo-text {

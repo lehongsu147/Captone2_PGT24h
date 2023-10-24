@@ -12,12 +12,12 @@ const Fields = () => {
     const [entFields, setEntFields] = useState([])
 
     const [inputSearch, setInputSearch] = useState("");
-    const [typeFieldSearch, setTypeFieldSearch] = useState("KOL");
+    const [typeFieldSearch, setTypeFieldSearch] = useState("PGT");
 
     const [openModalAdd, setOpenModalAdd] = useState(false)
     const [dataAdd, setDataAdd] = useState({
         name: "",
-        id: "KOL"
+        id: "PGT"
     })
 
     useEffect(() => {
@@ -79,7 +79,7 @@ const Fields = () => {
 
     const resultSearch = () => {
         let data = []
-        if (typeFieldSearch === "KOL") {
+        if (typeFieldSearch === "PGT") {
             data = Constants.optionsCategory
             // data = kolFields.filter((field) => {
             //     return (inputSearch === "" ? field : field.name.includes(inputSearch))
@@ -124,8 +124,8 @@ const Fields = () => {
                         value={typeFieldSearch}
                         onChange={onChangeTypeFieldHandler}
                     >
-                        <option key="KOL" value="KOL">
-                            KOL
+                        <option key="PGT" value="PGT">
+                            PGT
                         </option>
                         <option key="ENTERPRISE" value="ENTERPRISE">
                             ENTERPRISE
@@ -164,8 +164,8 @@ const Fields = () => {
                     onChange={onChangeDataAddField}
                     name="id"
                 >
-                    <option key="KOL" value="KOL">
-                        KOL
+                    <option key="PGT" value="PGT">
+                        PGT
                     </option>
                     <option key="ENTERPRISE" value="ENTERPRISE">
                         ENTERPRISE

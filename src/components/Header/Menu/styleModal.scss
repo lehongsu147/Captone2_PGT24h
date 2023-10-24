@@ -1,0 +1,59 @@
+.titleModal {
+    text-align: center;
+}
+
+.tab-content {}
+
+.top-info-section {
+    text-align: center;
+    border-bottom: 5px solid #f4f3f3;
+    margin-top: 15px;
+    position: relative;
+
+    .top-1-frame {
+        height: 120px;
+
+        .imgTop1 {
+            width: 80px;
+            height: 80px;
+            border-radius: 100%;
+        }
+
+        .imgTop1Frame {
+            position: absolute;
+            top: -34px;
+            left: 37%;
+            height: 149px;
+            width: 190px;
+        }
+
+
+    }
+
+    .moneyTop1 {
+        margin-top: 20px;
+        color: orange;
+        font-size: 1.1rem;
+        line-height: 25px;
+    }
+}
+
+.pull-left {
+    float: left !important;
+    display: flex;
+    .avt-rank {
+        img {
+            width: 42px;
+            height: 45px;
+            border-radius: 50%;
+        }
+    }
+
+    .name-pl ayer {}
+
+    .rank-stt {}
+}
+
+.pull-right {
+    float: right !important;
+}

@@ -43,7 +43,7 @@ const DropDownBookingRequest = ({ icon, options, record, type = 'user' }) => {
         setIsOpen(false);
     };
 
-    
+
     useOnClickOutside(dropRef, handleClickOutside);
     return (
         <div>
@@ -51,7 +51,7 @@ const DropDownBookingRequest = ({ icon, options, record, type = 'user' }) => {
             {isOpen &&
                 <div className={styles.selectOptions} ref={dropRef} >
                     <div className={styles.option} onClick={onOpenViewHandler}>Chấp nhận</div>
-                    <div className={styles.option} onClick={onOpenUpdateModalHandler} >Không cháp nhận</div>
+                    <div className={styles.option} onClick={onOpenUpdateModalHandler} >Không chấp nhận</div>
                 </div>
             }
         </div>

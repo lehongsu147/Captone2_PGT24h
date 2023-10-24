@@ -23,9 +23,9 @@ const PageDetail = () => {
   let { id } = useParams();
 
   useEffect(() => {
-    getEnt(id).then((res) => {
-      setInfoEnt(res.enterprise);
-    });
+    // getEnt(id).then((res) => {
+    //   setInfoEnt(res.enterprise);
+    // });
   }, [id]);
 
   useEffect(() => {
@@ -68,7 +68,7 @@ const PageDetail = () => {
                 </Menu.SubMenu>
 
                 <Menu.Item key="4">Ví</Menu.Item>
-                { type == 'KOL' &&  <Menu.Item key="5">Yêu cầu Booking</Menu.Item>}
+                { type === 'PGT' &&  <Menu.Item key="5">Yêu cầu Booking</Menu.Item>}
                
                 <Menu.Item key="6">Lịch sử booking</Menu.Item>
                 <Button

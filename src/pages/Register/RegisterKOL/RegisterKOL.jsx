@@ -8,7 +8,7 @@ import Modals from "../../../components/UI/Modal/Modals";
 import { Input } from 'antd';
 import { EyeTwoTone, EyeInvisibleOutlined } from '@ant-design/icons'
 
-import logo from '../../../assets/logo/logo_KOLgo-removebg.svg'
+import logo from '../../../assets/logo/LogoPage.png'
 import { register } from '../../../services/authentication';
 
 const RegisterEnterprise = (props) => {
@@ -149,7 +149,7 @@ const RegisterEnterprise = (props) => {
       </div>
       <form onSubmit={handleRegister} className="register-form">
         <div className='form-top'>
-          <h1 style={{ textAlign: 'center' }}>Thông tin đăng ký KOL</h1>
+          <h1 style={{ textAlign: 'center' }}>Thông tin đăng ký PGT</h1>
           <div className="register-form__control">
             <input
               type="text"

@@ -19,10 +19,10 @@ export const MessageProvider = ({ children }) => {
   useEffect(() => {
     if (user) {
       connect();
-      Promise.all([getNotifications()]).then(([notificationList]) => {
-        if (notificationList && notificationList.length > 0)
-          setNotifications(notificationList);
-      });
+      // Promise.all([getNotifications()]).then(([notificationList]) => {
+      //   if (notificationList && notificationList.length > 0)
+      //     setNotifications(notificationList);
+      // });
     }
     else disconnect();
   }, [user]);

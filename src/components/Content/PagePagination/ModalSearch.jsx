@@ -34,17 +34,17 @@ const ModalSearch = ({ serchValue = '' }) => {
   }, [serchValue])
 
   useEffect(() => {
-    getKolFields().then((res) => {
-      setKolFields(res);
-    });
+    // getKolFields().then((res) => {
+    //   setKolFields(res);
+    // });
 
-    getCities().then((res) => {
-      setCities(res);
-    });
+    // getCities().then((res) => {
+    //   setCities(res);
+    // });
 
-    getKols().then((res) => {
-      setKols(res);
-    });
+    // getKols().then((res) => {
+    //   setKols(res);
+    // });
   }, []);
 
   const onChangeFieldHandler = (event) => {

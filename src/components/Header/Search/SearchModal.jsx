@@ -18,13 +18,13 @@ const SearchModal = () => {
   const [show, setShow] = useState(false);
 
   useEffect(() => {
-    Promise.all([
-      getKols(),
-      getEnts()
-    ]).then(([kolList, entList]) => {
-      setKols(kolList);
-      setEnts(entList);
-    });
+    // Promise.all([
+    //   getKols(),
+    //   getEnts()
+    // ]).then(([kolList, entList]) => {
+    //   setKols(kolList);
+    //   setEnts(entList);
+    // });
   }, [])
 
   const onChangeInputHandler = (e) => {

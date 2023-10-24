@@ -165,7 +165,7 @@ const CreateCombo = () => {
               }}
             >
               <div style={{ display: "flex" }}>
-                <label style={{ width: 80, marginTop: 5 }}>KOL:</label>
+                <label style={{ width: 80, marginTop: 5 }}>PGT:</label>
                 <Select
                   mode="tags"
                   style={{
@@ -195,7 +195,7 @@ const CreateCombo = () => {
       <div className="content-right">
         <div className="btn-add-account">
           <button onClick={handleOpenModalLinhVuc}>Thêm Lĩnh Vực</button>
-          <button onClick={handleOpenModalKOL}>Thêm KOL</button>
+          <button onClick={handleOpenModalKOL}>Thêm PGT</button>
           <button onClick={handleOpenModalEnterprises}>Thêm Enterprises</button>
         </div>
         <div className="btn-create-combo">
@@ -238,7 +238,7 @@ const CreateCombo = () => {
       </Modal>
 
       <Modal
-        title="Thêm KOL"
+        title="Thêm PGT"
         open={modalKOL}
         onOk={handleOkKOL}
         onCancel={handleCancelKOL}
@@ -248,7 +248,7 @@ const CreateCombo = () => {
           style={{
             width: "100%",
           }}
-          placeholder="Tags KOL"
+          placeholder="Tags PGT"
           onChange={handleChangeKOL}
           options={optionsKOL}
         />

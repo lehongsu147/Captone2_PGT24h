@@ -1,12 +1,8 @@
 .noti-button {
-  width: 45px;
-  height: 45px;
+  width: 40px;
+  height: 40px;
   border-radius: 50px;
-  display: block;
   background-color: #eff5f7;
-  position: absolute;
-  margin: 10px 0;
-  right: 10%;
   text-align: center;
   cursor: pointer;
 }
@@ -25,6 +21,7 @@
 .icon-noti {
   font-size: 25px;
   line-height: 45px;
+  margin-top: 5px;
 }
 
 .noti-badge {
@@ -90,16 +87,19 @@
 .item-wrap {
   display: flex;
   justify-content: space-between;
+  padding: 4px;
   margin: 10px 0;
 }
 
 .item-wrap:hover {
-  background-color: var(--color-primary-2);
+  /* background-color: #f2f2f2; */
+  border-radius: 4px;
   cursor: pointer;
 }
 
 .avatar {
   margin-left: 10px;
+  margin-top: 6px;
 }
 
 .item-content {
@@ -109,7 +109,11 @@
   flex-direction: column;
   justify-content: space-between;
 }
-
+.item-btn{
+  display: flex;
+  margin-top: 4px;
+  gap: 20px;
+}
 .item-content.read {
   opacity: 0.5;
 }

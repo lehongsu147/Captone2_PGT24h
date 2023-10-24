@@ -90,7 +90,7 @@ function PaymentResult() {
                 <p>
                   Quý doanh nghiệp đã thanh toán thành công{" "}
                   <b>{formatCurrency("vi-VN", "VND", payment.amount / 100)}</b>{" "}
-                  cho KOL <b>{`${kol.firstName} ${kol.lastName}`}</b>. Mã giao
+                  cho PGT <b>{`${kol.firstName} ${kol.lastName}`}</b>. Mã giao
                   dịch <b>{payment.txnNo}</b>.
                 </p>
               )}

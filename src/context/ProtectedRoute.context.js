@@ -7,7 +7,7 @@ export function ProtectedRoute({ Component, role }) {
   const { user } = useContext(AuthContext);
 
   if (!user) {
-    // return <Login />;
+    return <Login />;
   }
   if (role === "ADMIN") {
     if (user.role === role) {

@@ -46,7 +46,7 @@ const ModalView = (props) => {
                                 {/* <InfoItem label="Khu vực" content={props.data?.cityName} /> */}
                                 <InfoItem label="Khu vực" content={'Đà Nẵng'} />
 
-                                {props?.type === 'KOL' ?
+                                {props?.type === 'PGT' ?
                                     <>
                                         <InfoItem label="Lĩnh vực" content={<>
                                             <span>
@@ -69,7 +69,7 @@ const ModalView = (props) => {
                                 <InfoItem label="Số điện thoại" content={props.data?.phone} />
                                 <InfoItem label="Địa chỉ cụ thể" content={props.data?.addressDetails} />
 
-                                {props?.type === 'KOL' ?
+                                {props?.type === 'PGT' ?
                                     <>
                                         <InfoItem label="Đánh giá" content={<StarRating starCount={props.data?.star}/>}/>
                                         <InfoItem label="Só người theo dõi" content={props.data?.follow} />

@@ -5,8 +5,11 @@ import "./Booking.css";
 import Search from "antd/es/input/Search";
 import DropdownOperation from "../../../../components/Dropdown/DropdownOperation";
 import Constants from "../../../../utils/constants";
+import AvatarGroup from "../../../../components/image-group/AvatarGroup";
+import Temp from "../../../../utils/temp";
+import DropDownBookingRequest from "../../../../components/Dropdown/DropDownBookingRequest/DropDownBookingRequest";
 
-const Booking = () => {
+const RequestPGT = () => {
   const [booking, setBooking] = useState([]);
   const [statusBooking, setStatusBooking] = useState("dabook");
   const [monthSelect, setMonthSelect] = useState("");
@@ -31,7 +34,17 @@ const Booking = () => {
       ),
     },
     {
-      title: "Người thuê",
+      title: "Ảnh đại diện",
+      width: 150,
+      dataIndex: "avatarLink",
+      render: (text) => (
+        <div className="text-data">
+          <Avatar src={text}/>
+        </div>
+      ),
+    },
+    {
+      title: "Tên tài khoản",
       width: 150,
       dataIndex: "username",
       render: (text) => (
@@ -41,13 +54,6 @@ const Booking = () => {
       ),
     },
     {
-      title: "Tên KOL",
-      dataIndex: "tenKOL",
-      width: 140,
-      align: 'left',
-      render: (text) => <div className="text-data">{text}</div>,
-    },
-    {
       title: "Ngày tạo",
       dataIndex: "createAt",
       key: "createAt",
@@ -55,26 +61,20 @@ const Booking = () => {
       render: (text) => <div className="text-data">{text}</div>,
     },
     {
-      title: "Thời Gian",
-      dataIndex: "time",
-      width: 200,
-      render: (text) => <div className="text-data">{text}</div>,
-    },
-    {
-      title: "Số tiền",
-      dataIndex: "sotien",
-      key: "sotien",
+      title: "Giá thuê",
+      dataIndex: "price",
+      key: "price",
       width: 140,
       render: (text) => <div className="text-data">{text}</div>,
     },
     {
       title: "Lĩnh Vực",
-      dataIndex: "linhvuc",
-      key: "linhvuc",
+      dataIndex: "listgame",
+      key: "listgame",
       align: 'center',
       width: 80,
-      render: (text) => (
-        <Avatar src={''} width={20} height={20} />
+      render: (text, data) => (
+        <AvatarGroup list={data?.listgame ?? []} maxCount={4} />
       ),
     },
     {
@@ -82,7 +82,7 @@ const Booking = () => {
       key: "action",
       width: 90,
       align: 'center',
-      render: (_, record) => <DropdownOperation record={record} />
+      render: (_, record) => <DropDownBookingRequest record={record} />
     },
   ];
 
@@ -104,25 +104,12 @@ const Booking = () => {
     };
   });
 
-
   return (
     <div className="booking-container">
-      <div className="booking-title"><span>Booking</span></div>
-      {/* <div className="booking-status">
-        <Radio.Group
-          value={statusBooking}
-          onChange={(e) => setStatusBooking(e.target.value)}
-          className="radio-btn-status"
-        >
-          <Radio.Button className="btn-book" value="dabook">
-            Đã Book
-          </Radio.Button>
-          <Radio.Button value="dangcho">Đang Chờ</Radio.Button>
-        </Radio.Group>
-      </div> */}
+      <div className="booking-title"><span>Yêu cầu làm PGT</span></div>
       <div className="booking-search">
         <Input
-          placeholder="Tìm kiếm theo mã, tên người thuê, ..."
+          placeholder="Tìm kiếm tên người đăng kí, ..."
           size="middle "
           onChange={(e) => handleOnChangeInput(e)} />
         <Select
@@ -136,29 +123,11 @@ const Booking = () => {
         />
 
       </div>
-
+      
       <div className="booking-table">
         <Table
           columns={columns}
-          dataSource={booking}
-        // dataSource={booking
-        //   .filter((item) => {
-        //     return monthSelect + statusBooking === ""
-        //       ? item
-        //       : (item.thoigianbook.slice(3, 5) + item.status).includes(
-        //         monthSelect + statusBooking
-        //       );
-        //   })
-        //   .filter((item) => {
-        //     return nameKOL.toLowerCase() === ""
-        //       ? item
-        //       : item.tenKOL.toLowerCase().includes(nameKOL.toLowerCase());
-        //   })}
-        // pagination={{
-        //   defaultPageSize: 10,
-        //   showSizeChanger: false,
-        //   pageSizeOptions: ["10", "20", "30"],
-        // }}
+          dataSource={Temp?.requestPGT}
         />
       </div>
 
@@ -166,4 +135,4 @@ const Booking = () => {
   );
 };
 
-export default Booking;
+export default RequestPGT;

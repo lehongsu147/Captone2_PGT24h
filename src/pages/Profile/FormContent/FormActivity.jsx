@@ -15,7 +15,7 @@ const columns = [
     dataIndex: "kol",
     key: "kol",
     align: "center",
-    render: (text, data) => <div>Hợp tác với KOL {data.kol.firstName}</div>,
+    render: (text, data) => <div>Hợp tác với PGT {data.kol.firstName}</div>,
   },
   {
     title: "Nội dung",

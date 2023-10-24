@@ -54,8 +54,6 @@ const AccountKOL = () => {
         },
       ],
       onFilter: (value, record) => {
-        console.log("🚀 ~ file: AccountKOL.jsx:57 ~ AccountKOL ~ record:", record.listgame);
-        console.log("🚀 ~ file: AccountKOL.jsx:57 ~ AccountKOL ~ value:", value);
         return record.listgame.some((item) => item.id === value);
       },
       render: (data) => <AvatarGroup list={data} maxCount={4} />
@@ -151,7 +149,7 @@ const AccountKOL = () => {
       width: 130,
       align: 'center',
       render: (_, record) => (
-        <DropdownOperation record={record} type={'KOL'} />
+        <DropdownOperation record={record} type={'PGT'} />
       )
     },
   ];

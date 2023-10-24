@@ -5,13 +5,15 @@ import { login } from "../../services/AuthService";
 import { Input } from "antd";
 import { EyeTwoTone, EyeInvisibleOutlined } from "@ant-design/icons";
 
-import logo from "../../assets/logo/logo_KOLgo-removebg.svg";
+import logo from "../../assets/logo/LogoPage.png";
 import ButtonFull from "../../components/UI/Button/ButtonFull";
 import Message from "../../components/UI/Message/Message";
 import { AuthContext } from "../../context/auth.context";
 
 import Avatar from '../../assets/images/defaultAvatar.jpg'
+import PGTAVATAR from '../../assets/images/KOL.jpg'
 import "./style.css";
+import Temp from "../../utils/temp";
 
 
 const Login = (props) => {
@@ -94,6 +96,9 @@ const Login = (props) => {
       setProfile('user@gmail.com');
     }
 
+    else if (userInput.email === 'pgt@gmail.com') {
+      setProfile('pgt@gmail.com');
+    }
     else if (userInput.email === 'admin@gmail.com') {
       setProfile('admin@gmail.com');
     }
@@ -122,32 +127,18 @@ const Login = (props) => {
     // };
     let user;
     if (response === 'user@gmail.com') {
-      user = {
-        id: 11111,
-        email: 'user@gmail.com',
-        firstName: 'Nguyễn',
-        lastName: 'Linh',
-        avatar: Avatar,
-        role: 'user',
-      };
+      user = Temp.UserDemo;
+    }
+    else if (response === 'pgt@gmail.com') {
+      user = Temp.UserPGT;
     }
     else {
-      user = {
-        id: 111221,
-        email: 'admin@gmail.com',
-        firstName: 'admin',
-        lastName: 'Nguỹen',
-        avatar: Avatar,
-        role: 'ADMIN',
-      };
+      user = Temp.UserAdmin;
     }
-
-
     setUser(user)
-
     localStorage.setItem("user", JSON.stringify({ ...user }))
     window.dispatchEvent(new Event('storage'))
-
+    console.log(user)
     setCheck({
       status: true,
       type: "success",
@@ -155,7 +146,7 @@ const Login = (props) => {
     });
 
     setTimeout(() => {
-      if (user?.role === "ADMIN") {
+      if (user?.role === 3) {
         // if (response.user.role === "ADMIN") {
         return navigate("../admin");
       } else return navigate("..");

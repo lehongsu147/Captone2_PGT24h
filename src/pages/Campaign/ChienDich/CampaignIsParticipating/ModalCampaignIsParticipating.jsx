@@ -25,7 +25,7 @@ const ModalCampaignIsParticipating = (props) => {
         if (ctx.user.role === "ENTERPRISE") {
             getEntCampaigns().then((res) => { setCampaigns(res); setTotal(res.length); })
         }
-        if (ctx.user.role === "KOL") {
+        if (ctx.user.role === "PGT") {
             getKol(ctx.idRole).then((res) => { setCampaigns(res.campaigns); setTotal(res.campaigns.length); })
         }
     }, [props.isCampaignAdded, ctx.isQuitCampaign])

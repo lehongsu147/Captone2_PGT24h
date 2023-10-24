@@ -26,6 +26,8 @@ import Footer from "../components/Footer/Footer";
 import LayoutSideBar from "../Layout/LayoutSideBar/LayoutSideBar";
 import LayoutHeader from "../Layout/LayoutOnlyHeader/LayoutHeader";
 import ResgisterKol from "../pages/ResgisterKol/ResgisterKol";
+import ProfileUser from "../pages/Details/PageEntDetail/Introduce/ProfileUser";
+import TrendingPage from "../pages/Trending/TrendingPage";
 
 const Router = () => {
 
@@ -58,10 +60,31 @@ const Router = () => {
             </LayoutSideBar>}
         />
         <Route
+          path="/trending"
+          element={
+            <LayoutSideBar>
+              <TrendingPage />
+            </LayoutSideBar>}
+        />
+        <Route
+          path="registet-pgt"
+          element={
+            <LayoutHeader>
+              <ProtectedRoute Component={ResgisterKol} />
+            </LayoutHeader>}
+        />
+        <Route
+          path="user-home"
+          element={
+            <LayoutSideBar>
+              <ProfileUser />
+            </LayoutSideBar>}
+        />
+        <Route
           path="chat/:id"
           element={
             <LayoutHeader>
-              <Chat />
+              <ProtectedRoute Component={Chat} />
             </LayoutHeader>}
         />
         <Route
@@ -72,6 +95,21 @@ const Router = () => {
               <ProtectedRoute Component={PageDetail} />
             </LayoutHeader>
           }
+        />
+        <Route
+          path="/setting"
+          element={
+            <LayoutHeader>
+              <ProtectedRoute Component={Profile} />
+            </LayoutHeader>}
+        />
+        <Route
+          path="/bookings/:id"
+          element={<ProtectedRoute Component={BookingDetails} />}
+        />
+        <Route
+          path="/resigter-kol"
+          element={<ProtectedRoute Component={ResgisterKol} />}
         />
         <Route path="/forgot_password" element={<ForgotPassword />} />
         <Route path="/register" element={<Register />} />
@@ -86,18 +124,7 @@ const Router = () => {
           element=<ProtectedRoute Component={HomeAdmin} />
         // element=<ProtectedRoute Component={HomeAdmin} role={"ADMIN"} />
         />
-        <Route
-          path="/setting"
-          element={<ProtectedRoute Component={Profile} />}
-        />
-        <Route
-          path="/bookings/:id"
-          element={<ProtectedRoute Component={BookingDetails} />}
-        />
-        <Route
-          path="/resigter-kol"
-          element={<ProtectedRoute Component={ResgisterKol} />}
-        />
+
         <Route
           path="/vnpay/return"
           element={<ProtectedRoute Component={PaymentResult} />}

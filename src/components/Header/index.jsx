@@ -13,12 +13,13 @@ import campaign from "../../assets/logo/icon-compaign.svg";
 import chat from "../../assets/logo/icon-chat.svg";
 import "./style.css";
 import Notification from "../Notification";
+import Temp from "../../utils/temp";
 
 const Header = (props) => {
   const navigate = useNavigate();
-
+  const [isOpen, setIsOpen] = useState(false);
+  
   const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")));
-
   useEffect(() => {
     const handleStorageChange = () => {
       setUser({ ...JSON.parse(localStorage.getItem("user")) });
@@ -41,7 +42,12 @@ const Header = (props) => {
   const registerHandler = () => {
     navigate("/register");
   };
-
+  function handleOpen() {
+    setIsOpen(!isOpen);
+  }
+  function handleClose() {
+    setIsOpen(!isOpen);
+  }
   return (
     <div className="header">
       <div className="header__icon">
@@ -55,30 +61,24 @@ const Header = (props) => {
       <div className="header__room">
         <Menu icons={[home, campaign, chat]} />
       </div>
-      {user && <Notification />}
       <div className="header__button">
-        {user && (
-          <h4>
-            {user?.firstName.charAt(0).toUpperCase() + user?.firstName.slice(1)}
-          </h4>
-        )}
+        {user && <Notification />}
         {user && (
           <div className="avata">
-            <NavBar logOutHandler={logOutHandler}>
-              <Avatar
-                size={40}
-                src={
-                  user?.avatar
-                    ? `http://localhost:8080/api/images/${user.avatar}`
-                    : ""
-                }
-              >
-                {user?.avatar ? "" : user?.firstName.charAt(0)?.toUpperCase()}
-                {/* {user?.image ? "" : user?.email.slice(0, 1).toUpperCase()} */}
-              </Avatar>
-            </NavBar>
+            <NavBar role={user?.role} isOpen={isOpen} onchangeOpen={handleClose} logOutHandler={logOutHandler}></NavBar>
+            <Avatar
+              size={40}
+              onClick={handleOpen}
+              src={
+                user?.avatar
+              }
+            >
+              {user?.avatar ? "" : user?.firstName.charAt(0)?.toUpperCase()}
+              {/* {user?.image ? "" : user?.email.slice(0, 1).toUpperCase()} */}
+          </Avatar>
           </div>
         )}
+        
         {!user && (
           <NotLogin
             loginHandler={loginHandler}

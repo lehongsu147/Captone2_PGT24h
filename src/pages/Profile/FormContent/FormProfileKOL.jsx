@@ -48,14 +48,14 @@ export default function FormProfileKOL(props) {
   };
 
   useEffect(() => {
-    Promise.all([getKolProfile(), getCities(), getKolFields()]).then(
-      ([profile, cities, fields]) => {
-        setProfile(profile);
-        setImages(profile.images);
-        setCities(cities);
-        setFields(fields);
-      }
-    );
+    // Promise.all([getKolProfile(), getCities(), getKolFields()]).then(
+    //   ([profile, cities, fields]) => {
+    //     setProfile(profile);
+    //     setImages(profile.images);
+    //     setCities(cities);
+    //     setFields(fields);
+    //   }
+    // );
   }, []);
 
   const optionCity = cities.map((c) => {
@@ -143,13 +143,7 @@ export default function FormProfileKOL(props) {
       errMsg = "Vui lòng chọn thành phố làm việc!";
     } else if (!formData.fieldIds) {
       errMsg = "Vui lòng chọn lĩnh vực hoạt động!";
-    } else if (!formData.postPrice) {
-      errMsg = "Vui lòng nhập giá của 1 bài đăng!";
-    } else if (!formData.videoPrice) {
-      errMsg = "Vui lòng nhập giá của 1 video!";
-    } else if (!formData.introduction) {
-      errMsg = "Vui lòng nhập giới thiệu bản thân!";
-    }
+    } 
     if (errMsg) {
       createErrorMessage(errMsg);
       res = false;
@@ -342,34 +336,6 @@ export default function FormProfileKOL(props) {
                 defaultValue={profile?.tiktokUrl}
                 name="tiktokUrl"
                 type="url"
-              />
-            </Col>
-          </Row>
-
-          <Row className={classes.form_control}>
-            <Col span={6}>Giá bài đăng:</Col>
-            <Col span={18}>
-              <input
-                placeholder="Giá của 1 bài đăng"
-                onChange={inputChangeHandler}
-                type="number"
-                className={classes.input_profile}
-                defaultValue={profile?.postPrice}
-                name="postPrice"
-              />
-            </Col>
-          </Row>
-
-          <Row className={classes.form_control}>
-            <Col span={6}>Giá video:</Col>
-            <Col span={18}>
-              <input
-                placeholder="Giá của 1 video"
-                onChange={inputChangeHandler}
-                type="number"
-                className={classes.input_profile}
-                defaultValue={profile?.videoPrice}
-                name="videoPrice"
               />
             </Col>
           </Row>

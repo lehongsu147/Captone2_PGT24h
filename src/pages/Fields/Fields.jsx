@@ -17,11 +17,11 @@ const Fields = () => {
   const [listOfKol, setListOfKol] = useState();
 
   useEffect(() => {
-    getKolsByFieldIds(id).then((res) => {
-      setListOfKol(res);
-      setTotalKol(res.length);
-      console.log(res);
-    });
+    // getKolsByFieldIds(id).then((res) => {
+    //   setListOfKol(res);
+    //   setTotalKol(res.length);
+    //   console.log(res);
+    // });
   }, [id]);
 
   const onChangeCurrentKol = (page) => {

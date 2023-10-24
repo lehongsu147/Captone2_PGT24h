@@ -5,7 +5,7 @@ import  styles from './HotKol.module.scss'
 const HotHOL = () => {
     return (
         <>
-            <h2>Hot KOL</h2>
+            <h2>Hot PGT</h2>
             <div className={styles["content-page"]}>
                 {/* <PageHOT /> */}
                 <p>ádasdasdasd</p>
