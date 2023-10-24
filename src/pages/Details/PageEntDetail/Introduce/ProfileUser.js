@@ -21,7 +21,6 @@ const ProfileUser = ({ type }) => {
     const [items, setItems] = useState();
     const [editPrice, setEditPrice] = useState();
     const [newPrice, setNewPrice] = useState();
-    console.log(userInfo?.price)
     const navigate = useNavigate();
     const [open, setOpen] = useState(false);
     const [status, setStatus] = useState("");

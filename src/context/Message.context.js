@@ -18,7 +18,7 @@ export const MessageProvider = ({ children }) => {
 
   useEffect(() => {
     if (user) {
-      connect();
+      // connect();
       // Promise.all([getNotifications()]).then(([notificationList]) => {
       //   if (notificationList && notificationList.length > 0)
       //     setNotifications(notificationList);

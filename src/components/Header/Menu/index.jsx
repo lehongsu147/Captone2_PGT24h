@@ -9,7 +9,7 @@ import { convertStringToNumber } from "../../../utils/Utils";
 
 const ItemTrend = (props) => {
   return (
-    <li style={{display: 'flex' , justifyContent: 'space-between'}} >
+    <li style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }} >
       <div className="pull-left">
         <div className="rank-stt"> {props?.stt} </div>
         <div className="avt-rank">
@@ -20,7 +20,7 @@ const ItemTrend = (props) => {
         </div>
       </div>
       <div className="pull-right">
-        <span> { convertStringToNumber(props?.money)} </span>
+        <span> {convertStringToNumber(props?.money)} </span>
       </div>
     </li>
   );
@@ -68,10 +68,54 @@ const MenuGuest = ({ icons }) => {
       {
         label: '7 ngày qua',
         key: 2,
+        children:
+          <div className="tab-content">
+            <div className="top-info-section">
+              <div className="top-1-frame">
+                <img className="imgTop1" src={TodayList[0]?.avatar} />
+                <img className="imgTop1Frame" src={no1_top_frame} />
+              </div>
+              <span className="moneyTop1">{convertStringToNumber(TodayList[0]?.money)} </span>
+            </div>
+            <div className="rank-list">
+              {TodayList?.map((item) => (
+                <ItemTrend
+                  key={item?.stt}
+                  stt={item?.stt}
+                  avatar={item?.avatar}
+                  userName={item?.userName}
+                  money={item?.money}
+                />
+              ))
+              }
+            </div>
+          </div >
       },
       {
         label: '30 ngày qua',
         key: 3,
+        children:
+          <div className="tab-content">
+            <div className="top-info-section">
+              <div className="top-1-frame">
+                <img className="imgTop1" src={TodayList[0]?.avatar} />
+                <img className="imgTop1Frame" src={no1_top_frame} />
+              </div>
+              <span className="moneyTop1">{convertStringToNumber(TodayList[0]?.money)} </span>
+            </div>
+            <div className="rank-list">
+              {TodayList?.map((item) => (
+                <ItemTrend
+                  key={item?.stt}
+                  stt={item?.stt}
+                  avatar={item?.avatar}
+                  userName={item?.userName}
+                  money={item?.money}
+                />
+              ))
+              }
+            </div>
+          </div >
       }
     ]
 

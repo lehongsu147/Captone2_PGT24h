@@ -31,10 +31,10 @@ const HomeAdmin = () => {
   };
 
   const logoutHandler = () => {
-    // localStorage.removeItem("user");
-    // localStorage.removeItem("accessToken");
-    // localStorage.removeItem("refreshToken");
-    // navigate("../login");
+    localStorage.removeItem("user");
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("refreshToken");
+    navigate("../login");
   }
 
   return (

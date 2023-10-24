@@ -23,7 +23,8 @@ const componentEnt = [
   { key: "sub1", component: <FormEmail /> },
   { key: "sub2", component: <FormPassword /> },
   { key: "3", component: <FormActivity /> },
-  { key: "4", component: <FormPayment /> },
+  { key: "4", component: <PaymentWallett /> },
+  { key: "5", component: <Booking /> },
 ];
 
 const SubContext = (props) => {

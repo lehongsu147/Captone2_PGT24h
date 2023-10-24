@@ -38,6 +38,11 @@ const MenuProfile = (props) => {
       getItem("Yêu cầu booking", "5", <PicRightOutlined />),
     )
   }
+  else {
+    item = item.concat(
+      getItem("Lịch sử booking", "5", <PicRightOutlined />),
+    )
+  }
   return (
     <Menu
       className={classes.menu}

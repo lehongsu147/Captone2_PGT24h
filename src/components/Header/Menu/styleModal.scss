@@ -40,7 +40,9 @@
 
 .pull-left {
     float: left !important;
+    gap: 20px;
     display: flex;
+
     .avt-rank {
         img {
             width: 42px;
@@ -49,9 +51,20 @@
         }
     }
 
-    .name-pl ayer {}
+    .name-player {
+        font-size: 1.4rem;
+        line-height: 40px;
+        color: #b44fc9 !important;
+    }
 
-    .rank-stt {}
+    .rank-stt {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        font-size: 30px;
+        color: #333;
+    }
 }
 
 .pull-right {

@@ -9,6 +9,7 @@ import { updateEntProfile } from "../../../services/EnterpriseService";
 import { getEntProfile } from "../../../services/EnterpriseService";
 import { getEntFields } from "../../../services/FieldService";
 import { getCities } from "../../../services/CityService";
+import Constants from "../../../utils/constants";
 
 export default function FormProfileEnterprise(props) {
   const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")));
@@ -41,13 +42,13 @@ export default function FormProfileEnterprise(props) {
   };
 
   useEffect(() => {
-    Promise.all([getEntProfile(), getCities(), getEntFields()]).then(
-      ([profile, cities, fields]) => {
-        setProfile(profile);
-        setCities(cities);
-        setFields(fields);
-      }
-    );
+    // Promise.all([getEntProfile(), getCities(), getEntFields()]).then(
+    //   ([profile, cities, fields]) => {
+    //     setProfile(profile);
+    //     setCities(cities);
+    //     setFields(fields);
+    //   }
+    // );
   }, []);
 
   const cityOptions = cities.map((c) => {
@@ -140,7 +141,12 @@ export default function FormProfileEnterprise(props) {
       createSuccessMessage("Cập nhật thành công!")
     );
   };
-
+  const optionCategory = Constants.optionsCategory.map((field) => {
+    return {
+      value: field.id,
+      label: field.name,
+    };
+  });
   return (
     <form className={classes.form} onSubmit={submitHandler}>
       <Row>
@@ -179,19 +185,6 @@ export default function FormProfileEnterprise(props) {
           </Row>
 
           <Row className={classes.form_control}>
-            <Col span={7}>Tên doanh nghiệp:</Col>
-            <Col span={17}>
-              <input
-                placeholder="Tên doanh nghiệp"
-                onChange={inputChangeHandler}
-                className={classes.input_profile}
-                defaultValue={profile.name}
-                name="name"
-              />
-            </Col>
-          </Row>
-
-          <Row className={classes.form_control}>
             <Col span={7}>Số điện thoại:</Col>
             <Col span={17}>
               <input
@@ -204,40 +197,29 @@ export default function FormProfileEnterprise(props) {
             </Col>
           </Row>
 
-          <Row className={classes.form_control}>
-            <Col span={7}>Mã số thuế:</Col>
-            <Col span={17}>
-              <input
-                placeholder="Mã số thuế"
-                onChange={inputChangeHandler}
-                className={classes.input_profile}
-                defaultValue={profile.taxId}
-                name="taxId"
-              />
-            </Col>
-          </Row>
+          {user?.role === 2 &&
+            <Row className={classes.form_control}>
+              <Col span={7}>Lĩnh vực:</Col>
+              <Col span={17}>
+                <Select
+                  showSearch
+                  mode="multiple"
+                  allowClear
+                  placeholder="Chọn lĩnh vực hoạt động"
+                  className={classes.select_profile}
+                  optionFilterProp="children"
+                  options={optionCategory}
+                  onChange={changeFieldsHandler}
+                  value={fieldName ? fieldName : profile.fieldIds}
+                  filterOption={(input, option) =>
+                    (option?.label ?? "")
+                      .toLowerCase()
+                      .includes(input.toLowerCase())
+                  }
+                />
+              </Col>
+            </Row>}
 
-          <Row className={classes.form_control}>
-            <Col span={7}>Lĩnh vực:</Col>
-            <Col span={17}>
-              <Select
-                showSearch
-                mode="multiple"
-                allowClear
-                placeholder="Chọn lĩnh vực hoạt động"
-                className={classes.select_profile}
-                optionFilterProp="children"
-                onChange={changeFieldsHandler}
-                value={fieldName ? fieldName : profile.fieldIds}
-                filterOption={(input, option) =>
-                  (option?.label ?? "")
-                    .toLowerCase()
-                    .includes(input.toLowerCase())
-                }
-                options={fieldOptions}
-              />
-            </Col>
-          </Row>
 
           <Row className={classes.form_control}>
             <Col span={7}>Tỉnh/Thành phố:</Col>
@@ -247,6 +229,7 @@ export default function FormProfileEnterprise(props) {
                 placeholder="Chọn tỉnh/thành phố địa chỉ"
                 className={classes.select_profile}
                 optionFilterProp="children"
+                options={Constants.vietnamProvinces}
                 onChange={changeCityHandler}
                 value={cityName ? cityName : profile.cityId}
                 filterOption={(input, option) =>
@@ -254,7 +237,6 @@ export default function FormProfileEnterprise(props) {
                     .toLowerCase()
                     .includes(input.toLowerCase())
                 }
-                options={cityOptions}
               />
             </Col>
           </Row>
@@ -276,7 +258,7 @@ export default function FormProfileEnterprise(props) {
             <Col span={7}>Mô tả:</Col>
             <Col span={17}>
               <textarea
-                placeholder="Giới thiệu về công ty"
+                placeholder="Giới thiệu về bản thân"
                 onChange={inputChangeHandler}
                 className={classes.input_profile}
                 defaultValue={profile?.introduction}
@@ -293,27 +275,6 @@ export default function FormProfileEnterprise(props) {
               </button>
             </Col>
           </Row>
-        </Col>
-        <Col span={8} style={{ marginTop: "30px", textAlign: "center" }}>
-          <h3>Ảnh đại diện</h3>
-          <Avatar
-            size={200}
-            src={`http://localhost:8080/api/images/${user?.avatar}`}
-          >
-            {user?.avatar ? (
-              ""
-            ) : (
-              <UserOutlined style={{ fontSize: 70, lineHeight: "200px" }} />
-            )}
-          </Avatar>
-          <div className={classes.avatarWrapper}>
-            <EditOutlined /> Thay đổi
-            <input
-              type="file"
-              accept="image/*"
-              onChange={avatarChangeHandler}
-            />
-          </div>
         </Col>
       </Row>
     </form>

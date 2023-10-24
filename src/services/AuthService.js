@@ -1,5 +1,5 @@
-import { post } from "./Common";
+// import { post } from "./Common";
 
-export function login(credentials) {
-  return post("auth/login", credentials);
-}
+// export function login(credentials) {
+//   return post("auth/login", credentials);
+// }

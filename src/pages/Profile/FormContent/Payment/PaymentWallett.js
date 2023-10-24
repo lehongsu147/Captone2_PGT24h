@@ -126,7 +126,7 @@ const PaymentWallett = () => {
                                 Số dư hiện tại
                             </span>
                             <span className={styles.textCoinValue}                            >
-                                1000 DuoCoin
+                                1.000.000 VND
                             </span>
                         </Space>
                         <Space direction="vertical">

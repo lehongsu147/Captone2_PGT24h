@@ -71,12 +71,6 @@ export default class Temp {
             userName: 'OFF',
             money: '35555000Đ'
         },
-        {
-            stt: 10,
-            avatar: Img2,
-            userName: 'OFF',
-            money: '35555000Đ'
-        },
     ]
     static notiinfo =
         {

@@ -1,5 +1,5 @@
-import { get } from "./Common";
+// import { get } from "./Common";
 
-export function getCities() {
-    return get('cities');
-}
+// export function getCities() {
+//     return get('cities');
+// }

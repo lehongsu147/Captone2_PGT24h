@@ -51,22 +51,22 @@ export default function FormActivity({ user }) {
   const [activity, setActivity] = useState();
 
   useEffect(() => {
-    getBookingHistory()
-      .then((res) => {
-        if (!res.ok) {
-          return Promise.reject(res);
-        }
-        return res.json();
-      })
-      .then((data) => {
-        console.log(data);
-        setActivity(data);
-      });
+    // getBookingHistory()
+    //   .then((res) => {
+    //     if (!res.ok) {
+    //       return Promise.reject(res);
+    //     }
+    //     return res.json();
+    //   })
+    //   .then((data) => {
+    //     console.log(data);
+    //     setActivity(data);
+    //   });
   }, []);
   return (
     <>
-      <h1 style={{ marginLeft: 30 }}>Lịch sử hoạt động</h1>
-      <Table columns={columns} dataSource={activity} />;
+      <h1 style={{ marginLeft: 30 }}>Lịch sử booking</h1>
+      <Table columns={columns} dataSource={activity} />
     </>
   );
 }

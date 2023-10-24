@@ -49,24 +49,24 @@ const columns = [
 export default function FormActivity(props) {
   const [payment, setPayment] = useState();
 
-  useEffect(() => {
-    getPaymentHistory()
-      .then((res) => {
-        if (!res.ok) {
-          return Promise.reject(res);
-        }
-        return res.json();
-      })
-      .then((data) => {
-        console.log(data);
-        setPayment(data);
-      });
-  }, []);
+  // useEffect(() => {
+  //   getPaymentHistory()
+  //     .then((res) => {
+  //       if (!res.ok) {
+  //         return Promise.reject(res);
+  //       }
+  //       return res.json();
+  //     })
+  //     .then((data) => {
+  //       console.log(data);
+  //       setPayment(data);
+  //     });
+  // }, []);
 
   return (
     <>
       <h1 style={{ marginLeft: 30 }}>Lịch sử giao dịch</h1>
-      <Table columns={columns} dataSource={payment} />;
+      <Table columns={columns} dataSource={payment} />
     </>
   );
 }
