@@ -73,7 +73,7 @@ const DropdownOperation = ({ icon, options, record, type='user' }) => {
                 <div className={styles.selectOptions} ref={dropRef} >
                     <div className={styles.option} onClick={onOpenViewHandler}>Xem thông tin</div>
                     <div className={styles.option} onClick={onOpenUpdateModalHandler} >Sửa thông tin</div>
-                    <Button className={styles.option} onClick={showDeleteConfirm} >Xóa tài khoản </Button>
+                    {/* <Button className={styles.option} onClick={showDeleteConfirm} >Xóa tài khoản </Button> */}
                 </div>
             }
             <ModalView
