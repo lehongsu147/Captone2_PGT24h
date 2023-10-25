@@ -378,7 +378,7 @@ export default function FormProfileKOL(props) {
             </Col>
           </Row>
         </Col>
-        <Col span={8} style={{ marginTop: "30px", textAlign: "center" }}>
+        {/* <Col span={8} style={{ marginTop: "30px", textAlign: "center" }}>
           <h3>Ảnh đại diện</h3>
           <Avatar
             size={200}
@@ -398,7 +398,7 @@ export default function FormProfileKOL(props) {
               onChange={avatarChangeHandler}
             />
           </div>
-        </Col>
+        </Col> */}
       </Row>
     </form>
   );

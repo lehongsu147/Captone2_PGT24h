@@ -20,10 +20,10 @@ const Fields = () => {
         id: "PGT"
     })
 
-    useEffect(() => {
-        getKolFields().then((res) => { setKolFields(res) })
-        getEntFields().then((res) => { setEntFields(res) })
-    }, [])
+    // useEffect(() => {
+    //     getKolFields().then((res) => { setKolFields(res) })
+    //     getEntFields().then((res) => { setEntFields(res) })
+    // }, [])
 
     const columns = [
         {

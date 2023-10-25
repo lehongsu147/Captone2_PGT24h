@@ -30,19 +30,19 @@ const MenuProfile = (props) => {
       getItem("Email", "sub1"),
       getItem("Tài khoản và mật khẩu", "sub2"),
     ]),
-    getItem("Lịch sử booking", "3", <ClockCircleOutlined />),
     getItem("Ví & Lịch sử thanh toán", "4", <HistoryOutlined />),
+    getItem("Lịch sử booking", "3", <ClockCircleOutlined />),
   ];
   if (props?.user.role === 2) {
     item = item.concat(
       getItem("Yêu cầu booking", "5", <PicRightOutlined />),
     )
   }
-  else {
-    item = item.concat(
-      getItem("Lịch sử booking", "5", <PicRightOutlined />),
-    )
-  }
+  // else {
+  //   item = item.concat(
+  //     getItem("Lịch sử booking", "5", <PicRightOutlined />),
+  //   )
+  // }
   return (
     <Menu
       className={classes.menu}
