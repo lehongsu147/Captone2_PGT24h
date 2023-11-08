@@ -29,7 +29,7 @@ const componentEnt = [
 
 const SubContext = (props) => {
   return (
-    <div className="sub-context" style={{ width: "100%"  }}>
+    <div className="sub-context" style={{ width: "100%"  , height: 'calc(100vh - 60px)' , overflow: 'scroll' }}>
       {props.user.role === 2 &&
         Object.keys(props.changeContent).length === 0 && <FormProfileKOL />}
       {props.user.role === 2 &&

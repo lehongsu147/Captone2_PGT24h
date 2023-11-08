@@ -51,26 +51,27 @@ const Booking = () => {
     },
     {
       title: "Thời Gian",
-      dataIndex: "time",
+      dataIndex: "timestamp",
       width: 200,
       render: (text) => <div className="text-data">{text}</div>,
     },
     {
-      title: "Tổng tiền",
-      dataIndex: "money",
-      key: "money",
-      width: 140,
-      render: (text) => <div className="text-data">{text}</div>,
-    },
-    {
       title: "Lĩnh Vực",
-      dataIndex: "linhvuc",
-      key: "linhvuc",
+      dataIndex: "category",
+      key: "category",
       align: 'center',
       width: 80,
       render: (text) => (
-        <Avatar src={''} width={20} height={20} />
+        <Avatar src={text ?? ''} width={20} height={20} />
       ),
+    },
+    {
+      title: "Tổng sô tiền",
+      dataIndex: "money",
+      key: "money",
+      align: 'right',
+      width: 140,
+      render: (text) => <div className="text-data">{text}</div>,
     },
     {
       title: "Tác vụ",
@@ -103,18 +104,6 @@ const Booking = () => {
   return (
     <div className="booking-container">
       <div className="booking-title"><span>Booking</span></div>
-      {/* <div className="booking-status">
-        <Radio.Group
-          value={statusBooking}
-          onChange={(e) => setStatusBooking(e.target.value)}
-          className="radio-btn-status"
-        >
-          <Radio.Button className="btn-book" value="dabook">
-            Đã Book
-          </Radio.Button>
-          <Radio.Button value="dangcho">Đang Chờ</Radio.Button>
-        </Radio.Group>
-      </div> */}
       <div className="booking-search">
         <Input
           placeholder="Tìm kiếm theo mã, tên người thuê, ..."
@@ -129,12 +118,16 @@ const Booking = () => {
           placeholder='Chọn ngày'
           onChange={(e) => handleOnChangeDate(e?.$d)}
         />
-
       </div>
 
       <div className="booking-table">
         <Table
           columns={columns}
+          pagination={{
+            defaultPageSize: 8,
+            showSizeChanger: false,
+            pageSizeOptions: ["10", "20", "30"]
+          }}
           dataSource={Temp.bookingRequest}
         // dataSource={booking
         //   .filter((item) => {

@@ -37,9 +37,7 @@
 }
 
 .formInfo {
-    width: 100%;
     padding: 20px;
-
 }
 
 .spaceContent {
@@ -55,7 +53,11 @@
 
 .textCoinValue {
     font-size: 26px;
-    color: #f0564a;
+    color: rgb(118, 176, 243);
     font-weight: 600;
 
+}
+.text-money{
+    color: rgb(102, 166, 240);
+    font-weight: 600;
 }

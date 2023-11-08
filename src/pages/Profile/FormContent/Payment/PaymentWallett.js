@@ -4,6 +4,7 @@ import { Button, Input, Row, Space, Table, message } from 'antd';
 import { toast } from 'react-toastify';
 import { DownloadOutlined, EyeInvisibleOutlined, EyeTwoTone, MoneyCollectTwoTone, WalletTwoTone } from '@ant-design/icons';
 import Title from 'antd/es/typography/Title';
+import Temp from '../../../../utils/temp';
 const PaymentWallett = () => {
     const [profile, setProfile] = useState({});
     const [loading, setLoading] = useState(false);
@@ -67,86 +68,67 @@ const PaymentWallett = () => {
             ),
         },
         {
-            title: "Người gửi",
-            width: 150,
-            dataIndex: "username",
-            render: (text) => (
-                <div className="text-data">
-                    {text}
-                </div>
-            ),
-        },
-        {
-            title: "Người nhận",
-            dataIndex: "tenKOL",
-            width: 140,
-            align: 'left',
-            render: (text) => <div className="text-data">{text}</div>,
-        },
-        {
             title: "Ngày giao dịch",
-            dataIndex: "createAt",
-            key: "createAt",
+            dataIndex: "date",
+            key: "date",
             width: 140,
             render: (text) => <div className="text-data">{text}</div>,
         },
         {
-            title: "Thời Gian",
-            dataIndex: "time",
-            width: 200,
-            render: (text) => <div className="text-data">{text}</div>,
+            title: "Nội dung",
+            dataIndex: "content",
+            key: "content",
+            width: 140,
+            render: (text,data) => <div className="text-data">{text}</div>,
         },
         {
             title: "Số tiền",
-            dataIndex: "sotien",
-            key: "sotien",
+            dataIndex: "money",
+            key: "money",
+            align: 'right',
             width: 140,
-            render: (text) => <div className="text-data">{text}</div>,
+            render: (text,data) => <div className="text-money" style={{ color: data?.send ? 'red' : 'rgb(102, 166, 240)'}}>{ data?.send ? '-' : '+' } {text} </div>,
         },
     ];
     const [historyWallet, setHistoryWallet] = useState([]);
 
     useEffect(() => {
-        const getData = async () => {
-            setHistoryWallet([]);
-        };
-        getData();
+        // const getData = async () => {
+        //     setHistoryWallet([]);
+        // };
+        // getData();
     }, []);
 
     return (
-        <main className={styles["main-details"]} >
-            <div
-                className={`${styles["container"]} `}
-            >
-                <div className={styles.formInfo}>
-                    <Title level={1}>Ví DuoCoin</Title>
-                    <Space direction="horizontal" className={styles.spaceContent}  >
-                        <Space direction="vertical" >
-                            <span className={styles.textCoin}                            >
-                                Số dư hiện tại
-                            </span>
-                            <span className={styles.textCoinValue}                            >
-                                1.000.000 VND
-                            </span>
-                        </Space>
-                        <Space direction="vertical">
-                            <Button style={{ width: 170 }} type="primary" icon={<WalletTwoTone width={70} />} size={'large'} >
-                                <span>
-                                    Nạp tiền
-                                </span>
-                            </Button>
-                            <Button style={{ width: 170 }} type="primary" icon={<MoneyCollectTwoTone width={30} />} size={'large'} >
-                                <span>
-                                    Rút tiền
-                                </span>
-                            </Button>
-                        </Space>
+        <main className={'booking-container'} >
+            <div className={styles.formInfo}>
+                <Title level={1} style={{color: 'red'}}> Ví DuoCoin</Title>
+                <Space direction="horizontal" className={styles.spaceContent}  >
+                    <Space direction="vertical" >
+                        <span className={styles.textCoin}                            >
+                            Số dư hiện tại
+                        </span>
+                        <span className={styles.textCoinValue}                            >
+                            1.000.000 VND
+                        </span>
                     </Space>
-                    <div className="booking-table">
-                        <Table
-                            columns={columns}
-                            dataSource={historyWallet} />
-                    </div>
+                    <Space direction="vertical">
+                        <Button style={{ width: 170 }} type="primary" icon={<WalletTwoTone width={70} />} size={'large'} >
+                            <span>
+                                Nạp tiền
+                            </span>
+                        </Button>
+                        <Button style={{ width: 170 }} type="primary" icon={<MoneyCollectTwoTone width={30} />} size={'large'} >
+                            <span>
+                                Rút tiền
+                            </span>
+                        </Button>
+                    </Space>
+                </Space>
+                <div className="booking-table">
+                    <Table
+                        columns={columns}
+                        dataSource={Temp.walletHistory} />
                 </div>
             </div>
         </main >

@@ -29,7 +29,7 @@ const PageKOLDetail = () => {
 
 
   useEffect(() => {
-    setKolInfo(Temp.UserPGT );
+    setKolInfo(Temp.UserPGT);
     // getKol(id).then((res) => {
     //   // setKol(res);
 
@@ -38,14 +38,14 @@ const PageKOLDetail = () => {
     // });
   }, []);
 
-  useEffect(() => {
-    if (kolInfo) {
-      document.title = `PGT24h | ${kolInfo?.firstName} ${kolInfo?.lastName}`;
-    }
-    return () => {
-      document.title = "PGT24h";
-    };
-  }, [kolInfo?.id]);
+  // useEffect(() => {
+  //   if (kolInfo) {
+  //     document.title = `PGT24h | ${kolInfo?.firstName} ${kolInfo?.lastName}`;
+  //   }
+  //   return () => {
+  //     document.title = "PGT24h";
+  //   };
+  // }, [kolInfo?.id]);
 
   const checkStatus = (bookings, user, kol) => {
     if (!user) {
@@ -73,7 +73,7 @@ const PageKOLDetail = () => {
   };
 
   const bookingHandler = () => {
-    if ( !user ){
+    if (!user) {
       navigate('/login');
     }
     setOpen(true);
@@ -163,13 +163,11 @@ const PageKOLDetail = () => {
   return (
     <>
       <main className={styles["main-details"]} >
-        {kolInfo && (
-          <BookingCreate
-            kol={kolInfo}
-            onCancelOpenHandler={onCancelOpenHandler}
-            open={open}
-          />
-        )}
+        <BookingCreate
+          kol={kolInfo ?? ''}
+          onCancelOpenHandler={onCancelOpenHandler}
+          open={open}
+        />
         <div
           className={`${styles["container"]} ${styles[isCollapse ? "isCollapse" : '']}  `}
         >

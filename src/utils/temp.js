@@ -15,13 +15,65 @@ export default class Temp {
         email: 'user@gmail.com',
         pass: '111'
     }
+    static walletHistory = [
+        {
+            code: 'MBSDSD.232123',
+            date: '22/11/2023',
+            send: false,
+            content: 'Hủy yêu cầu booking PGT #1231',
+            money: "100.000",
+            type: 1,
+        },
+        {
+            code: 'MBSDSD.45542',
+            date: '22/11/2023',
+            send: true,
+            content: 'booking PGT #1421',
+            money: "100.000",
+            type: 3,
+        },
+        {
+            code: 'MBSDSD.232123',
+            date: '22/11/2023',
+            content: ' Hủy yêu cầu booking PGT #1421',
+            send: false,
+            money: "100.000",
+            type: 1,
+        },
+        {
+            code: 'MBSDSD.45542',
+            date: '22/11/2023',
+            content: 'booking PGT #1421',
+            send: true,
+            money: "120.000",
+            type: 3,
+        },
+        {
+            code: 'MBSDSD.92349',
+            date: '22/11/2023',
+            send: true,
+            content: 'booking PGT #1121',
+            money: "130.000",
+            type: 2,
+        },
+        {
+            code: 'MBSDSD.92349',
+            date: '22/11/2023',
+            send: false,
+            content: 'Nạp tiền vào ví',
+            money: "1.000.000",
+            type: 2,
+        },
+
+    ]
     static bookingRequest = [
         {
             id: 1231,
-            username: 'HoàngTrần',
+            username: 'CiCi',
             pgt: 'ManiaCute',
             pgtId: 1223,
             createAt: '07/20/2023',
+            category: 'https://playerduo.net/api/upload-service/game_avatars/715867c6-698f-411a-b4f9-1e9093130b60__0ba80060-2b58-11ee-a657-a54d6be1d46a__game_avatars.jpg',
             timestamp: '20:00 - 23:00',
             money: '100.000',
             status: 'PAID',
@@ -29,34 +81,54 @@ export default class Temp {
         {
             id: 1231,
             pgt: 'ManiaCute',
+            username: 'THINKING!',
             pgtId: 1223,
+            category: 'https://files.playerduo.net/production/game_avatars/715867c6-698f-411a-b4f9-1e9093130b60__a844a8e0-34cf-11ed-838c-b120e70abb59__game_avatars.jpg',
             createAt: '07/20/2023',
             timestamp: '20:00 - 23:00',
-            money: '100.000',
+            money: '120.000',
             status: 'PAID',
         },
         {
             id: 1231,
             pgt: 'ManiaCute',
+            username: 'Vũ Trấn Đông',
+            category: 'https://files.playerduo.net/production/game_avatars/715867c6-698f-411a-b4f9-1e9093130b60__c5802ad0-33e2-11ed-838c-b120e70abb59__game_avatars.jpg',
             pgtId: 1223,
             createAt: '07/20/2023',
             timestamp: '20:00 - 23:00',
-            money: '100.000',
+            money: '130.000',
             status: 'CANCELED',
         },
         {
             id: 1231,
             pgt: 'ManiaCute',
+            username: 'Vũ Trấn Đông',
+            category: 'https://files.playerduo.net/production/game_avatars/715867c6-698f-411a-b4f9-1e9093130b60__c5802ad0-33e2-11ed-838c-b120e70abb59__game_avatars.jpg',
             pgtId: 1223,
             createAt: '07/20/2023',
             timestamp: '20:00 - 23:00',
-            money: '100.000',
+            money: '110.000',
             status: 'REJECTED',
         },
         {
             id: 1231,
             pgt: 'ManiaCute',
+            username: 'Toanvanga88888',
+            category: 'https://files.playerduo.net/production/game_avatars/715867c6-698f-411a-b4f9-1e9093130b60__a844a8e0-34cf-11ed-838c-b120e70abb59__game_avatars.jpg',
             pgtId: 1223,
+            money: '110.000',
+            createAt: '07/20/2023',
+            timestamp: '20:00 - 23:00',
+            status: 'PAID',
+        },
+        {
+            id: 1231,
+            username: 'hoang van chung',
+            pgt: 'ManiaCute',
+            category: 'https://files.playerduo.net/production/game_avatars/715867c6-698f-411a-b4f9-1e9093130b60__a844a8e0-34cf-11ed-838c-b120e70abb59__game_avatars.jpg',
+            pgtId: 1223,
+            money: '80.000',
             createAt: '07/20/2023',
             timestamp: '20:00 - 23:00',
             status: 'PAID',
@@ -65,22 +137,19 @@ export default class Temp {
             id: 1231,
             pgt: 'ManiaCute',
             pgtId: 1223,
+            username: 'Đông Hoa Đế Quân',
             createAt: '07/20/2023',
+            money: '80.000',
+            category: 'https://files.playerduo.net/production/game_avatars/715867c6-698f-411a-b4f9-1e9093130b60__c5802ad0-33e2-11ed-838c-b120e70abb59__game_avatars.jpg',
             timestamp: '20:00 - 23:00',
             status: 'PAID',
         },
         {
             id: 1231,
             pgt: 'ManiaCute',
+            username: 'hoang van chung',
             pgtId: 1223,
-            createAt: '07/20/2023',
-            timestamp: '20:00 - 23:00',
-            status: 'PAID',
-        },
-        {
-            id: 1231,
-            pgt: 'ManiaCute',
-            pgtId: 1223,
+            category: 'https://files.playerduo.net/production/game_avatars/715867c6-698f-411a-b4f9-1e9093130b60__a844a8e0-34cf-11ed-838c-b120e70abb59__game_avatars.jpg',
             createAt: '07/20/2023',
             timestamp: '20:00 - 23:00',
             money: '100.000',
@@ -88,7 +157,9 @@ export default class Temp {
         },
         {
             id: 1231,
+            username: 'hoang van chung',
             pgt: 'ManiaCute',
+            category: 'https://files.playerduo.net/production/game_avatars/715867c6-698f-411a-b4f9-1e9093130b60__c5802ad0-33e2-11ed-838c-b120e70abb59__game_avatars.jpg',
             pgtId: 1223,
             createAt: '07/20/2023',
             timestamp: '20:00 - 23:00',
@@ -102,6 +173,7 @@ export default class Temp {
             pgt: 'ManiaCute',
             pgtId: 1223,
             date: '07/20/2023',
+            category: 'https://playerduo.net/api/upload-service/game_avatars/715867c6-698f-411a-b4f9-1e9093130b60__0ba80060-2b58-11ee-a657-a54d6be1d46a__game_avatars.jpg',
             timestamp: '20:00 - 23:00',
             money: '100.000',
             status: 'PAID',
@@ -110,6 +182,7 @@ export default class Temp {
             id: 1231,
             pgt: 'ManiaCute',
             pgtId: 1223,
+            category: 'https://files.playerduo.net/production/game_avatars/715867c6-698f-411a-b4f9-1e9093130b60__a844a8e0-34cf-11ed-838c-b120e70abb59__game_avatars.jpg',
             date: '07/20/2023',
             timestamp: '20:00 - 23:00',
             money: '100.000',
@@ -120,6 +193,7 @@ export default class Temp {
             pgt: 'ManiaCute',
             pgtId: 1223,
             date: '07/20/2023',
+            category: 'https://files.playerduo.net/production/game_avatars/715867c6-698f-411a-b4f9-1e9093130b60__a844a8e0-34cf-11ed-838c-b120e70abb59__game_avatars.jpg',
             timestamp: '20:00 - 23:00',
             money: '100.000',
             status: 'CANCELED',
@@ -127,6 +201,7 @@ export default class Temp {
         {
             id: 1231,
             pgt: 'ManiaCute',
+            category: 'https://files.playerduo.net/production/game_avatars/715867c6-698f-411a-b4f9-1e9093130b60__3b5dac30-34d0-11ed-838c-b120e70abb59__game_avatars.jpg',
             pgtId: 1223,
             date: '07/20/2023',
             timestamp: '20:00 - 23:00',
@@ -136,6 +211,7 @@ export default class Temp {
         {
             id: 1231,
             pgt: 'ManiaCute',
+            category: 'https://playerduo.net/api/upload-service/game_avatars/715867c6-698f-411a-b4f9-1e9093130b60__0ba80060-2b58-11ee-a657-a54d6be1d46a__game_avatars.jpg',
             pgtId: 1223,
             date: '07/20/2023',
             timestamp: '20:00 - 23:00',
@@ -146,6 +222,7 @@ export default class Temp {
             id: 1231,
             pgt: 'ManiaCute',
             pgtId: 1223,
+            category: 'https://files.playerduo.net/production/game_avatars/715867c6-698f-411a-b4f9-1e9093130b60__3b5dac30-34d0-11ed-838c-b120e70abb59__game_avatars.jpg',
             date: '07/20/2023',
             timestamp: '20:00 - 23:00',
             money: '100.000',
@@ -155,6 +232,7 @@ export default class Temp {
             id: 1231,
             pgt: 'ManiaCute',
             pgtId: 1223,
+            category: 'https://playerduo.net/api/upload-service/game_avatars/715867c6-698f-411a-b4f9-1e9093130b60__0ba80060-2b58-11ee-a657-a54d6be1d46a__game_avatars.jpg',
             date: '07/20/2023',
             timestamp: '20:00 - 23:00',
             money: '100.000',
@@ -164,6 +242,7 @@ export default class Temp {
             id: 1231,
             pgt: 'ManiaCute',
             pgtId: 1223,
+            category: 'https://playerduo.net/api/upload-service/game_avatars/715867c6-698f-411a-b4f9-1e9093130b60__0ba80060-2b58-11ee-a657-a54d6be1d46a__game_avatars.jpg',
             date: '07/20/2023',
             timestamp: '20:00 - 23:00',
             status: 'PAID',
@@ -173,6 +252,7 @@ export default class Temp {
             pgt: 'ManiaCute',
             pgtId: 1223,
             date: '07/20/2023',
+            category: 'https://files.playerduo.net/production/game_avatars/715867c6-698f-411a-b4f9-1e9093130b60__3b5dac30-34d0-11ed-838c-b120e70abb59__game_avatars.jpg',
             timestamp: '20:00 - 23:00',
             money: '100.000',
             status: 'PAID',
@@ -822,7 +902,7 @@ export default class Temp {
     static satistcal = [
 
     ]
-    static HotKOL =   [
+    static HotKOL = [
         {
             id: '1',
             username: 'meomeo',
@@ -1119,7 +1199,7 @@ export default class Temp {
         },
     ]
 
-    static OutstandingKOL =   [
+    static OutstandingKOL = [
         {
             id: '1',
             username: 'meomeo',
@@ -1651,7 +1731,7 @@ export default class Temp {
     ]
 
     static bookingListData = [
-        {   
+        {
             code: '12232',
             username: 'meomeo',
             tenKOL: 'strawberry2001',
@@ -1660,7 +1740,7 @@ export default class Temp {
             sotien: '30000',
             linhvuc: 'https://files.playerduo.net/production/game_avatars/715867c6-698f-411a-b4f9-1e9093130b60__f364f2e0-34ce-11ed-838c-b120e70abb59__game_avatars.jpg',
         },
-        {   
+        {
             code: '12262',
             username: 'cici003',
             tenKOL: 'thucanh97',
@@ -1669,7 +1749,7 @@ export default class Temp {
             sotien: '30000',
             linhvuc: 'https://playerduo.net/api/upload-service/game_avatars/715867c6-698f-411a-b4f9-1e9093130b60__0ba80060-2b58-11ee-a657-a54d6be1d46a__game_avatars.jpg',
         },
-        {   
+        {
             code: '12272',
             username: 'namcoi',
             tenKOL: 'trangmythuat',
@@ -1678,7 +1758,7 @@ export default class Temp {
             sotien: '30000',
             linhvuc: 'https://files.playerduo.net/production/game_avatars/715867c6-698f-411a-b4f9-1e9093130b60__f364f2e0-34ce-11ed-838c-b120e70abb59__game_avatars.jpg',
         },
-        {   
+        {
             code: '12232',
             username: 'meomeo',
             tenKOL: 'strawberry2001',
@@ -1687,7 +1767,7 @@ export default class Temp {
             sotien: '30000',
             linhvuc: 'https://files.playerduo.net/production/game_avatars/715867c6-698f-411a-b4f9-1e9093130b60__c5802ad0-33e2-11ed-838c-b120e70abb59__game_avatars.jpg',
         },
-        {   
+        {
             code: '12232',
             username: 'meomeo',
             tenKOL: 'strawberry2001',
@@ -1696,7 +1776,7 @@ export default class Temp {
             sotien: '30000',
             linhvuc: 'https://playerduo.net/api/upload-service/game_avatars/715867c6-698f-411a-b4f9-1e9093130b60__0ba80060-2b58-11ee-a657-a54d6be1d46a__game_avatars.jpg',
         },
-        {   
+        {
             code: '12232',
             username: 'meomeo',
             tenKOL: 'strawberry2001',
@@ -1705,7 +1785,7 @@ export default class Temp {
             sotien: '30000',
             linhvuc: 'https://files.playerduo.net/production/game_avatars/715867c6-698f-411a-b4f9-1e9093130b60__f364f2e0-34ce-11ed-838c-b120e70abb59__game_avatars.jpg',
         },
-        {   
+        {
             code: '12232',
             username: 'meomeo',
             tenKOL: 'strawberry2001',
@@ -1714,7 +1794,7 @@ export default class Temp {
             sotien: '30000',
             linhvuc: 'https://files.playerduo.net/production/game_avatars/715867c6-698f-411a-b4f9-1e9093130b60__f364f2e0-34ce-11ed-838c-b120e70abb59__game_avatars.jpg',
         },
-        {   
+        {
             code: '12232',
             username: 'meomeo',
             tenKOL: 'strawberry2001',
@@ -1723,7 +1803,7 @@ export default class Temp {
             sotien: '30000',
             linhvuc: 'https://files.playerduo.net/production/game_avatars/715867c6-698f-411a-b4f9-1e9093130b60__f364f2e0-34ce-11ed-838c-b120e70abb59__game_avatars.jpg',
         },
-        {   
+        {
             code: '12232',
             username: 'meomeo',
             tenKOL: 'strawberry2001',

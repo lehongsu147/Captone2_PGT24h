@@ -1,32 +1,28 @@
 import React, { useEffect, useState } from 'react';
-import styles from './HotKol.module.scss'
+import styles from './HotKol.module.scss';
 import CardKol from '../../card/CardKOL/CardKol';
-import ContentLoader, { Facebook, List } from 'react-content-loader'
-import MyLoader from '../../loader/Loader';
-import Temp from '../../../utils/temp';
 import PgtFactories from '../../../services/PgtFatories';
+
 const HotHOL = () => {
     const [hotKols, setHotKols] = useState([]);
+    const [apiCalled, setApiCalled] = useState(false);
+
     useEffect(() => {
-        // setHotKols(
-        //     Temp.HotKOL
-        // )
-        const fetchData = async () => {
-            const response = await PgtFactories.getListPGT();
-            setHotKols(response);
-        };
-        fetchData();
-    }, []);
+        if (!apiCalled) {
+            const fetchData = async () => {
+                try {
+                    const response = await PgtFactories.getListPGT();
+                    setHotKols(response);
+                    setApiCalled(true);
+                } catch (error) {
+                    // Handle errors here
+                }
+            };
 
+            fetchData();
+        }
+    }, [apiCalled]); 
 
-    // useEffect(() => {
-    //     const fetchData = async () => {
-    //         const response = await PgtFactories.getListHotPGT();
-    //         setHotKols(response)
-    //     };
-    //     fetchData();
-    // }, []);
-    
     return (
         <div className={styles.container}>
             <span className={styles.title}>Hot PGT</span>
@@ -36,7 +32,7 @@ const HotHOL = () => {
                     {hotKols?.map((kol, i) => {
                         return (
                             <CardKol key={i} kol={kol} />
-                        )
+                        );
                     })}
                 </div>
             </div>

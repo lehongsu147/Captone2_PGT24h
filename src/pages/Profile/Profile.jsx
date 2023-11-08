@@ -17,10 +17,12 @@ const Profile = () => {
   return (
     <>
       <div style={{ width: '100%', backgroundColor: "#fff" }}>
-        <Row>
-          <Col span={4}>
+        <Row 
+          style={{height: 'calc(100vh - 58px)', overflow: 'hidden'}}
+        >
+          <Col span={4} style={{height: '100%' }}>
             <MenuProfile
-              style={{marginTop: '-64px'}}
+              // style={{marginTop: '-64px'}}
               user={user}
               onChangeContentHandler={onChangeContentHandler}
             />

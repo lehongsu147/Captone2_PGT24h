@@ -1,22 +1,19 @@
 import React, { useContext, useEffect } from "react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { formatDate } from "../../services/DateTimeUtil";
-import { createBooking } from "../../services/BookingService";
-import { BookingStatus } from "../../utils/Enums";
-
 import classes from "./Booking.module.css";
 import { MessageContext } from "../../context/Message.context";
-import { Modal, DatePicker, Form, Select, Button, Input, TimePicker, Space } from "antd";
+import { Modal, DatePicker, Form, Select, Input, TimePicker, Space } from "antd";
 import { Option } from "antd/es/mentions";
 import TextArea from "antd/es/input/TextArea";
-import { convertStringToNumber, getDate } from './../../utils/Utils';
+import { convertStringToNumber } from './../../utils/Utils';
 import { toast } from "react-toastify";
+import { logDOM } from "@testing-library/react";
 
 const BookingCreate = (props) => {
   const user = JSON.parse(localStorage.getItem("user"));
   const kol = props.kol;
-  const { sendPrivateNotification } = useContext(MessageContext);
+  // const { sendPrivateNotification } = useContext(MessageContext);
   const navigate = useNavigate();
   const [booking, setBooking] = useState({
     timestamp: "",
@@ -28,15 +25,17 @@ const BookingCreate = (props) => {
     description: "",
   });
 
-  
+
   const onCloseModal = () => {
     props.onCancelOpenHandler();
   };
 
   const [timeBooking, setTimeBooking] = useState(1);
   const [dateBooking, setDateBooking] = useState();
-  const [timeFromBooking, setTimeFromBooking] = useState();
-  const [timeEndBooking, setTimeEndBooking] = useState();
+  const [rangeTimeBooking, setRangeTimeBooking] = useState();
+
+  const [error, setError] = useState(null);
+  const [inputTimeEndBooking, setInputTimeEndBooking] = useState();
   const [note, setNote] = useState();
   const [priceTotal, setPrice] = useState();
 
@@ -44,41 +43,115 @@ const BookingCreate = (props) => {
     setPrice(convertStringToNumber(parseInt(kol?.price) * timeBooking))
   }, [kol?.price, timeBooking])
 
-  
-  useEffect(() => {
-    if (timeFromBooking && timeBooking) {
-      const newTime = new Date(timeFromBooking?.$d);
-      newTime.setHours(newTime.getHours() + timeBooking);
-      let EndTime = timeFromBooking;
-      EndTime.$d = newTime;
-      setTimeEndBooking(EndTime);
-    }
-  }, [timeBooking, timeFromBooking])
+  const checkDate = (startTimeRange) => {
+    // Lấy ngày, tháng và năm từ dateBooking
+    const dateBookingDate = dateBooking.getDate();
+    const dateBookingMonth = dateBooking.getMonth();
+    const dateBookingYear = dateBooking.getFullYear();
 
-  const checkDateExit = () => {
-    const startTimeRange = new Date('2023-11-08T08:00:00');
-    const endTimeRange = new Date('2023-11-08T10:00:00');
+    // Lấy ngày, tháng và năm từ startTimeRange
+    const startTimeRangeDate = startTimeRange.getDate();
+    const startTimeRangeMonth = startTimeRange.getMonth();
+    const startTimeRangeYear = startTimeRange.getFullYear();
 
     if (
-      timeFromBooking >= startTimeRange &&
-      timeEndBooking <= endTimeRange
+      dateBookingDate === startTimeRangeDate &&
+      dateBookingMonth === startTimeRangeMonth &&
+      dateBookingYear === startTimeRangeYear
     ) {
-    return true;
-    } else {
-    return false;
+      return true
     }
-
+    else {
+      return false
+    }
   }
+
+
+  const checkTimeStart = (startTimeRange, endTimeRange) => {
+    const inputHoursStart = rangeTimeBooking[0]?.$d.getHours();
+    const inputMinutesStart = rangeTimeBooking[0]?.$d.getMinutes();
+
+    const inputHoursEnd = rangeTimeBooking[1]?.$d.getHours();
+    const inputMinutesEnd = rangeTimeBooking[1]?.$d.getMinutes();
+    const startHours = startTimeRange.getHours();
+    const startMinutes = startTimeRange.getMinutes();
+
+    const endHours = endTimeRange.getHours();
+    const endMinutes = endTimeRange.getMinutes();
+    if (
+      ((inputHoursStart >= startHours && inputHoursStart <= endHours) ||
+        (inputHoursEnd >= startHours && inputHoursEnd <= endHours)) ||
+      ((inputHoursStart >= startHours && inputHoursStart <= endHours && inputMinutesStart > startMinutes)
+        && (inputHoursEnd === endHours && inputMinutesEnd < endMinutes))
+    ) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  const checkTimeBookingDateExit = () => {
+    const startTimeRange = new Date('2023-11-09T08:00:00');
+    const endTimeRange = new Date('2023-11-09T10:00:00');
+    if (checkDate(startTimeRange)) {
+      if (checkTimeStart(startTimeRange, endTimeRange)) {
+        return true;
+      }
+      return false;
+    }
+    return false;
+  }
+
+
+  const checkDateBooking = (value) => {
+    const now = new Date();
+    const bookingDate = new Date(dateBooking);
+
+    if (bookingDate) {
+      const timeDiff = bookingDate - now;
+      const daysDiff = timeDiff / (1000 * 60 * 60 * 24);
+      if (daysDiff >= 15) {
+        return Promise.reject(new Error('Ngày đặt phải nằm trong 15 ngày kể từ ngày hiện tại'));
+
+      } else if (daysDiff < -1) {
+        return Promise.reject(new Error('Ngày đặt đã qua, bạn không thể đặt trong quá khứ'));
+      }
+      else {
+        return Promise.resolve();
+      }
+    }
+    else {
+      return Promise.reject(new Error('Bắt buộc chọn ngày'));
+    }
+  };
+
+  useEffect(() => {
+    if (rangeTimeBooking) {
+      const newTime = rangeTimeBooking[1]?.$H - rangeTimeBooking[0]?.$H;
+      setTimeBooking(newTime);
+      setError({ mes: '' })
+    }
+  }, [rangeTimeBooking])
+
   const handleBooking = () => {
-    props.onCancelOpenHandler();
-    
-    const checkDateExits  = checkDateExit();
-    console.log("🚀 ~ file: BookingCreate.jsx:71 ~ handleBooking ~ checkDateExits:", checkDateExits)
+
+    const checkDateExits = checkTimeBookingDateExit();
     if (checkDateExits) {
       toast.error('PGT đã trùng lịch, vui lòng chọn lại lịch khác.')
+      setError(
+        {
+          mes: 'PGT đã có lịch booking lúc 8:00 - 10: 00, vui lòng chọn thời gian khác.'
+        }
+      );
     }
-    else{
+    else {
       toast.success('Tạo lượt booking thành công, PGT sẽ phàn hồi lại trong 5 phút.')
+      setError(
+        {
+          mes: ''
+        }
+      );
+      props.onCancelOpenHandler();
     }
     // booking.timestamp = formatDate(new Date());
     // setBooking({ ...booking });
@@ -97,24 +170,9 @@ const BookingCreate = (props) => {
     //   if (res.error) {
     //   }
     // });
+    // props.onCancelOpenHandler();
   };
 
-  const checkDateBooking = (value) => {
-    const now = new Date(); 
-    const bookingDate = new Date(dateBooking);
-  
-    const timeDiff = bookingDate - now;
-    const daysDiff = timeDiff / (1000 * 60 * 60 * 24) ;
-    if (daysDiff >= 15) {
-      return Promise.reject(new Error('Ngày đặt phải nằm trong 15 ngày kể từ ngày hiện tại'));
-      
-    } else if (daysDiff < -1 ) {
-      return Promise.reject(new Error('Ngày đặt đã qua, bạn không thể đặt trong quá khứ'));
-    }
-    else{
-      return Promise.resolve();
-    }
-  };
 
   return (
     <Modal
@@ -122,7 +180,7 @@ const BookingCreate = (props) => {
       open={props.open}
       title="Tạo lượt thuê"
       onOk={handleBooking}
-      destroyOnClose
+      destroyOnClose={true}
       onCancel={onCloseModal}
     >
 
@@ -138,15 +196,15 @@ const BookingCreate = (props) => {
         >
           <Form.Item label="Player" >{kol.firstName} {kol.lastName}</Form.Item>
 
-          <Form.Item label="Ngày" x name='dateBooking' 
-              rules={[ {  validator: checkDateBooking }, ]}
-            >
+          <Form.Item label="Ngày" name='dateBooking'
+            rules={[{ validator: checkDateBooking },]}
+          >
             <DatePicker placeholder="Chọn ngày" onChange={(e) => setDateBooking(e?.$d)} value={dateBooking} style={{ width: '100%' }} />
           </Form.Item>
 
-          <Form.Item
+          {/* <Form.Item
             name='time'
-            rules={[{ required: true, message: 'Bắt buộc chọn giờ thuê ' }]}
+            rules={[{ required: true, message: 'Bắt buộc chọn giờ  thuê ' }]}
             label="Số giờ thuê"
           >
             <Select placeholder="Chọn giờ thuê" allowClear onChange={(e) => setTimeBooking(e)} value={timeBooking}      >
@@ -163,15 +221,20 @@ const BookingCreate = (props) => {
               <Option value={11}>11 giờ</Option>
               <Option value={12}>12 giờ</Option>
             </Select>
-          </Form.Item>
+          </Form.Item> */}
 
           <Form.Item label="Thời gian" name="timefrom" rules={[{ required: true, message: 'Bắt buộc chọn giờ' }]} >
             <Space.Compact block>
-              <TimePicker placeholder="Bắt đầu từ" style={{ width: '50%' }} use12Hours format="h:mm a" value={timeFromBooking} onChange={(e) => setTimeFromBooking(e)} />
-              <TimePicker placeholder="Kết thúc" style={{ width: '50%' }} use12Hours format="h:mm a" value={timeEndBooking} disabled />
+              <TimePicker.RangePicker format='h:mm' onChange={(e) => setRangeTimeBooking(e)} />
+              {/* 
+              <TimePicker placeholder="Bắt đầu từ" style={{ width: '50%' }} use12Hours format="h:mm a" value={inputTimeFromBooking} onChange={(e) => {
+                setInputTimeFromBooking(e)
+                setInputTimeEndBooking(e)
+              }} />
+              <TimePicker placeholder="Kết thúc" style={{ width: '50%' }} use12Hours format="h:mm a" value={inputTimeEndBooking} disabled /> */}
             </Space.Compact>
+            {error?.mes !== '' ? <span style={{ color: '#eb6734', fontSize: 12 }}>{error?.mes}</span> : <></>}
           </Form.Item>
-
           <Form.Item label="Tổng tiền">
             <Input
               style={{
