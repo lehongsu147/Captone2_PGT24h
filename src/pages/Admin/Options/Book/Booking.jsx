@@ -5,6 +5,7 @@ import "./Booking.css";
 import Search from "antd/es/input/Search";
 import DropdownOperation from "../../../../components/Dropdown/DropdownOperation";
 import Constants from "../../../../utils/constants";
+import Temp from "../../../../utils/temp";
 
 const Booking = () => {
   const [booking, setBooking] = useState([]);
@@ -13,11 +14,13 @@ const Booking = () => {
   const [nameKOL, setNameKOL] = useState("");
 
   useEffect(() => {
-    const getData = async () => {
-      const listBooking = await BookingData;
-      setBooking(listBooking);
-    };
-    getData();
+    // const getData = async () => {
+    //   const listBooking = await BookingData;
+    //   setBooking(listBooking);
+    // };
+    
+    // getData();
+      setBooking(Temp.bookingListData);
   }, []);
   const columns = [
     {
@@ -74,7 +77,7 @@ const Booking = () => {
       align: 'center',
       width: 80,
       render: (text) => (
-        <Avatar src={''} width={20} height={20} />
+        <Avatar src={text ?? ''} width={20} height={20} />
       ),
     },
     {
@@ -106,7 +109,7 @@ const Booking = () => {
 
 
   return (
-    <div className="booking-container">
+    <div className="booking-container" style={{ height: '100vh', overflow: 'scroll' }}>
       <div className="booking-title"><span>Booking</span></div>
       {/* <div className="booking-status">
         <Radio.Group

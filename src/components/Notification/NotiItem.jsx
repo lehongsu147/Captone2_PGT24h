@@ -40,7 +40,7 @@ export default function NotiItem({ noti }) {
         }
         className={classes.avatar}
       >
-        {noti.userAvatar ? "" : noti.user?.firstName.charAt(0)?.toUpperCase()}
+        {noti.userAvatar ? "" : noti.user?.firstName?.charAt(0)?.toUpperCase()}
       </Avatar>
 
       <div

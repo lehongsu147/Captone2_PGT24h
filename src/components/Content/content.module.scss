@@ -26,7 +26,7 @@
     transition-timing-function: ease;
 
     gap: 20px;
-
+    min-width: 1000px;
     &.Collapse {
       @media(min-width: 1365px) {
         width: 95%;

@@ -62,7 +62,7 @@ const CardKol = (props) => {
                             </div>
                         </div>
                         <FontAwesomeIcon icon="fa-sharp fa-solid fa-star-sharp" />
-                        <p className="channel__star">{data?.star} <span className='channel__cmt'>({data?.commnent})</span></p>
+                        <p className="channel__star">{data?.star} <span className='channel__cmt'>({data?.comment})</span></p>
                     </div>
                 </div>
             </div>

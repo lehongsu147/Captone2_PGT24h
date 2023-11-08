@@ -84,7 +84,7 @@ const HomeAdmin = () => {
             {selectedMenuItem === "4" && <Booking />}
             {/* {selectedMenuItem === "4" && <CreateCombo />} */}
             {/* {selectedMenuItem === "5" && <Campaign />} */}
-            {selectedMenuItem === "7" && <ListCombo />}
+            {selectedMenuItem === "7" && <OutStanding />}
             {selectedMenuItem === "8" && <Fields />}
             {selectedMenuItem === "9" && <RequestPGT />}
             {selectedMenuItem === "10" && <Statistical />}

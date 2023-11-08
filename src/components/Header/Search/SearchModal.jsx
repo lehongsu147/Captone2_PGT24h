@@ -108,7 +108,7 @@ const SearchModal = () => {
                   <div key={kol.id}>
                     <Link key={kol.id} to={`kols/${kol.id}`} className={classes["item-search-user"]}>
                       <Avatar size={40} src={kol?.avatar}>
-                        {kol?.avatar ? "" : kol?.firstName.charAt(0)?.toUpperCase()}
+                        {kol?.avatar ? "" : kol?.firstName?.charAt(0)?.toUpperCase()}
                       </Avatar>
                       <div>
                         <div className={classes['name-item-user']}>{kol.firstName.toLowerCase()} {kol.lastName}</div>

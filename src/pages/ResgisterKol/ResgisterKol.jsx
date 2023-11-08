@@ -6,7 +6,7 @@ import { createBooking } from "../../services/BookingService";
 import { BookingStatus } from "../../utils/Enums";
 
 import styles from "./ResgisterKol.module.css";
-import { Card, Avatar, Col, Row, Input, Button } from "antd";
+import { Card, Avatar, Col, Row, Input, Button, InputNumber } from "antd";
 import Constants from "../../utils/constants";
 import Meta from "antd/es/card/Meta";
 import Temp from "../../utils/temp";
@@ -27,11 +27,14 @@ const ResgisterKol = (props) => {
       setSelectedCards(updatedSelectedCards);
     }
   };
-  const navigate =useNavigate();
-  function onSubmit(){
+  const navigate = useNavigate();
+  function onSubmit() {
     toast.success('Gửi yêu cầu thành công, vui lòng chờ admin xác nhận yêu cầu')
     navigate('/home');
   }
+
+  
+
   return (
     <div>
       <main className={styles["main-details"]} >
@@ -63,11 +66,17 @@ const ResgisterKol = (props) => {
           <h1>Thêm lĩnh vực mới</h1>
           <div className={styles.addCategory}>
             <Input placeholder="Nhập tên lĩnh vực" />
-            <TextArea placeholder="Giải thích về lĩnh vực mới này ..."/>
+            <TextArea placeholder="Giải thích về lĩnh vực mới này ..." />
           </div>
           <h1>Giá thuê mỗi giờ</h1>
           <div className={styles.addCategory}>
-            <Input placeholder="Nhập số tiền" />
+            <InputNumber
+              placeholder="Nhập số tiền"
+              addonAfter="VNĐ"
+              style={{ width: '100%' }}
+              formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+              parser={value => value.replace(/\$\s?|(,*)/g, '')}
+            />
           </div>
           <Button type='primary' onClick={onSubmit} className={styles.btnSubmit}>Gửi yêu cầu</Button>
         </div>

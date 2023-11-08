@@ -1,17 +1,22 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useState } from 'react';
 import styles from './OutStandingKol.module.scss'
 import CardKol from '../../card/CardKOL/CardKol';
 import Temp from '../../../utils/temp';
+import PgtFactories from '../../../services/PgtFatories';
 const OutStandingKol = () => {
     const [hotKols, setHotKols] = useState([]);
-    useEffect(() => {
-        setHotKols(
-            Temp.OutstandingKOL
-        )
-        // getKols().then((res) => {
-        //   // setHotKols(res)
+    // useEffect(() => {
+    //     setHotKols(
+    //         Temp.OutstandingKOL
+    //     )
+    // }, []);
 
-        // });
+    useLayoutEffect(() => {
+        const fetchData = async () => {
+            const response = await PgtFactories.getListPGT();
+            setHotKols(response);
+        };
+        fetchData();
     }, []);
 
     return (

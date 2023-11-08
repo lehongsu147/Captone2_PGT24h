@@ -1,22 +1,21 @@
-import React, { useState, useEffect, useLayoutEffect, useContext } from 'react'
-import { getKolFields } from '../../services/FieldService';
-import { Link, useNavigate, useParams } from "react-router-dom";
+import React, { useState, useEffect, useContext, useLayoutEffect } from 'react'
+import { useNavigate, useParams } from "react-router-dom";
 import styles from './Sidebar.module.scss'
 import { CollapseContext } from '../../context/collapse.context';
-import Constants from '../../utils/constants';
+import CategoriesFactories from '../../services/CategoriesFatories';
 
 const SideBar = ({ onChangeCollapse }) => {
+    const [fields, setFields] = useState()
 
-    const [fields, setFields] = useState([])
-
-    useEffect(() => {
-        setFields(Constants.optionsCategory)
-        // getKolFields().then(res => {
-        //     setFields(res)
-        // });
-    }, [])
-
-
+    useLayoutEffect(() => {
+        const fetchData = async () => {
+            const response = await CategoriesFactories.getListCategories();
+            setFields(response);
+        };
+        fetchData();
+        // setFields(Constants.optionsCategory)
+    }, []);
+    
     const { isCollapse, setIsCollapse } = useContext(CollapseContext);
     const { id } = useParams();
     const navigator = useNavigate();
@@ -26,7 +25,6 @@ const SideBar = ({ onChangeCollapse }) => {
     function handleClickLink(value) {
         navigator(`/field/${value}`)
     }
-
 
     return (
         <div className={`${styles['container']}`} >

@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { Table } from "antd";
 import { OutStandingData } from "../DataAdmin";
 import "./OutStanding.css";
+import Temp from "../../../../utils/temp";
+import Constants from "../../../../utils/constants";
 
 const OutStanding = () => {
   const [outStanding, setOutStanding] = useState([]);
@@ -9,42 +11,55 @@ const OutStanding = () => {
   const [nameKOL, setNameKOL] = useState("");
 
   useEffect(() => {
-    const getData = async () => {
-      const listOutStanding = await OutStandingData;
-      setOutStanding(listOutStanding);
-    };
-    getData();
+    // const getData = async () => {
+    //   const listOutStanding = await OutStandingData;
+    //   setOutStanding(listOutStanding);
+    // };
+    // getData();
+      setOutStanding(Temp.HotKOL);
   }, []);
 
   const columns = [
     {
       title: "Tên PGT",
-      dataIndex: "tenKOL",
-      key: "tenKOL",
-      render: (text) => <div className="text-data">{text}</div>,
+      dataIndex: "username",
+      key: "username",
+      render: text =>
+        <div className="text-data">
+          {text}
+        </div>
     },
     {
-      title: "Số lượng tiếp cận",
+      title: "Số lượng theo dõi",
       dataIndex: "soluongtiepcan",
       key: "soluongtiepcan",
-      render: (text) => <div className="text-data">{text}</div>,
+      render: text =>
+        <div className="text-data">
+          {text}
+        </div>
     },
     {
-      title: "Số lượng book",
+      title: "Lượt booking",
       dataIndex: "soluongbook",
       key: "soluongbook",
-      render: (text) => <div className="text-data">{text}</div>,
+      render: text =>
+        <div className="text-data">
+          {text}
+        </div>
     },
     {
       title: "Tổng doanh thu",
       dataIndex: "tongdoanhthu",
       key: "tongdoanhthu",
-      render: (text) => <div className="text-data">{text}</div>,
+      render: text =>
+        <div className="text-data">
+          {text}
+        </div>
     },
     {
-      title: "Thêm nổi bật",
+      title: "Tác vụ",
       key: "action",
-      render: (_, record) => (
+      render: (_, record) =>
         <div className="action-btn">
           <button
             className="btn-add-noibat"
@@ -53,16 +68,15 @@ const OutStanding = () => {
             Cho nổi bật
           </button>
         </div>
-      ),
-    },
+    }
   ];
-  const handleOnChangeStatus = (e) => {
+  const handleOnChangeStatus = e => {
     setStatusSelect(e.target.value);
   };
-  const handleOnChangeInput = (e) => {
+  const handleOnChangeInput = e => {
     setNameKOL(e.target.value);
   };
-  const handleAddNoiBat = (value) => {
+  const handleAddNoiBat = value => {
     console.log(value);
   };
 
@@ -74,11 +88,11 @@ const OutStanding = () => {
           type="text"
           placeholder="Tên"
           className="input-search"
-          onChange={(e) => handleOnChangeInput(e)}
+          onChange={e => handleOnChangeInput(e)}
         />
         <select
           className="select-search"
-          onChange={(e) => handleOnChangeStatus(e)}
+          onChange={e => handleOnChangeStatus(e)}
         >
           <option value={"dangnoibat"} selected>
             Đang nổi bật
@@ -88,6 +102,7 @@ const OutStanding = () => {
       </div>
       <Table
         columns={columns}
+        dataSource={Constants.dataTableKol}
         // dataSource={outStanding
         //   .filter((item) => {
         //     return statusSelect === ""
@@ -102,7 +117,7 @@ const OutStanding = () => {
         pagination={{
           defaultPageSize: 8,
           showSizeChanger: false,
-          pageSizeOptions: ["10", "20", "30"],
+          pageSizeOptions: ["10", "20", "30"]
         }}
       />
     </div>

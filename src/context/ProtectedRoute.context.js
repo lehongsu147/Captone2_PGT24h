@@ -10,7 +10,7 @@ export function ProtectedRoute({ Component, role }) {
     return <Login />;
   }
   if (role === "ADMIN") {
-    if (user.role === role) {
+    if (user.role === 3) {
       return <Component />;
     } else return <NotAdmin />;
   } else return <Component />;

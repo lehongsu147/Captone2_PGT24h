@@ -14,6 +14,7 @@ import Avatar from '../../assets/images/defaultAvatar.jpg'
 import PGTAVATAR from '../../assets/images/KOL.jpg'
 import "./style.css";
 import Temp from "../../utils/temp";
+import AccountFactories from "../../services/AccountFactories";
 
 
 const Login = (props) => {
@@ -83,28 +84,34 @@ const Login = (props) => {
       });
       return;
     }
-    // let response = await login(userInput);
-    // if (!response) {
-    //   setCheck({
-    //     status: true,
-    //     type: "error",
-    //     content: `Đăng nhập thất bại, kiểm tra lại email và mật khẩu!`,
-    //   });
-    // }
-    // else setProfile(response);
-    if (userInput.email === 'user@gmail.com') {
-      setProfile('user@gmail.com');
+
+
+    const response = await AccountFactories.requestLogin(userInput);
+    if (response?.error) {
+      console.log(response?.error);
+      setCheck({
+        status: true,
+        type: "error",
+        content: response?.error,
+      });
+    }
+    if (response?.user) {
+      setProfile(response);
     }
 
-    else if (userInput.email === 'pgt@gmail.com') {
-      setProfile('pgt@gmail.com');
-    }
-    else if (userInput.email === 'admin@gmail.com') {
-      setProfile('admin@gmail.com');
-    }
-    else {
-      alert('acc sai')
-    }
+    // if (userInput.email === 'user@gmail.com') {
+    //   setProfile('user@gmail.com');
+    // }
+
+    // else if (userInput.email === 'pgt@gmail.com') {
+    //   setProfile('pgt@gmail.com');
+    // }
+    // else if (userInput.email === 'admin@gmail.com') {
+    //   setProfile('admin@gmail.com');
+    // }
+    // else {
+    //   alert('acc sai')
+    // }
 
   };
 
@@ -117,19 +124,20 @@ const Login = (props) => {
     // refreshToken = JSON.stringify(refreshToken);
     // localStorage.setItem("refreshToken", refreshToken);
 
-    // let user = {
-    //   id: response.user.id,
-    //   email: response.user.email,
-    //   firstName: response.user.firstName,
-    //   lastName: response.user.lastName,
-    //   avatar: response.user.avatar,
-    //   role: response.user.role,
-    // };
-    let user;
-    if (response === 'user@gmail.com') {
+    let user = {
+      id: response?.user?.id,
+      email: response?.user?.email,
+      firstName: response?.user?.firstName,
+      lastName: response?.user?.lastName,
+      avatar: response?.user?.avatar,
+      role_id: response?.user?.role_id,
+      role: response?.user?.role_name,
+    };
+    
+    if (response.user.role_name === 'user') {
       user = Temp.UserDemo;
     }
-    else if (response === 'pgt@gmail.com') {
+    else if (response.user.role_name === 'pgt') {
       user = Temp.UserPGT;
     }
     else {

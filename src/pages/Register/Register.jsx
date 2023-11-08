@@ -8,14 +8,13 @@ import logo from '../../assets/logo/LogoPage.png'
 import { register } from "../../services/authentication";
 import { Input } from "antd";
 import { EyeInvisibleOutlined, EyeTwoTone } from "@ant-design/icons";
+import Message from "../../components/UI/Message/Message";
+import AccountFactories from "../../services/AccountFactories";
 
 const Register = (props) => {
   const [userInput, setUserInput] = useState({
-    firstName: "",
-    lastName: "",
     email: "",
     password: "",
-    confirmPassword: "",
     biz: false
   });
   const [showMessage, setShowMessage] = useState({
@@ -71,16 +70,12 @@ const Register = (props) => {
     });
   };
 
+  const navigator = useNavigate()
+
   const validateUserInput = (userInput) => {
     let res = true;
     let errMsg = '';
-    if (!userInput.firstName) {
-      errMsg = 'Hãy nhập tên';
-    }
-    else if (!userInput.lastName) {
-      errMsg = 'Hãy nhập họ';
-    }
-    else if (!userInput.email) {
+    if (!userInput.email) {
       errMsg = 'Hãy nhập email';
     }
     else if (userInput.email.indexOf('@') < 0) {
@@ -105,36 +100,53 @@ const Register = (props) => {
     return res;
   }
 
-  const registerWithCredentials = (credentials) => {
-    register(credentials)
-      .then(res => {
-        if (!res.ok) {
-          return Promise.reject(res)
-        }
-        else if (res.ok) {
-          createSuccessNoti(userInput.email)
-          return res.json();
-        }
-      })
-      .then(data => {
-        console.log(data);
-        createWarningNoti(data.message)
-      }).catch(err => {
-        err.json().then(e => {
-          createErrorNoti(e.message)
-          console.log(e)
-        })
+  const registerWithCredentials = async (credentials) => {
+    const response = await AccountFactories.requestLSignUp(credentials);
+    if (response?.status === 400) {
+      setShowMessage({
+        status: true,
+        type: "error",
+        content: response?.message,
       });
+    }
+    else if (response?.status === 200) {
+      setShowMessage({
+        status: true,
+        type: "success",
+        content: response?.message,
+      });
+      navigator('/login')
+    }
+
+    // register(credentials)
+    //   .then(res => {
+    //     if (!res.ok) {
+    //       return Promise.reject(res)
+    //     }
+    //     else if (res.ok) {
+    //       createSuccessNoti(userInput.email)
+    //       return res.json();
+    //     }
+    //   })
+    //   .then(data => {
+    //     console.log(data);
+    //     createWarningNoti(data.message)
+    //   }).catch(err => {
+    //     err.json().then(e => {
+    //       createErrorNoti(e.message)
+    //       console.log(e)
+    //     })
+    //   });
   }
-  const navigator = useNavigate()
+
   const handleRegister = (event) => {
-    console.log(userInput);
-    navigator('/login')
-    // if (event) {
-    //   event.preventDefault();
-    // }
-    // validateUserInput(userInput)
-    // if (validateUserInput(userInput)) { registerWithCredentials(userInput) }
+    if (event) {
+      event.preventDefault();
+    }
+    console.log(validateUserInput(userInput));
+    if (validateUserInput(userInput)) {
+      registerWithCredentials(userInput);
+    }
   }
 
   return (
@@ -142,9 +154,16 @@ const Register = (props) => {
       <div className="register__logo">
         <img className='logo' src={logo} alt="" />
       </div>
+      <Message
+        status={showMessage.status}
+        type={showMessage.type}
+        content={showMessage.content}
+        changeMessage={changeMessage}
+      />
+
       <form onSubmit={handleRegister} className="register-form">
         <div className='form-top'>
-          <h1 style={{ textAlign: 'center' }}>Thông tin đăng ký PGT</h1>
+          <h1 style={{ textAlign: 'center' }}>Thông tin đăng ký</h1>
           <div className="register-form__control">
             <input
               type="text"

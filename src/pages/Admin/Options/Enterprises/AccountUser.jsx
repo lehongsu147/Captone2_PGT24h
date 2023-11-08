@@ -150,7 +150,7 @@ const AccountUser = () => {
         <div className={[classes.tableContent]}>
           <Table
             columns={columns}
-            dataSource={Constants.dataTableKol}
+            dataSource={Constants.dataUser}
             onChange={onChange}
             scroll={{
               y: 'calc(100vh - 215px)'

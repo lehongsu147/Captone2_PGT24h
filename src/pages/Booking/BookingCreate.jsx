@@ -28,9 +28,58 @@ const BookingCreate = (props) => {
     description: "",
   });
 
-  const handleBooking = () => {
-    toast.success('Tạo lượt booking thành công, PGT sẽ phàn hồi lại trong 5 phút.')
+  
+  const onCloseModal = () => {
     props.onCancelOpenHandler();
+  };
+
+  const [timeBooking, setTimeBooking] = useState(1);
+  const [dateBooking, setDateBooking] = useState();
+  const [timeFromBooking, setTimeFromBooking] = useState();
+  const [timeEndBooking, setTimeEndBooking] = useState();
+  const [note, setNote] = useState();
+  const [priceTotal, setPrice] = useState();
+
+  useEffect(() => {
+    setPrice(convertStringToNumber(parseInt(kol?.price) * timeBooking))
+  }, [kol?.price, timeBooking])
+
+  
+  useEffect(() => {
+    if (timeFromBooking && timeBooking) {
+      const newTime = new Date(timeFromBooking?.$d);
+      newTime.setHours(newTime.getHours() + timeBooking);
+      let EndTime = timeFromBooking;
+      EndTime.$d = newTime;
+      setTimeEndBooking(EndTime);
+    }
+  }, [timeBooking, timeFromBooking])
+
+  const checkDateExit = () => {
+    const startTimeRange = new Date('2023-11-08T08:00:00');
+    const endTimeRange = new Date('2023-11-08T10:00:00');
+
+    if (
+      timeFromBooking >= startTimeRange &&
+      timeEndBooking <= endTimeRange
+    ) {
+    return true;
+    } else {
+    return false;
+    }
+
+  }
+  const handleBooking = () => {
+    props.onCancelOpenHandler();
+    
+    const checkDateExits  = checkDateExit();
+    console.log("🚀 ~ file: BookingCreate.jsx:71 ~ handleBooking ~ checkDateExits:", checkDateExits)
+    if (checkDateExits) {
+      toast.error('PGT đã trùng lịch, vui lòng chọn lại lịch khác.')
+    }
+    else{
+      toast.success('Tạo lượt booking thành công, PGT sẽ phàn hồi lại trong 5 phút.')
+    }
     // booking.timestamp = formatDate(new Date());
     // setBooking({ ...booking });
     // createBooking(kol.id, booking).then((res) => {
@@ -50,31 +99,22 @@ const BookingCreate = (props) => {
     // });
   };
 
-  const onCloseModal = () => {
-    props.onCancelOpenHandler();
-  };
-
-  const [timeBooking, setTimeBooking] = useState(1);
-  const [dateBooking, setDateBooking] = useState();
-  const [timeFromBooking, setTimeFromBooking] = useState();
-  const [timeEndBooking, setTimeEndBooking] = useState();
-  const [note, setNote] = useState();
-  const [priceTotal, setPrice] = useState();
-
-  useEffect(() => {
-    setPrice(convertStringToNumber(parseInt(kol?.price) * timeBooking))
-  }, [kol?.price, timeBooking])
-
-  useEffect(() => {
-    if (timeFromBooking && timeBooking) {
-      console.log(timeBooking)
-      const newTime = new Date(timeFromBooking?.$d);
-      newTime.setHours(newTime.getHours() + timeBooking);
-      let EndTime = timeFromBooking;
-      EndTime.$d = newTime;
-      setTimeEndBooking(EndTime);
+  const checkDateBooking = (value) => {
+    const now = new Date(); 
+    const bookingDate = new Date(dateBooking);
+  
+    const timeDiff = bookingDate - now;
+    const daysDiff = timeDiff / (1000 * 60 * 60 * 24) ;
+    if (daysDiff >= 15) {
+      return Promise.reject(new Error('Ngày đặt phải nằm trong 15 ngày kể từ ngày hiện tại'));
+      
+    } else if (daysDiff < -1 ) {
+      return Promise.reject(new Error('Ngày đặt đã qua, bạn không thể đặt trong quá khứ'));
     }
-  }, [timeBooking, timeFromBooking])
+    else{
+      return Promise.resolve();
+    }
+  };
 
   return (
     <Modal
@@ -98,7 +138,9 @@ const BookingCreate = (props) => {
         >
           <Form.Item label="Player" >{kol.firstName} {kol.lastName}</Form.Item>
 
-          <Form.Item label="Ngày" name="date" rules={[{ required: true, message: 'Bắt buộc chọn ngày' }]} >
+          <Form.Item label="Ngày" x name='dateBooking' 
+              rules={[ {  validator: checkDateBooking }, ]}
+            >
             <DatePicker placeholder="Chọn ngày" onChange={(e) => setDateBooking(e?.$d)} value={dateBooking} style={{ width: '100%' }} />
           </Form.Item>
 
@@ -125,7 +167,7 @@ const BookingCreate = (props) => {
 
           <Form.Item label="Thời gian" name="timefrom" rules={[{ required: true, message: 'Bắt buộc chọn giờ' }]} >
             <Space.Compact block>
-              <TimePicker placeholder="Bắt đầu từ" style={{ width: '50%' }} use12Hours format="h:mm a" onChange={(e) => setTimeFromBooking(e)} />
+              <TimePicker placeholder="Bắt đầu từ" style={{ width: '50%' }} use12Hours format="h:mm a" value={timeFromBooking} onChange={(e) => setTimeFromBooking(e)} />
               <TimePicker placeholder="Kết thúc" style={{ width: '50%' }} use12Hours format="h:mm a" value={timeEndBooking} disabled />
             </Space.Compact>
           </Form.Item>

@@ -9,7 +9,6 @@ import DropDownBookingRequest from "../../../../components/Dropdown/DropDownBook
 
 const RequireBooking = () => {
   const [booking, setBooking] = useState([]);
-  console.log("🚀 ~ file: RequireBooking.jsx:11 ~ RequireBooking ~ booking:", booking)
   const [statusBooking, setStatusBooking] = useState("dabook");
   const [monthSelect, setMonthSelect] = useState("");
   const [nameKOL, setNameKOL] = useState("");

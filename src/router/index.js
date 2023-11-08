@@ -14,7 +14,6 @@ import PageKOLDetail from "../pages/Details/PageKolDetail/PageKolDetail";
 import VerifyRegister from "../pages/VerifyRegister/VerifyRegister";
 import ResetPassword from "../pages/ForgotPassword/ResetPassword";
 import Chat from "../pages/Chat/Chat";
-import Fields from "../pages/Fields/Fields";
 import NotFound from "../pages/NotFound/NotFound";
 import PageDetail from "../pages/Details/PageEntDetail/PageDetail";
 import HomeAdmin from "../pages/Admin/HomeAdmin";
@@ -22,7 +21,6 @@ import PaymentResult from "../pages/Payment/PaymentResult";
 import BookingDetails from "../pages/Booking/BookingDetails";
 
 import { ProtectedRoute } from "../context/ProtectedRoute.context";
-import Footer from "../components/Footer/Footer";
 import LayoutSideBar from "../Layout/LayoutSideBar/LayoutSideBar";
 import LayoutHeader from "../Layout/LayoutOnlyHeader/LayoutHeader";
 import ResgisterKol from "../pages/ResgisterKol/ResgisterKol";
@@ -121,7 +119,7 @@ const Router = () => {
 
         <Route
           path="/admin"
-          element=<ProtectedRoute Component={HomeAdmin} />
+          element=<ProtectedRoute Component={HomeAdmin}  role={"ADMIN"}   />
         // element=<ProtectedRoute Component={HomeAdmin} role={"ADMIN"} />
         />
 

@@ -6,6 +6,7 @@ import Search from "antd/es/input/Search";
 import DropdownOperation from "../../../../components/Dropdown/DropdownOperation";
 import Constants from "../../../../utils/constants";
 import DropDownBookingRequest from "../../../../components/Dropdown/DropDownBookingRequest/DropDownBookingRequest";
+import Temp from "../../../../utils/temp";
 
 const Booking = () => {
   const [booking, setBooking] = useState([]);
@@ -23,7 +24,7 @@ const Booking = () => {
   const columns = [
     {
       title: "Mã",
-      dataIndex: "code",
+      dataIndex: "id",
       width: 50,
       render: (text) => (
         <div className="text-data">
@@ -42,13 +43,6 @@ const Booking = () => {
       ),
     },
     {
-      title: "Tên PGT",
-      dataIndex: "tenKOL",
-      width: 140,
-      align: 'left',
-      render: (text) => <div className="text-data">{text}</div>,
-    },
-    {
       title: "Ngày tạo",
       dataIndex: "createAt",
       key: "createAt",
@@ -62,9 +56,9 @@ const Booking = () => {
       render: (text) => <div className="text-data">{text}</div>,
     },
     {
-      title: "Số tiền",
-      dataIndex: "sotien",
-      key: "sotien",
+      title: "Tổng tiền",
+      dataIndex: "money",
+      key: "money",
       width: 140,
       render: (text) => <div className="text-data">{text}</div>,
     },
@@ -141,7 +135,7 @@ const Booking = () => {
       <div className="booking-table">
         <Table
           columns={columns}
-          dataSource={booking}
+          dataSource={Temp.bookingRequest}
         // dataSource={booking
         //   .filter((item) => {
         //     return monthSelect + statusBooking === ""

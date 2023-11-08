@@ -129,7 +129,7 @@ const MenuGuest = ({ icons }) => {
         width={800}
       >
         <>
-          <h1 className="titleModal">BẢNG XẾP HẠNG ĐẠI GIA</h1>
+          <h1 className="titleModal">BẢNG XẾP HẠNG PGT</h1>
           <Tabs
             defaultActiveKey="1"
             centered

@@ -18,7 +18,6 @@ const PageKOLDetail = () => {
 
   const { id } = useParams();
   const [kolInfo, setKolInfo] = useState();
-  console.log("🚀 ~ file: PageKolDetail.jsx:21 ~ PageKOLDetail ~ kolInfo:", kolInfo)
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const [status, setStatus] = useState("");
@@ -250,10 +249,10 @@ const PageKOLDetail = () => {
                   <span> 67 Đánh giá</span>
                 </div>
                 <div className={styles['text-center']}>
-                  <Button type="primary" size={'large'} onClick={() => bookingHandler()} block danger>
+                  <Button type="primary" size={'large'} onClick={bookingHandler} block danger>
                     Thuê
                   </Button>
-                  <Button type="primary" size={'large'} onClick={() => hanleClickChat()} block  >
+                  <Button type="primary" size={'large'} onClick={hanleClickChat} block  >
                     Chat
                   </Button>
                 </div>

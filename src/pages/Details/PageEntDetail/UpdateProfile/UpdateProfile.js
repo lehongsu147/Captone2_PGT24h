@@ -10,7 +10,6 @@ const UpdateProfile = (id, type) => {
 
     const [loading, setLoading] = useState(false);
     const [profile, setProfile] = useState({});
-    console.log("🚀 ~ file: UpdateProfile.js:12 ~ UpdateProfile ~ profile:", profile)
 
     useEffect(() => {
         if (id) {

@@ -73,7 +73,7 @@ const Header = (props) => {
                 user?.avatar
               }
             >
-              {user?.avatar ? "" : user?.firstName.charAt(0)?.toUpperCase()}
+              {user?.avatar ? "" : user?.firstName?.charAt(0)?.toUpperCase()}
               {/* {user?.image ? "" : user?.email.slice(0, 1).toUpperCase()} */}
           </Avatar>
           </div>

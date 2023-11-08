@@ -12,24 +12,26 @@ const ScrollAuto = () => {
 
     return (
         <div className={styles.mainContainer}>
-            <CarouselProvider
+            <img className={styles.image} src={banner1} alt="image 1" />
+
+            {/* <CarouselProvider
                 naturalSlideWidth={100}
                 naturalSlideHeight={260}
                 totalSlides={3}
             >
-                <Slider>
-                    <Slide index={0}>
-                        <img className={styles.image} src={banner1} alt="image 1" /></Slide>
-                    <Slide index={1}>
-                        <img className={styles.image} src={banner1} alt="image 1" /> </Slide>
-                    <Slide index={2}>         '
-                        <img className={styles.image} src={banner1} alt="image 1" />
-                    </Slide>
-                </Slider>
+                <Slide index={0}>
+                    <img className={styles.image} src={banner1} alt="image 1" />
+                </Slide>
+                <Slide index={1}>
+                    <img className={styles.image} src={banner1} alt="image 1" />
+                </Slide>
+                <Slide index={2}>         '
+                    <img className={styles.image} src={banner1} alt="image 1" />
+                </Slide>
                 <ButtonBack>Back</ButtonBack>
                 <ButtonNext>Next</ButtonNext>
-            </CarouselProvider>
-        </div>
+            </CarouselProvider> */}
+        </div >
     );
 };
 export default ScrollAuto;
