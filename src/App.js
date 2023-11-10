@@ -11,25 +11,25 @@ import { messaging } from './firebase'
 
 export default function App() {
 
-  async function requestPermission() {
-    const permission = await Notification.requestPermission();
-    if (permission === "granted") {
-      // Generate Token
-      const token = await getToken(messaging, {
-        vapidKey:
-          "BMN0M5i6s_YnpRjEuMemNtDPxZzQFqxXS9E8D-m55YpchaNmC4I5EDxQTZhGiwNA0h9ugHTYYXfJZkhs4k4xToQ",
-      });
-      console.log(token);
-      // Send this token  to server ( db)
-    } else if (permission === "denied") {
-      alert("You denied for the notification");
-    }
-  }
+  // async function requestPermission() {
+  //   const permission = await Notification.requestPermission();
+  //   if (permission === "granted") {
+  //     // Generate Token
+  //     const token = await getToken(messaging, {
+  //       vapidKey:
+  //         "BMN0M5i6s_YnpRjEuMemNtDPxZzQFqxXS9E8D-m55YpchaNmC4I5EDxQTZhGiwNA0h9ugHTYYXfJZkhs4k4xToQ",
+  //     });
+  //     console.log(token);
+  //     // Send this token  to server ( db)
+  //   } else if (permission === "denied") {
+  //     alert("You denied for the notification");
+  //   }
+  // }
 
-  useEffect(() => {
-    // Req user for notification permission
-    requestPermission();
-  }, []);
+  // useEffect(() => {
+  //   // Req user for notification permission
+  //   requestPermission();
+  // }, []);
 
 
   return (
