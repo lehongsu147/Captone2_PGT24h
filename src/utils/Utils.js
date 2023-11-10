@@ -2,7 +2,7 @@ import moment from 'moment'
 
 import regex from './regex'
 
-export const convertStringToNumber =  (value, delimiter = '.')  => {
+export const convertStringToNumber = (value, delimiter = '.') => {
     if (value || value === 0) {
         return `${value.toString().replace(regex.formatMoney, delimiter)} Vnđ`
     }
@@ -52,4 +52,11 @@ export const getDate = (timestamp, type = 1) => {
             break;
     }
     return result;
+}
+
+export const getTime = (inputTime) => {
+    if (inputTime || inputTime === '0:00') {
+        return moment(inputTime, 'HH:mm:ssZ').format('H:mm');
+    }
+    return '0'
 }

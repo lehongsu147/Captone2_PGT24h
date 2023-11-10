@@ -34,7 +34,7 @@ const Avatar = ({ avatar, photoList = [] }) => {
                                 width={60}
                                 height={60}
                                 key={index}
-                                src={imgage.avatarLink ?? 'error'}
+                                src={imgage.link ?? 'error'}
                             />
                         ))}
                     </Image.PreviewGroup>

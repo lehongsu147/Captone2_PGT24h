@@ -1,18 +1,17 @@
-import React, { useContext, useEffect } from "react";
-import { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import classes from "./Booking.module.css";
-import { MessageContext } from "../../context/Message.context";
-import { Modal, DatePicker, Form, Select, Input, TimePicker, Space } from "antd";
-import { Option } from "antd/es/mentions";
+import { Modal, DatePicker, Form, Select, Input, TimePicker, Space, Button } from "antd";
 import TextArea from "antd/es/input/TextArea";
 import { convertStringToNumber } from './../../utils/Utils';
 import { toast } from "react-toastify";
-import { logDOM } from "@testing-library/react";
+import PgtFactories from "../../services/PgtFatories";
 
 const BookingCreate = (props) => {
   const user = JSON.parse(localStorage.getItem("user"));
   const kol = props.kol;
+  const [category, setCategory] = useState();
+
   // const { sendPrivateNotification } = useContext(MessageContext);
   const navigate = useNavigate();
   const [booking, setBooking] = useState({
@@ -30,78 +29,19 @@ const BookingCreate = (props) => {
     props.onCancelOpenHandler();
   };
 
+  const [errorMessage, setErrorMessage] = useState('');
   const [timeBooking, setTimeBooking] = useState(1);
   const [dateBooking, setDateBooking] = useState();
   const [rangeTimeBooking, setRangeTimeBooking] = useState();
 
-  const [error, setError] = useState(null);
-  const [inputTimeEndBooking, setInputTimeEndBooking] = useState();
   const [note, setNote] = useState();
+  const [priceTotalShow, setPriceShow] = useState(convertStringToNumber(parseInt(kol?.price)));
   const [priceTotal, setPrice] = useState();
 
   useEffect(() => {
-    setPrice(convertStringToNumber(parseInt(kol?.price) * timeBooking))
+    setPriceShow(convertStringToNumber(parseInt(kol?.price) * timeBooking))
+    setPrice(kol?.price * timeBooking)
   }, [kol?.price, timeBooking])
-
-  const checkDate = (startTimeRange) => {
-    // Lấy ngày, tháng và năm từ dateBooking
-    const dateBookingDate = dateBooking.getDate();
-    const dateBookingMonth = dateBooking.getMonth();
-    const dateBookingYear = dateBooking.getFullYear();
-
-    // Lấy ngày, tháng và năm từ startTimeRange
-    const startTimeRangeDate = startTimeRange.getDate();
-    const startTimeRangeMonth = startTimeRange.getMonth();
-    const startTimeRangeYear = startTimeRange.getFullYear();
-
-    if (
-      dateBookingDate === startTimeRangeDate &&
-      dateBookingMonth === startTimeRangeMonth &&
-      dateBookingYear === startTimeRangeYear
-    ) {
-      return true
-    }
-    else {
-      return false
-    }
-  }
-
-
-  const checkTimeStart = (startTimeRange, endTimeRange) => {
-    const inputHoursStart = rangeTimeBooking[0]?.$d.getHours();
-    const inputMinutesStart = rangeTimeBooking[0]?.$d.getMinutes();
-
-    const inputHoursEnd = rangeTimeBooking[1]?.$d.getHours();
-    const inputMinutesEnd = rangeTimeBooking[1]?.$d.getMinutes();
-    const startHours = startTimeRange.getHours();
-    const startMinutes = startTimeRange.getMinutes();
-
-    const endHours = endTimeRange.getHours();
-    const endMinutes = endTimeRange.getMinutes();
-    if (
-      ((inputHoursStart >= startHours && inputHoursStart <= endHours) ||
-        (inputHoursEnd >= startHours && inputHoursEnd <= endHours)) ||
-      ((inputHoursStart >= startHours && inputHoursStart <= endHours && inputMinutesStart > startMinutes)
-        && (inputHoursEnd === endHours && inputMinutesEnd < endMinutes))
-    ) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-
-  const checkTimeBookingDateExit = () => {
-    const startTimeRange = new Date('2023-11-09T08:00:00');
-    const endTimeRange = new Date('2023-11-09T10:00:00');
-    if (checkDate(startTimeRange)) {
-      if (checkTimeStart(startTimeRange, endTimeRange)) {
-        return true;
-      }
-      return false;
-    }
-    return false;
-  }
-
 
   const checkDateBooking = (value) => {
     const now = new Date();
@@ -125,63 +65,72 @@ const BookingCreate = (props) => {
     }
   };
 
+
   useEffect(() => {
     if (rangeTimeBooking) {
       const newTime = rangeTimeBooking[1]?.$H - rangeTimeBooking[0]?.$H;
-      setTimeBooking(newTime);
-      setError({ mes: '' })
+      if (newTime === 0 ){
+        setErrorMessage('Vui lòng chọn thời gian thuê lớn hơn 1 giờ.')
+      }
+      else{
+        setTimeBooking(newTime);
+        setErrorMessage('')
+      }
     }
   }, [rangeTimeBooking])
 
-  const handleBooking = () => {
-
-    const checkDateExits = checkTimeBookingDateExit();
-    if (checkDateExits) {
-      toast.error('PGT đã trùng lịch, vui lòng chọn lại lịch khác.')
-      setError(
-        {
-          mes: 'PGT đã có lịch booking lúc 8:00 - 10: 00, vui lòng chọn thời gian khác.'
-        }
-      );
+  const requestBooking = async (data) => {
+    try {
+      const response = await PgtFactories.requestBooking(data);
+      if (response.status === 200) {
+        toast.success('Tạo lượt booking thành công, PGT sẽ phàn hồi lại trong 5 phút.')
+        props.onCancelOpenHandler();
+      }
+      else if (response.status === 201) {
+        toast.error(response?.messsage);
+        setErrorMessage(response?.messsageError);
+      }
+      else {
+        toast.error('Hệ thống lỗi, vui lòng thử lại sau')
+      }
+    } catch (error) {
+      toast.error('Hệ thống lỗi, vui lòng thử lại sau')
     }
-    else {
-      toast.success('Tạo lượt booking thành công, PGT sẽ phàn hồi lại trong 5 phút.')
-      setError(
-        {
-          mes: ''
-        }
-      );
-      props.onCancelOpenHandler();
-    }
-    // booking.timestamp = formatDate(new Date());
-    // setBooking({ ...booking });
-    // createBooking(kol.id, booking).then((res) => {
-    //   console.log(res);
-    //   if (!res.error) {
-    //     sendPrivateNotification({
-    //       type: "BOOKING",
-    //       bookingId: res.id,
-    //       content: `${user.firstName} đã gửi lời mời hợp tác đến bạn`,
-    //       timestamp: formatDate(new Date()),
-    //       userId: kol.userId,
-    //     });
-    //     navigate(`/bookings/${res.id}`);
-    //   }
-    //   if (res.error) {
-    //   }
-    // });
-    // props.onCancelOpenHandler();
   };
 
+  const onSubmit = () => {
+    const data = {
+      userId: user?.id,
+      pgtId: kol?.id,
+      price: parseInt(priceTotal),
+      date: dateBooking,
+      timeStart: rangeTimeBooking[0]?.$d,
+      timeEnd: rangeTimeBooking[1]?.$d,
+      category: category,
+      note: note,
+    }
+    requestBooking(data);
+  };
+
+  const optionCategory = kol?.listgame?.map((field) => {
+    return {
+      value: field.id,
+      label: field.name,
+    };
+  });
+
+  const handleChangeleGame = (value) => {
+    setCategory(value);
+  }
 
   return (
     <Modal
       width={600}
       open={props.open}
       title="Tạo lượt thuê"
-      onOk={handleBooking}
       destroyOnClose={true}
       onCancel={onCloseModal}
+      footer=""
     >
 
       <div className={classes["modal-booking-create"]}>
@@ -193,11 +142,13 @@ const BookingCreate = (props) => {
           style={{ maxWidth: 600 }}
           initialValues={{ remember: true }}
           autoComplete="off"
+          onFinish={onSubmit}
         >
-          <Form.Item label="Player" >{kol.firstName} {kol.lastName}</Form.Item>
-
+          <Form.Item label="Player" >{kol.firstName} {kol?.username}</Form.Item>
           <Form.Item label="Ngày" name='dateBooking'
-            rules={[{ validator: checkDateBooking },]}
+            rules={[
+              { required: true, message: 'Bắt buộc chọn ngày' },
+              { validator: checkDateBooking },]}
           >
             <DatePicker placeholder="Chọn ngày" onChange={(e) => setDateBooking(e?.$d)} value={dateBooking} style={{ width: '100%' }} />
           </Form.Item>
@@ -223,9 +174,18 @@ const BookingCreate = (props) => {
             </Select>
           </Form.Item> */}
 
-          <Form.Item label="Thời gian" name="timefrom" rules={[{ required: true, message: 'Bắt buộc chọn giờ' }]} >
-            <Space.Compact block>
-              <TimePicker.RangePicker format='h:mm' onChange={(e) => setRangeTimeBooking(e)} />
+          <Form.Item label="Lĩnh vực" name="category" rules={[{ required: true, message: 'Bắt buộc chọn lĩnh vục' }]} >
+            <Select
+              style={{ width: "100%", }}
+              placeholder="Chọn lĩnh Vực"
+              onChange={(e) => handleChangeleGame(e)}
+              options={optionCategory}
+            />
+          </Form.Item>
+
+          <Form.Item label="Thời gian" name="timefrom" >
+            <Space.Compact block >
+              <TimePicker.RangePicker format='h:mm' value={rangeTimeBooking} onChange={(e) => setRangeTimeBooking(e)} />
               {/* 
               <TimePicker placeholder="Bắt đầu từ" style={{ width: '50%' }} use12Hours format="h:mm a" value={inputTimeFromBooking} onChange={(e) => {
                 setInputTimeFromBooking(e)
@@ -233,15 +193,13 @@ const BookingCreate = (props) => {
               }} />
               <TimePicker placeholder="Kết thúc" style={{ width: '50%' }} use12Hours format="h:mm a" value={inputTimeEndBooking} disabled /> */}
             </Space.Compact>
-            {error?.mes !== '' ? <span style={{ color: '#eb6734', fontSize: 12 }}>{error?.mes}</span> : <></>}
+            {errorMessage !== '' && <span style={{ color: 'red' }}> {errorMessage}</span>}
           </Form.Item>
+
           <Form.Item label="Tổng tiền">
             <Input
-              style={{
-                width: '100%',
-                textAlign: 'right',
-              }}
-              value={priceTotal}
+              style={{ width: '100%', textAlign: 'right', }}
+              value={priceTotalShow}
             />
           </Form.Item>
           <Form.Item
@@ -254,7 +212,16 @@ const BookingCreate = (props) => {
               onChange={(e) => setNote(e)}
               value={note}
             />
+            <div style={{ display: 'flex', gap: 20, float: 'right', marginTop: 20 }}>
+              <Button type="link" htmlType="button" onClick={onCloseModal}>
+                Hủy
+              </Button>
+              <Button type="primary" htmlType="submit">
+                Submit
+              </Button>
+            </div>
           </Form.Item>
+
         </Form>
       </div>
     </Modal>

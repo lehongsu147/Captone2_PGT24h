@@ -4,25 +4,45 @@ import { getBookingHistory } from "../../../services/getApiProfile";
 import { displayDateTime } from "../../../services/DateTimeUtil";
 import Temp from "../../../utils/temp";
 import Constants from "../../../utils/constants";
+import BookingFactories from "../../../services/BookingFactories";
+import { getDate, getTime } from "../../../utils/Utils";
 
 
 
-export default function FormActivity({ user }) {
+export default function FormActivity() {
+  const user = JSON.parse(localStorage.getItem("user"));
+  const [dateTable, setDataTable] = useState();
+
   const [activity, setActivity] = useState();
   const [statusBooking, setStatusBooking] = useState("dabook");
   const [monthSelect, setMonthSelect] = useState("");
   const [nameKOL, setNameKOL] = useState("");
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await BookingFactories.getListBookingForUser(user?.id);
+        setDataTable(response?.data);
+        console.log("🚀 ~ file: FormActivity.jsx:22 ~ fetchData ~ response:", response)
+      } catch (error) {
+        // Handle errors here
+      }
+    };
+    fetchData();
+  }, [user?.id]);
+
   const columns = [
     {
-      title: "Mã booking",
+      title: "Mã",
       dataIndex: "id",
       key: "id",
-      align: "left",
+      width: 80,
+      align: "center",
     },
     {
       title: "PGT",
-      dataIndex: "pgt",
-      key: "pgt",
+      dataIndex: "pgt_name",
+      key: "pgt_name",
       align: "left",
       render: (text, data) => <div> {text} </div>,
     },
@@ -31,19 +51,19 @@ export default function FormActivity({ user }) {
       key: "date",
       dataIndex: "date",
       align: "left",
-      render: (text, data) => <div>{text}</div>,
+      render: (text, data) => <div>{ getDate(data?.date,1)}</div>,
     },
     {
       title: "Thời gian",
-      key: "timestamp",
-      dataIndex: "timestamp",
+      key: "time_from",
+      dataIndex: "time_from",
       align: "left",
-      render: (text, data) => <div>{text}</div>,
+      render: (text, data) => <div>{ getTime(data?.time_from)} - { getTime(data.time_to)}</div>,
     },
     {
       title: "Lĩnh Vực",
-      dataIndex: "category",
-      key: "category",
+      dataIndex: "category_link",
+      key: "category_link",
       align: 'center',
       width: 120,
       render: (text) => (
@@ -55,14 +75,14 @@ export default function FormActivity({ user }) {
       key: "status",
       align: "left",
       render: (text, data) =>
-        data.status === "PAID" ? (
+        data.status === 4 ? (
           <Badge status="success" text="Hoàn thành" />
-        ) : data.status === "CANCELED" ? (
-          <Badge status="error" text="Đã hủy" />
-        ) : data.status === "ACCEPTED" ? (
-          <Badge status="processing" text="Đang tiến hành" />
-        ) : data.status === "REJECTED" ? (
-          <Badge status="warning" text="Đã từ chối" />
+        ) : data.status === 3 ? (
+          <Badge status="error" text="PGT Đã từ chối" />
+        ) : data.status === 2 ? (
+          <Badge status="processing" text="PGT Đã xác nhận" />
+        ) : data.status === 1 ? (
+          <Badge status="warning" text="Chờ xác nhận" />
         ) : null,
     },
   ];
@@ -101,7 +121,7 @@ export default function FormActivity({ user }) {
           onChange={(e) => handleOnChangeDate(e?.$d)}
         />
       </div>
-      <Table columns={columns} dataSource={Temp.bookingHistory} pagination={{
+      <Table columns={columns} dataSource={dateTable ?? []} pagination={{
         defaultPageSize: 8,
         showSizeChanger: false,
         pageSizeOptions: ["10", "20", "30"]

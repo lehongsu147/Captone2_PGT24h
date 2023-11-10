@@ -1,26 +1,34 @@
 import React, { useEffect, useState } from "react";
-import { BookingData } from "./DataAdmin";
-import { Table, Radio, Input, Select, DatePicker, Avatar } from "antd";
+import { Table, Input, Select, DatePicker, Avatar, Badge } from "antd";
 import "./Booking.css";
-import Search from "antd/es/input/Search";
-import DropdownOperation from "../../../../components/Dropdown/DropdownOperation";
 import Constants from "../../../../utils/constants";
 import DropDownBookingRequest from "../../../../components/Dropdown/DropDownBookingRequest/DropDownBookingRequest";
 import Temp from "../../../../utils/temp";
+import BookingFactories from "../../../../services/BookingFactories";
+import { convertStringToNumber, getDate, getTime } from "../../../../utils/Utils";
 
-const Booking = () => {
-  const [booking, setBooking] = useState([]);
+const RequestBooking = () => {
+  const user = JSON.parse(localStorage.getItem("user"));
+  const [bookingList, setBookingList] = useState([]);
   const [statusBooking, setStatusBooking] = useState("dabook");
   const [monthSelect, setMonthSelect] = useState("");
   const [nameKOL, setNameKOL] = useState("");
+ 
+ 
+  const fetchData = async () => {
+    try {
+      const response = await BookingFactories.getListRequestBookingForPGT(user?.id);
+      setBookingList(response?.data);
+      console.log("🚀 ~ file: FormActivity.jsx:22 ~ fetchData ~ response:", response)
+    } catch (error) {
+      // Handle errors here
+    }
+  };
 
   useEffect(() => {
-    const getData = async () => {
-      const listBooking = await BookingData;
-      setBooking(listBooking);
-    };
-    getData();
-  }, []);
+    fetchData();
+  }, [user?.id]);
+
   const columns = [
     {
       title: "Mã",
@@ -35,7 +43,7 @@ const Booking = () => {
     {
       title: "Người thuê",
       width: 150,
-      dataIndex: "username",
+      dataIndex: "user_name",
       render: (text) => (
         <div className="text-data">
           {text}
@@ -43,42 +51,59 @@ const Booking = () => {
       ),
     },
     {
-      title: "Ngày tạo",
-      dataIndex: "createAt",
-      key: "createAt",
-      width: 140,
-      render: (text) => <div className="text-data">{text}</div>,
+      title: "Ngày booking",
+      key: "date",
+      dataIndex: "date",
+      align: "left",
+      render: (text, data) => <div>{getDate(data?.date, 1)}</div>,
     },
     {
-      title: "Thời Gian",
-      dataIndex: "timestamp",
-      width: 200,
-      render: (text) => <div className="text-data">{text}</div>,
+      title: "Thời gian",
+      key: "time_from",
+      dataIndex: "time_from",
+      align: "left",
+      render: (text, data) => <div>{getTime(data?.time_from)} - {getTime(data.time_to)}</div>,
     },
     {
       title: "Lĩnh Vực",
-      dataIndex: "category",
-      key: "category",
+      dataIndex: "category_link",
+      key: "category_link",
       align: 'center',
-      width: 80,
+      width: 120,
       render: (text) => (
         <Avatar src={text ?? ''} width={20} height={20} />
       ),
     },
     {
+      title: "Tình trạng",
+      key: "status",
+      align: "left",
+      width: 150,
+      render: (text, data) =>
+        data.status === 4 ? (
+          <Badge status="success" text="Hoàn thành" />
+        ) : data.status === 3 ? (
+          <Badge status="error" text="PGT Đã từ chối" />
+        ) : data.status === 2 ? (
+          <Badge status="processing" text="PGT Đã xác nhận" />
+        ) : data.status === 1 ? (
+          <Badge status="warning" text="Chờ xác nhận" />
+        ) : null,
+    },
+    {
       title: "Tổng sô tiền",
-      dataIndex: "money",
-      key: "money",
+      dataIndex: "price",
+      key: "price",
       align: 'right',
       width: 140,
-      render: (text) => <div className="text-data">{text}</div>,
+      render: (text) => <div className="text-data">{convertStringToNumber(text) }</div>,
     },
     {
       title: "Tác vụ",
       key: "action",
       width: 90,
       align: 'center',
-      render: (_, record) => <DropDownBookingRequest record={record} />
+      render: (_, record) => <DropDownBookingRequest id={record?.id} onFetchData={fetchData} />
     },
   ];
 
@@ -128,7 +153,7 @@ const Booking = () => {
             showSizeChanger: false,
             pageSizeOptions: ["10", "20", "30"]
           }}
-          dataSource={Temp.bookingRequest}
+          dataSource={bookingList ?? []}
         // dataSource={booking
         //   .filter((item) => {
         //     return monthSelect + statusBooking === ""
@@ -154,4 +179,4 @@ const Booking = () => {
   );
 };
 
-export default Booking;
+export default RequestBooking;

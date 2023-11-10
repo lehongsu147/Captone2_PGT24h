@@ -1,17 +1,19 @@
 import React, { useEffect, useState, useContext } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import IntroduceKOL from "./IntroduceKOL/IntroduceKOL";
-import { getKol } from "../../../services/KolService";
 import { AuthContext } from "../../../context/auth.context";
 import styles from './HomeDetails.module.scss'
 import { CollapseContext } from "../../../context/collapse.context";
 import CardType from "../../../components/catgegory/CardType";
 import Feedback from "../../../components/Feedback/Feedback";
-import { BackTop, Button, Image, Pagination, Tabs } from 'antd';
+import { BackTop, Button, Pagination, Tabs } from 'antd';
 import Avatar from "../../../components/Avatar/Avatar";
 import StarRating from "../../../components/start-rating/StarRating";
 import BookingCreate from "../../Booking/BookingCreate";
 import Temp from "../../../utils/temp";
+import PgtFactories from "../../../services/PgtFatories";
+import { toast } from "react-toastify";
+import { convertStringToNumber } from "../../../utils/Utils";
 
 const PageKOLDetail = () => {
   const { user, setUser } = useContext(AuthContext);
@@ -20,7 +22,7 @@ const PageKOLDetail = () => {
   const [kolInfo, setKolInfo] = useState();
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
-  const [status, setStatus] = useState("");
+  const [statusPGT, setStatus] = useState("");
   const { isCollapse } = useContext(CollapseContext);
 
   const onCancelOpenHandler = () => {
@@ -29,23 +31,20 @@ const PageKOLDetail = () => {
 
 
   useEffect(() => {
-    setKolInfo(Temp.UserPGT);
-    // getKol(id).then((res) => {
-    //   // setKol(res);
-
-    //   checkStatus(res.bookings, user, res.kol);
-    //   console.log(res);
-    // });
+    window.scroll(0,0)
+    const fetchData = async () => {
+      try {
+        const response = await PgtFactories.getPGTDetail(id);
+        setKolInfo(response[0]);
+        setStatus(response[0].status);
+      } catch (error) {
+        toast.error('Hệ thống lỗi, vui lòng thử lại sau')
+        // Handle errors here
+      }
+    };
+    fetchData();
+    document.title = `Thồng tin PGT`;
   }, []);
-
-  // useEffect(() => {
-  //   if (kolInfo) {
-  //     document.title = `PGT24h | ${kolInfo?.firstName} ${kolInfo?.lastName}`;
-  //   }
-  //   return () => {
-  //     document.title = "PGT24h";
-  //   };
-  // }, [kolInfo?.id]);
 
   const checkStatus = (bookings, user, kol) => {
     if (!user) {
@@ -88,7 +87,7 @@ const PageKOLDetail = () => {
 
   const onRedirect = () => {
     const booking = kolInfo.bookings.find(
-      (booking) => booking.status === status && booking.user.id === user.id
+      (booking) => booking.status === statusPGT && booking.user.id === user.id
     );
     if (booking) {
       navigate(`/bookings/${booking.id}`);
@@ -98,12 +97,12 @@ const PageKOLDetail = () => {
   const renderCategopryGame = () => {
     return (
       <>
-        {Temp?.GameList?.map((item, index) => (
+        {kolInfo?.listgame?.map((item, index) => (
           <CardType
             key={index}
             id={item.id}
             name={item.name}
-            background={item.background}
+            background={item.image}
           />
         ))}
       </>
@@ -176,18 +175,18 @@ const PageKOLDetail = () => {
             <div className={styles.stickyProfile}>
               <div className={styles.profileContainer}>
                 <Avatar
-                  avatar={kolInfo?.avatar ?? ''}
-                  photoList={kolInfo?.photoList ?? ''}
+                  avatar={kolInfo?.image ?? ''}
+                  photoList={kolInfo?.listImage ?? ''}
                 />
               </div>
 
               <div className={styles.statusInfo}>
-                <div className={` ${styles.boxStatus} ${styles.Pause}   `} >
-                  <div className={` ${styles.textStatus} ${styles.Pause}  `} >
-                    Đang làm việc
+                <div className={`${styles.boxStatus}   ${styles[statusPGT === 2 ? 'Pause' : '']}`}>
+                  <div className={`${styles.textStatus}   ${styles[statusPGT === 2 ? 'Pause' : '']}`}>
+                    {statusPGT === 1 ? 'Đang làm việc' : 'Đang tạm nghỉ'}
                   </div>
                 </div>
-                <span className={styles.dateFrom}>Ngay tham gia: 22/06/2004</span>
+                <span className={styles.dateFrom}>Ngay tham gia: 22/06/2023</span>
               </div>
             </div>
           </div>
@@ -195,7 +194,7 @@ const PageKOLDetail = () => {
           <div className={styles.info}>
             <div className={styles.profileInfo}>
               <div className={styles.title}>
-                <span className={` ${styles.userName}  `} >{kolInfo?.firstName} {kolInfo?.lastName}  </span>
+                <span className={` ${styles.userName}  `} >{kolInfo?.username}  </span>
                 <buton className={` ${styles.buttonFollow}  `} >Theo dõi </buton>
               </div>
 
@@ -205,7 +204,7 @@ const PageKOLDetail = () => {
                     SỐ NGƯỜI THEO DÕI
                   </span>
                   <span className={styles.number}>
-                    628 người
+                    {kolInfo?.follower}
                   </span>
                 </div>
 
@@ -214,7 +213,7 @@ const PageKOLDetail = () => {
                     ĐÃ ĐƯỢC THUÊ
                   </span>
                   <span className={styles.number}>
-                    628 người
+                    {kolInfo?.countRental}
                   </span>
                 </div>
 
@@ -223,7 +222,7 @@ const PageKOLDetail = () => {
                     TỶ LỆ HOÀN THÀNH
                   </span>
                   <span className={styles.number}>
-                    87.85 %
+                    {kolInfo?.rate}%
                   </span>
                 </div>
               </div>
@@ -241,10 +240,10 @@ const PageKOLDetail = () => {
           <div className={styles.contact}>
             <div className={styles.stickyBox}>
               <div className={styles.boxContainer}>
-                <p>99,000 đ/h</p>
+                <p>{convertStringToNumber(kolInfo?.price)}/h</p>
                 <div className={styles['rateting-style']}>
-                  <StarRating starCount={4} />
-                  <span> 67 Đánh giá</span>
+                  <StarRating starCount={kolInfo?.star} />
+                  <span>{kolInfo?.countComment} Đánh giá</span>
                 </div>
                 <div className={styles['text-center']}>
                   <Button type="primary" size={'large'} onClick={bookingHandler} block danger>

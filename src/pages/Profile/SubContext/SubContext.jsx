@@ -6,7 +6,7 @@ import FormPassword from "../FormContent/FormPassword";
 import FormActivity from "../FormContent/FormActivity";
 import FormPayment from "../FormContent/FormPayment";
 import PaymentWallett from "../FormContent/Payment/PaymentWallett";
-import Booking from "../FormContent/Book/Booking";
+import RequestBooking from "../FormContent/Book/RequestBooking";
 
 const componentKOL = [
   { key: "1", component: <FormProfileKOL /> },
@@ -14,7 +14,7 @@ const componentKOL = [
   { key: "sub2", component: <FormPassword /> },
   { key: "3", component: <FormActivity /> },
   { key: "4", component: <PaymentWallett /> },
-  { key: "5", component: <Booking /> },
+  { key: "5", component: <RequestBooking /> },
 
 ];
 
@@ -24,7 +24,7 @@ const componentEnt = [
   { key: "sub2", component: <FormPassword /> },
   { key: "3", component: <FormActivity /> },
   { key: "4", component: <PaymentWallett /> },
-  { key: "5", component: <Booking /> },
+  { key: "5", component: <RequestBooking /> },
 ];
 
 const SubContext = (props) => {

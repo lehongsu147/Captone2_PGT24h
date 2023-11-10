@@ -3,7 +3,7 @@
     flex-direction: column;
     position: absolute;
     top: 44px;
-    left: -53px;
+    left: -103px;
     padding: var(--8px, 8px);
     align-items: flex-start;
     gap: var(--4px, 4px);
@@ -16,7 +16,7 @@
 
     .option {
         display: flex;
-        min-width: 70px;
+        min-width: 140px;
         padding: var(--10px, 10px) var(--8px, 10px);
         align-items: center;
         gap: var(--8px, 8px);

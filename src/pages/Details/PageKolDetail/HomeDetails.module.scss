@@ -4,10 +4,14 @@
   align-items: center;
   justify-content: center;
   width: 96%;
+  min-width: 1103px;
+  min-height: 90vh;
 }
 
 .container {
   width: 100%;
+  min-width: 1103px;
+  min-height: 89vh;
   background: var(--base-on-background, #FFF);
   gap: 10px;
   border-radius: 20px;

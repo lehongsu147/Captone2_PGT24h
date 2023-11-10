@@ -1,7 +1,10 @@
 const BASE_PREFIX = 'api';
 const ApiConstants = {
     CATEGORIES :`/categories`,
-    LIST_PGT :`/pgt`,
+    REQUEST_BOOKING_PGT :`/booking/pgt`,
+    BOOKING_USER :`/booking/user`,
+    BOOKING_PGT :`/booking`,
+    PGT :`/pgt`,
     LOGIN:  '/account/login', 
     SIGNUP:  '/account/signup', 
     

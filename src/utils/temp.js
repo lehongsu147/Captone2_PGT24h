@@ -701,7 +701,7 @@ export default class Temp {
 
     static UserDemo = {
         avatar: avatar,
-        id: 11111,
+        id: 1,
         email: 'user@gmail.com',
         firstName: 'Nguyễn',
         lastName: 'Linh',
@@ -750,7 +750,7 @@ export default class Temp {
         rate: '87.58',
         countRental: 6280,
         follower: 1120,
-        id: 'gamrach',
+        id: 7,
         postPrice: 'không chảnh',
         introduction: `Hello mình là Mẫn
         🌸 Giọng miền nam, chơi mic nhà không ồn
