@@ -2,32 +2,26 @@ import React, { useState } from "react";
 import ButtonFull from "../../components/UI/Button/ButtonFull";
 import "./style.css";
 import { useNavigate } from "react-router-dom";
-
 import logo from '../../assets/logo/LogoPage.png'
-
-import { register } from "../../services/authentication";
 import { Input } from "antd";
 import { EyeInvisibleOutlined, EyeTwoTone } from "@ant-design/icons";
 import Message from "../../components/UI/Message/Message";
 import AccountFactories from "../../services/AccountFactories";
+import { createUserWithEmailAndPassword, sendEmailVerification } from "firebase/auth";
+
+import { auth } from "../../firebase";
+import { toast } from "react-toastify";
 
 const Register = (props) => {
   const [userInput, setUserInput] = useState({
     email: "",
     password: "",
-    biz: false
   });
   const [showMessage, setShowMessage] = useState({
     status: false,
     type: '',
     content: '',
   })
-  const [noti, setNoti] = useState({
-    status: false,
-    title: '',
-    email: '',
-    message: ''
-  });
 
   const changeMessage = () => {
     setShowMessage({
@@ -39,26 +33,6 @@ const Register = (props) => {
 
   const createErrorMessage = (msg) => {
     setShowMessage({ status: true, type: 'error', content: msg })
-  }
-
-  const createSuccessNoti = (email) => {
-    setNoti({ status: true, title: 'success', email: email })
-  }
-
-  const createWarningNoti = (msg) => {
-    setNoti({ status: true, title: 'warning', message: msg })
-  }
-
-  const createErrorNoti = (msg) => {
-    setNoti({ status: true, title: 'error', message: msg })
-  }
-
-  const changeNotificationHandler = () => {
-    setNoti({ status: false })
-  }
-
-  const onClickBackHandler = () => {
-    props.changeFormHandler(0)
   }
 
   const inputChangeHandler = (event) => {
@@ -100,50 +74,35 @@ const Register = (props) => {
     return res;
   }
 
-  const registerWithCredentials = async (credentials) => {
-    const response = await AccountFactories.requestLSignUp(credentials);
-    if (response?.status === 400) {
+  const registerWithCredentials = async ({ email, password }) => {
+    try {
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+      if (user) {
+        await sendEmailVerification(user);
+        const response = await AccountFactories.requestLSignUp(userInput);
+        if (response?.status === 200) {
+          toast.success('Đăng ký thành công! Vui lòng kiểm tra email để xác thực tài khoản.')
+        }
+        else{
+          toast.success('Có lỗi xảy ra. Vui lòng thử lại sau.')
+        }
+      }
+      navigator('/login');
+    } catch (error) {
       setShowMessage({
         status: true,
         type: "error",
-        content: response?.message,
+        content: `Đăng ký thất bại: Địa chỉ email đã được sử dụng`,
       });
     }
-    else if (response?.status === 200) {
-      setShowMessage({
-        status: true,
-        type: "success",
-        content: response?.message,
-      });
-      navigator('/login')
-    }
-
-    // register(credentials)
-    //   .then(res => {
-    //     if (!res.ok) {
-    //       return Promise.reject(res)
-    //     }
-    //     else if (res.ok) {
-    //       createSuccessNoti(userInput.email)
-    //       return res.json();
-    //     }
-    //   })
-    //   .then(data => {
-    //     console.log(data);
-    //     createWarningNoti(data.message)
-    //   }).catch(err => {
-    //     err.json().then(e => {
-    //       createErrorNoti(e.message)
-    //       console.log(e)
-    //     })
-    //   });
   }
+
 
   const handleRegister = (event) => {
     if (event) {
       event.preventDefault();
     }
-    console.log(validateUserInput(userInput));
     if (validateUserInput(userInput)) {
       registerWithCredentials(userInput);
     }

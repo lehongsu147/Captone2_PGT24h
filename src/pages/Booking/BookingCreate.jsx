@@ -69,10 +69,16 @@ const BookingCreate = (props) => {
   useEffect(() => {
     if (rangeTimeBooking) {
       const newTime = rangeTimeBooking[1]?.$H - rangeTimeBooking[0]?.$H;
-      if (newTime === 0 ){
+      const startTime  = rangeTimeBooking[0]?.$d;
+      const timeCurrent = new Date();
+      // if ( startTime < timeCurrent){
+      //   setErrorMessage('Thời gian bắt đầu phải là thời gian trong tương lai.');
+      // }
+      // else
+       if (newTime === 0) {
         setErrorMessage('Vui lòng chọn thời gian thuê lớn hơn 1 giờ.')
       }
-      else{
+      else {
         setTimeBooking(newTime);
         setErrorMessage('')
       }
@@ -153,45 +159,18 @@ const BookingCreate = (props) => {
             <DatePicker placeholder="Chọn ngày" onChange={(e) => setDateBooking(e?.$d)} value={dateBooking} style={{ width: '100%' }} />
           </Form.Item>
 
-          {/* <Form.Item
-            name='time'
-            rules={[{ required: true, message: 'Bắt buộc chọn giờ  thuê ' }]}
-            label="Số giờ thuê"
-          >
-            <Select placeholder="Chọn giờ thuê" allowClear onChange={(e) => setTimeBooking(e)} value={timeBooking}      >
-              <Option value={1}>1 giờ</Option>
-              <Option value={2}>2 giờ</Option>
-              <Option value={3}>3 giờ</Option>
-              <Option value={4}>4 giờ</Option>
-              <Option value={5}>5 giờ</Option>
-              <Option value={6}>6 giờ</Option>
-              <Option value={7}>7 giờ</Option>
-              <Option value={8}>8 giờ</Option>
-              <Option value={9}>9 giờ</Option>
-              <Option value={10}>10 giờ</Option>
-              <Option value={11}>11 giờ</Option>
-              <Option value={12}>12 giờ</Option>
-            </Select>
-          </Form.Item> */}
-
-          <Form.Item label="Lĩnh vực" name="category" rules={[{ required: true, message: 'Bắt buộc chọn lĩnh vục' }]} >
+          {/* <Form.Item label="Lĩnh vực" name="category" rules={[{ required: true, message: 'Bắt buộc chọn lĩnh vục' }]} >
             <Select
               style={{ width: "100%", }}
               placeholder="Chọn lĩnh Vực"
               onChange={(e) => handleChangeleGame(e)}
               options={optionCategory}
             />
-          </Form.Item>
+          </Form.Item> */}
 
           <Form.Item label="Thời gian" name="timefrom" >
             <Space.Compact block >
               <TimePicker.RangePicker format='h:mm' value={rangeTimeBooking} onChange={(e) => setRangeTimeBooking(e)} />
-              {/* 
-              <TimePicker placeholder="Bắt đầu từ" style={{ width: '50%' }} use12Hours format="h:mm a" value={inputTimeFromBooking} onChange={(e) => {
-                setInputTimeFromBooking(e)
-                setInputTimeEndBooking(e)
-              }} />
-              <TimePicker placeholder="Kết thúc" style={{ width: '50%' }} use12Hours format="h:mm a" value={inputTimeEndBooking} disabled /> */}
             </Space.Compact>
             {errorMessage !== '' && <span style={{ color: 'red' }}> {errorMessage}</span>}
           </Form.Item>
@@ -209,7 +188,7 @@ const BookingCreate = (props) => {
             <TextArea
               rows={2}
               placeholder="Nhập lời nhắn"
-              onChange={(e) => setNote(e)}
+              onChange={(e) => setNote(e.target.value)}
               value={note}
             />
             <div style={{ display: 'flex', gap: 20, float: 'right', marginTop: 20 }}>

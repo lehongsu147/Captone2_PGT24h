@@ -1,26 +1,15 @@
 import React, { useState, useEffect, useRef } from "react";
 
-import DidLogin from "../BtnLogin/DidLogin";
-
 import {
   UserOutlined,
-  ToolOutlined,
-  PlusCircleOutlined,
-  MailOutlined,
-  CalendarOutlined,
-  AppstoreOutlined,
-  SettingOutlined,
-  LinkOutlined,
   CheckCircleTwoTone,
   ProfileOutlined,
   WifiOutlined,
   RightSquareOutlined,
 } from "@ant-design/icons";
-import { Dropdown, Menu, Space } from "antd";
+import { Menu } from "antd";
 import { Link } from "react-router-dom";
 
-import { getKols } from "../../services/KolService";
-import { getEnts } from "../../services/EnterpriseService";
 import useOnClickOutside from "../../hook/use-onclick-outside";
 
 function getItem(label, key, icon, children) {
@@ -34,8 +23,6 @@ function getItem(label, key, icon, children) {
 
 const NavBar = (props) => {
   const user = JSON.parse(localStorage.getItem("user"))
-  const [kol, setKol] = useState([])
-  const [ent, setEnt] = useState([])
   const [isOnline, setIsOnline] = useState(true);
 
   function handleChangeStatusOn() {
@@ -68,8 +55,7 @@ const NavBar = (props) => {
         <Link style={{}} to={`../user-home`}>
           Trang cá nhân
         </Link>
-      </>
-      , '1',
+      </>, '1',
       <ProfileOutlined />
     ),
     getItem(
@@ -77,8 +63,7 @@ const NavBar = (props) => {
         <Link style={{}} to="/setting" >
           Quản lý tài khoản
         </Link>
-      </>
-      , '2',
+      </>, '2',
       <UserOutlined />
     ),
     getItem('Thay đổi trạng thái', '3', <WifiOutlined />, [
@@ -88,16 +73,14 @@ const NavBar = (props) => {
           {isOnline &&
             <CheckCircleTwoTone />
           }
-        </div>
-        , '4',),
+        </div>, '4',),
       getItem(
         <div className="dropdownProfile" onClick={handleChangeStatusOff}>
           <span> Đang tạm nghỉ</span>
           {!isOnline &&
             <CheckCircleTwoTone />
           }
-        </div>
-        , '5',),
+        </div>, '5',),
     ]),
   ];
 
@@ -108,8 +91,7 @@ const NavBar = (props) => {
           <Link style={{}} to={'/registet-pgt'}>
             Đăng ký làm PGT
           </Link>
-        </>,
-        '2',
+        </>, '2',
         <RightSquareOutlined />
       )
     );
@@ -119,8 +101,7 @@ const NavBar = (props) => {
           <Link style={{}} onClick={props.logOutHandler}>
             Đăng xuất
           </Link>
-        </>,
-        '2',
+        </>, '2',
         <RightSquareOutlined />
       )
     );
@@ -132,8 +113,7 @@ const NavBar = (props) => {
           <Link style={{}} to='/setting'>
             Quản lý booking
           </Link>
-        </>,
-        '2',
+        </>, '2',
         <RightSquareOutlined />
       )
     );
@@ -143,8 +123,7 @@ const NavBar = (props) => {
           <Link style={{}} onClick={props.logOutHandler}>
             Đăng xuất
           </Link>
-        </>,
-        '2',
+        </>, '2',
         <RightSquareOutlined />
       )
     );

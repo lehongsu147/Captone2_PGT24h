@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useContext, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { Avatar } from "antd";
@@ -14,10 +14,12 @@ import chat from "../../assets/logo/icon-chat.svg";
 import "./style.css";
 import Notification from "../Notification";
 import Temp from "../../utils/temp";
+import { AuthContext } from "../../context/auth.context";
 
 const Header = (props) => {
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
+  const { logout} = useContext(AuthContext)
   
   const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")));
   useEffect(() => {
@@ -29,6 +31,7 @@ const Header = (props) => {
   }, []);
 
   const logOutHandler = () => {
+    logout()
     localStorage.removeItem("user");
     localStorage.removeItem("accessToken");
     localStorage.removeItem("refreshToken");

@@ -12,7 +12,6 @@ const destroyAll = () => {
 };
 
 const DropDownBookingRequest = ({ icon, options, id,  onFetchData = () => { }, type = 'user' }) => {
-    console.log("🚀 ~ file: DropDownBookingRequest.js:15 ~ DropDownBookingRequest ~ id:", id)
     const [isOpen, setIsOpen] = useState(false);
     const handleOpen = () => {
         setIsOpen(!isOpen)
@@ -25,7 +24,6 @@ const DropDownBookingRequest = ({ icon, options, id,  onFetchData = () => { }, t
     const fetchDataUpdateBooking = async (id,type) => {
         try {
             const response = await BookingFactories.updateBooking(id, type);
-            console.log("🚀 ~ file: DropDownBookingRequest.js:27 ~ fetchData ~ response:", response)
             if ( response?.status === 200){
                 toast.success('Cập nhật yêu cầu booking thành công.')
                 onFetchData();
