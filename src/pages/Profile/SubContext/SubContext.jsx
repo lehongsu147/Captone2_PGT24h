@@ -30,18 +30,18 @@ const componentEnt = [
 const SubContext = (props) => {
   return (
     <div className="sub-context" style={{ width: "100%"  , height: 'calc(100vh - 60px)' , overflow: 'scroll' }}>
-      {props.user.role === 2 &&
+      {props.user.role_id === 2 &&
         Object.keys(props.changeContent).length === 0 && <FormProfileKOL />}
-      {props.user.role === 2 &&
+      {props.user.role_id === 2 &&
         componentKOL.map((component) => {
           if (component.key === props.changeContent) return component.component;
         })}
 
-      {props.user.role === 1 &&
+      {props.user.role_id === 1 &&
         Object.keys(props.changeContent).length === 0 && (
           <FormProfileEnterprise />
         )}
-      {props.user.role === 1 &&
+      {props.user.role_id === 1 &&
         componentEnt.map((component) => {
           if (component.key === props.changeContent) return component.component;
         })}

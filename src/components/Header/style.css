@@ -22,6 +22,22 @@
   width: 105px;
   height: 100%;
 }
+
+.noti-badge {
+  background-color: var(--color-primary-1);
+  position: absolute;
+  right: 69px;
+  top: 5px;
+  display: block;
+  border-radius: 50px;
+  height: 15px;
+  width: 15px;
+  color: #fff;
+  font-size: 11px;
+  text-align: center;
+}
+
+
 .icon_box {
   width: 100px;
   height: 60px;

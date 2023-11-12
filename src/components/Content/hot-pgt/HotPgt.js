@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import styles from './HotKol.module.scss';
+import styles from './HotPgt.module.scss';
 import CardKol from '../../card/CardKOL/CardKol';
 import PgtFactories from '../../../services/PgtFatories';
 
@@ -11,7 +11,7 @@ const HotHOL = () => {
         if (!apiCalled) {
             const fetchData = async () => {
                 try {
-                    const response = await PgtFactories.getListPGT();
+                    const response = await PgtFactories.getListPGT(10);
                     setHotKols(response);
                     setApiCalled(true);
                 } catch (error) {

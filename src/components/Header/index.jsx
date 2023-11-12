@@ -15,12 +15,14 @@ import "./style.css";
 import Notification from "../Notification";
 import Temp from "../../utils/temp";
 import { AuthContext } from "../../context/auth.context";
+import { NotificationContext } from "../../context/Notification.context";
+import { toast } from "react-toastify";
 
 const Header = (props) => {
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
-  const { logout} = useContext(AuthContext)
-  
+  const { logout } = useContext(AuthContext)
+
   const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")));
   useEffect(() => {
     const handleStorageChange = () => {
@@ -51,6 +53,22 @@ const Header = (props) => {
   function handleClose() {
     setIsOpen(!isOpen);
   }
+  
+  const { notifications } = useContext(NotificationContext);
+  const [countNotification, setCountNotification] = useState();
+
+  useEffect(() => {
+    const unreadMessages = notifications.filter(message => message.read === false);
+    console.log("🚀 ~ file: index.jsx:62 ~ useEffect ~ unreadMessages:", unreadMessages)
+    const numUnreadMessages = unreadMessages.length;
+    if ( countNotification === 0 && numUnreadMessages > 0 ){
+      unreadMessages?.map((item,index) =>
+        toast.info(item?.title)
+      )
+    }
+    setCountNotification(numUnreadMessages);
+  }, [notifications])
+
   return (
     <div className="header">
       <div className="header__icon">
@@ -65,7 +83,10 @@ const Header = (props) => {
         <Menu icons={[home, campaign, chat]} />
       </div>
       <div className="header__button">
-        {user && <Notification />}
+        {user && <Notification countNotification={countNotification} />}
+        {countNotification > 0 && (
+          <span className={"noti-badge"}>{countNotification}</span>
+        )}
         {user && (
           <div className="avata">
             <NavBar role={user?.role} isOpen={isOpen} onchangeOpen={handleClose} logOutHandler={logOutHandler}></NavBar>
@@ -78,10 +99,10 @@ const Header = (props) => {
             >
               {user?.avatar ? "" : user?.firstName?.charAt(0)?.toUpperCase()}
               {/* {user?.image ? "" : user?.email.slice(0, 1).toUpperCase()} */}
-          </Avatar>
+            </Avatar>
           </div>
         )}
-        
+
         {!user && (
           <NotLogin
             loginHandler={loginHandler}

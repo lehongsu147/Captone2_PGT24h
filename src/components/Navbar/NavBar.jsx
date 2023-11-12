@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useContext } from "react";
 
 import {
   UserOutlined,
@@ -11,6 +11,9 @@ import { Menu } from "antd";
 import { Link } from "react-router-dom";
 
 import useOnClickOutside from "../../hook/use-onclick-outside";
+import AccountFactories from "../../services/AccountFactories";
+import { toast } from "react-toastify";
+import { AuthContext } from "../../context/auth.context";
 
 function getItem(label, key, icon, children) {
   return {
@@ -22,26 +25,48 @@ function getItem(label, key, icon, children) {
 }
 
 const NavBar = (props) => {
-  const user = JSON.parse(localStorage.getItem("user"))
-  const [isOnline, setIsOnline] = useState(true);
+  const { user ,setUser} = useContext(AuthContext);
+
+  const [isOnline, setIsOnline] = useState();
+
+  const fetchDataUpdate = async (data) => {
+    try {
+      await AccountFactories.requestUpdate(user?.id, data);
+      if (user) {
+        user.status = data?.status;
+        localStorage.setItem("user", JSON.stringify(user));
+        const storedUser = localStorage.getItem("user");
+        setUser(JSON.parse(storedUser));
+
+      } else {
+        console.error("User not found in localStorage");
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error('Hệ thống lỗi.')
+    }
+  };
 
   function handleChangeStatusOn() {
     setIsOnline(true);
-    console.log('heheh11');
-
+    const data = { status: 1 }
+    fetchDataUpdate(data)
   }
   function handleChangeStatusOff() {
     setIsOnline(false);
-    console.log('heheh');
+    const data = { status: 2 }
+    fetchDataUpdate(data)
   }
+
   useEffect(() => {
-    if (user.role === "PGT") {
-      // getKols().then((res) => setKol(res.find((kol) => kol.userId === user.id)))
+    if (user?.status === 1) {
+      setIsOnline(true)
     }
-    if (user.role === "ENTERPRISE") {
-      // getEnts().then((res) => setEnt(res.find((ent) => ent.userId === user.id)))
+    else {
+      setIsOnline(false);
     }
-  }, [])
+  }, [user])
+
   const dropRef = useRef();
   useOnClickOutside(dropRef, handleClickOutside);
 
@@ -66,25 +91,9 @@ const NavBar = (props) => {
       </>, '2',
       <UserOutlined />
     ),
-    getItem('Thay đổi trạng thái', '3', <WifiOutlined />, [
-      getItem(
-        <div className="dropdownProfile" onClick={handleChangeStatusOn}>
-          <span> Đang làm việc</span>
-          {isOnline &&
-            <CheckCircleTwoTone />
-          }
-        </div>, '4',),
-      getItem(
-        <div className="dropdownProfile" onClick={handleChangeStatusOff}>
-          <span> Đang tạm nghỉ</span>
-          {!isOnline &&
-            <CheckCircleTwoTone />
-          }
-        </div>, '5',),
-    ]),
   ];
 
-  if (user?.role === 1) {
+  if (user?.role_id === 1) {
     items2 = items2.concat(
       getItem(
         <>
@@ -108,6 +117,22 @@ const NavBar = (props) => {
   }
   else {
     items2 = items2.concat(
+      getItem('Thay đổi trạng thái', '3', <WifiOutlined />, [
+        getItem(
+          <div className="dropdownProfile" onClick={handleChangeStatusOn}>
+            <span> Đang làm việc</span>
+            {isOnline &&
+              <CheckCircleTwoTone />
+            }
+          </div>, '4',),
+        getItem(
+          <div className="dropdownProfile" onClick={handleChangeStatusOff}>
+            <span> Đang tạm nghỉ</span>
+            {!isOnline &&
+              <CheckCircleTwoTone />
+            }
+          </div>, '5',),
+      ]),
       getItem(
         <>
           <Link style={{}} to='/setting'>

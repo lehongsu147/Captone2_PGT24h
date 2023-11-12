@@ -2,13 +2,22 @@ import ApiConstants from "../adapter/ApiConstants";
 import ApiOperation from "../adapter/ApiOperation";
 
 const PgtFactories = {
-  getListPGT: async data => {
+  getListPGT: async ( Type = 10  , KeyWord, Category ) => {
+    let params = {} ; 
+    if (KeyWord){
+      params.KeyWord = KeyWord;
+    }
+    if (Category){
+      params.Category = Category;
+    }
+    if (Type){
+      params.Type = Type;
+    }
+
     return ApiOperation.request({
       url: ApiConstants.PGT,
       method: "GET",
-      params: {
-        type: "1"
-      }
+      params: params, 
     });
   },
   getPGTDetail: async data => {

@@ -1,20 +1,14 @@
 import React, { useEffect, useLayoutEffect, useState } from 'react';
 import styles from './OutStandingKol.module.scss'
 import CardKol from '../../card/CardKOL/CardKol';
-import Temp from '../../../utils/temp';
 import PgtFactories from '../../../services/PgtFatories';
-const OutStandingKol = () => {
-    const [hotKols, setHotKols] = useState([]);
-    // useEffect(() => {
-    //     setHotKols(
-    //         Temp.OutstandingKOL
-    //     )
-    // }, []);
+const OutStandingPGT = () => {
+    const [hotPgtList, setHotPgtList] = useState([]);
 
     useLayoutEffect(() => {
         const fetchData = async () => {
-            const response = await PgtFactories.getListPGT();
-            setHotKols(response);
+            const response = await PgtFactories.getListPGT(20);
+            setHotPgtList(response);
         };
         fetchData();
     }, []);
@@ -26,7 +20,7 @@ const OutStandingKol = () => {
 
             <div className={styles["boxContent"]}>
                 <div className={styles["content"]}>
-                    {hotKols?.map((kol, i) => {
+                    {hotPgtList?.map((kol, i) => {
                         return (
                             <CardKol key={i} kol={kol} />
                         )
@@ -40,4 +34,4 @@ const OutStandingKol = () => {
     );
 };
 
-export default OutStandingKol;
+export default OutStandingPGT;

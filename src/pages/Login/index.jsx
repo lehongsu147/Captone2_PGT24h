@@ -111,11 +111,11 @@ const Login = (props) => {
             const errorCode = error.code;
             const errorMessage = error.message;
             // Hiển thị thông báo lỗi
-            setCheck({
-              status: true,
-              type: "error",
-              content: errorMessage,
-            });
+            // setCheck({
+            //   status: true,
+            //   type: "error",
+            //   content: errorMessage,
+            // });
           });
       }
       else if (response?.user?.role_id === 3) {
@@ -134,6 +134,7 @@ const Login = (props) => {
       avatar: userDb?.avatar,
       role_id: userDb?.role_id,
       role: userDb?.role_name,
+      status: userDb?.status,
       ...userFireBase,
     };
 

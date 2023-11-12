@@ -29,7 +29,6 @@ const PageKOLDetail = () => {
     setOpen(false);
   };
 
-
   useEffect(() => {
     window.scroll(0,0)
     const fetchData = async () => {

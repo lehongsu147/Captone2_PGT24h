@@ -1,38 +1,49 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { CollapseContext } from '../../../../context/collapse.context';
 import { AuthContext } from '../../../../context/auth.context';
 import Feedback from '../../../../components/Feedback/Feedback';
-import { BackTop, Button, Input, Pagination, Tabs, Upload, message } from 'antd';
+import { BackTop, Button, Input, InputNumber, Pagination, Tabs, Upload, message } from 'antd';
 import IntroduceKOL from '../../PageKolDetail/IntroduceKOL/IntroduceKOL';
 import styles from './Profile.module.scss'
 import Avatar from '../../../../components/Avatar/Avatar';
 import CardType from '../../../../components/catgegory/CardType';
 import StarRating from '../../../../components/start-rating/StarRating';
-import { EditFilled, EditOutlined, UploadOutlined } from '@ant-design/icons';
+import { EditFilled, UploadOutlined } from '@ant-design/icons';
 import Temp from '../../../../utils/temp';
 import useWindowSize from '../../../../hook/use-window-size';
 import { convertStringToNumber } from '../../../../utils/Utils';
+import PgtFactories from '../../../../services/PgtFatories';
+import { toast } from 'react-toastify';
+import AccountFactories from '../../../../services/AccountFactories';
 
 const ProfileUser = ({ type }) => {
-    // const { user, setUser } = useContext(AuthContext);
-    const { id } = useParams();
+    const { user } = useContext(AuthContext);
     const [userInfo, setUserInfo] = useState();
+
     const [items, setItems] = useState();
     const [editPrice, setEditPrice] = useState();
-    const [newPrice, setNewPrice] = useState();
-    const navigate = useNavigate();
-    const [open, setOpen] = useState(false);
-    const [status, setStatus] = useState("");
+    const [pricePgt, setPricePgt] = useState();
     const { isCollapse } = useContext(CollapseContext);
 
     useEffect(() => {
-        setUserInfo(JSON.parse(localStorage.getItem("user")));
+        const fetchData = async () => {
+            try {
+                const response = await PgtFactories.getPGTDetail(user?.id);
+                setUserInfo(response[0]);
+            } catch (error) {
+                toast.error('Hệ thống lỗi, vui lòng thử lại sau')
+                // Handle errors here
+            }
+        };
+        fetchData();
+        document.title = `Thồng tin cá nhân`;
     }, []);
 
     useEffect(() => {
-        setNewPrice(userInfo?.price)
+        setPricePgt(userInfo?.price)
     }, [userInfo?.price]);
+
     const renderFeedBack = () => {
         const onShowSizeChange = (current, pageSize) => {
             console.log(current, pageSize);
@@ -84,21 +95,20 @@ const ProfileUser = ({ type }) => {
     };
 
     useEffect(() => {
-        document.title = `PGT24h | ${userInfo?.firstName} ${userInfo?.lastName}`;
+        document.title = `PGT24h | ${userInfo?.username}`;
         return () => {
             document.title = "PGT24h";
         };
     }, [userInfo?.id]);
 
     useEffect(() => {
-        console.log(userInfo)
-        if (userInfo?.role === 2) {
+        if (user?.role_id === 2) {
             setItems(
                 [
                     {
                         key: '1',
                         label: 'Giới thiệu',
-                        children: <IntroduceKOL canEdit introduction={userInfo?.introduction} />,
+                        children: <IntroduceKOL id={user?.id} canEdit introduction={userInfo?.introduction} />,
                     }, {
                         key: '2',
                         label: 'Đánh giá',
@@ -112,21 +122,36 @@ const ProfileUser = ({ type }) => {
                     {
                         key: '1',
                         label: 'Giới thiệu',
-                        children: <IntroduceKOL canEdit introduction={userInfo?.introduction} />,
+                        children: <IntroduceKOL id={user?.id} canEdit introduction={userInfo?.introduction} />,
                     }
                 ])
         }
     }, [userInfo]);
 
-
-    const onCancelOpenHandler = () => {
-        setOpen(false);
-    };
-
     const onChange = (key) => {
         console.log(key);
     };
+
+    const fetchDataUpdate = async (data) => {
+        try {
+            const response = await AccountFactories.requestUpdate(user?.id, data);
+            if (response?.status === 200) {
+                toast.success('Cập nhật thông tin thành công')
+                setPricePgt(response?.user?.price);
+            }
+        } catch (error) {
+            console.log(error);
+            toast.error('Hệ thống lỗi.')
+        }
+    };
+
+    const onSubmitChangePrice = () => {
+        const data = { price: pricePgt, }
+        fetchDataUpdate(data)
+        setEditPrice(!editPrice);
+    };
     const handleChagePrice = () => {
+        setEditPrice(pricePgt);
         setEditPrice(!editPrice);
     };
 
@@ -165,18 +190,18 @@ const ProfileUser = ({ type }) => {
                                     </Upload>
                                 </div>
                                 <Avatar
-                                    avatar={userInfo?.avatar ?? ''}
-                                    photoList={userInfo?.photoList ?? ''}
+                                    avatar={userInfo?.image ?? ''}
+                                    photoList={userInfo?.listImage ?? ''}
                                 />
                             </div>
 
                             <div className={styles.statusInfo}>
-                                <div className={` ${styles.boxStatus} ${userInfo?.status === 1 ? '' : styles.Pause}  `} >
-                                    <div className={`${styles.textStatus} ${userInfo?.status === 1 ? '' : styles.Pause}`}>
-                                        {userInfo?.status === 1 ? 'Đang làm việc' : 'Đang tạm nghỉ'}
+                                <div className={` ${styles.boxStatus} ${user?.status === 1 ? '' : styles.Pause}  `} >
+                                    <div className={`${styles.textStatus} ${user?.status === 1 ? '' : styles.Pause}`}>
+                                        {user?.status === 1 ? 'Đang làm việc' : 'Đang tạm nghỉ'}
                                     </div>
                                 </div>
-                                <span className={styles.dateFrom}>Ngay tham gia: 22/06/2004</span>
+                                {/* <span className={styles.dateFrom}>Ngay tham gia: 22/06/2023</span> */}
                             </div>
                         </div>
                     </div>
@@ -185,7 +210,7 @@ const ProfileUser = ({ type }) => {
                         <div className={styles.profileInfo}>
                             <div className={styles.title}>
                                 <span className={` ${styles.userName}  `} >
-                                    {userInfo?.firstName} {userInfo?.lastName}
+                                    {userInfo?.username}
                                 </span>
 
                             </div>
@@ -199,7 +224,7 @@ const ProfileUser = ({ type }) => {
                                         {userInfo?.follower ?? 0} người
                                     </span>
                                 </div>
-                                {userInfo?.role === 2 &&
+                                {user?.role_id === 2 &&
                                     <>
                                         <div className={styles.boxPropertie}>
                                             <span className={styles.namePropertie}>
@@ -233,22 +258,30 @@ const ProfileUser = ({ type }) => {
 
                     </div>
 
-                    {userInfo?.role === 2 &&
+                    {user?.role_id === 2 &&
                         <div className={styles.contact}>
                             <div className={styles.stickyBox}>
                                 <div className={styles.boxContainer}>
                                     <div className={styles.edit}>
                                         {editPrice ?
                                             <div>
-                                                <Input placeholder={userInfo?.price} onChange={(e) => setNewPrice(e.target.value)} />
+                                                <InputNumber
+                                                    addonAfter="VNĐ"
+                                                    style={{ width: '100%' }}
+                                                    // placeholder={pricePgt}
+                                                    value={pricePgt}
+                                                    onChange={(e) => setPricePgt(e)} 
+                                                    formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                                                    parser={value => value.replace(/\$\s?|(,*)/g, '')}
+                                                />
                                                 <div className={styles.editbtn}>
-                                                    <Button>Hủy</Button>
-                                                    <Button onClick={handleChagePrice}>Lưu</Button>
+                                                    <Button onClick={handleChagePrice} >Hủy</Button>
+                                                    <Button onClick={onSubmitChangePrice}>Lưu</Button>
                                                 </div>
                                             </div>
                                             :
                                             <>
-                                                <p>{ convertStringToNumber(newPrice)  ?? ''}/h</p>
+                                                <p>{convertStringToNumber(pricePgt) ?? ''}/h</p>
                                                 <EditFilled width={50} onClick={handleChagePrice} />
                                             </>
 

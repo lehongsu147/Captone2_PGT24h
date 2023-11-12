@@ -23,7 +23,6 @@ export default function FormActivity() {
       try {
         const response = await BookingFactories.getListBookingForUser(user?.id);
         setDataTable(response?.data);
-        console.log("🚀 ~ file: FormActivity.jsx:22 ~ fetchData ~ response:", response)
       } catch (error) {
         // Handle errors here
       }
@@ -60,16 +59,16 @@ export default function FormActivity() {
       align: "left",
       render: (text, data) => <div>{ getTime(data?.time_from)} - { getTime(data.time_to)}</div>,
     },
-    {
-      title: "Lĩnh Vực",
-      dataIndex: "category_link",
-      key: "category_link",
-      align: 'center',
-      width: 120,
-      render: (text) => (
-        <Avatar src={text ?? ''} width={20} height={20} />
-      ),
-    },
+    // {
+    //   title: "Lĩnh Vực",
+    //   dataIndex: "category_link",
+    //   key: "category_link",
+    //   align: 'center',
+    //   width: 120,
+    //   render: (text) => (
+    //     <Avatar src={text ?? ''} width={20} height={20} />
+    //   ),
+    // },
     {
       title: "Tình trạng",
       key: "status",

@@ -26,6 +26,7 @@ import LayoutHeader from "../Layout/LayoutOnlyHeader/LayoutHeader";
 import ResgisterKol from "../pages/ResgisterKol/ResgisterKol";
 import ProfileUser from "../pages/Details/PageEntDetail/Introduce/ProfileUser";
 import TrendingPage from "../pages/Trending/TrendingPage";
+import SearchPgt from "../pages/SearchPgt/SearchPgt";
 
 const Router = () => {
 
@@ -42,6 +43,12 @@ const Router = () => {
           path="/home" element={
             <LayoutSideBar>
               <Home />
+            </LayoutSideBar>}
+        />
+        <Route
+          path="/pgt" element={
+            <LayoutSideBar>
+              <SearchPgt />
             </LayoutSideBar>}
         />
         <Route

@@ -5,6 +5,7 @@ const ApiConstants = {
     BOOKING_USER :`/booking/user`,
     BOOKING_PGT :`/booking`,
     PGT :`/pgt`,
+    ACCOUNT:  '/account', 
     LOGIN:  '/account/login', 
     SIGNUP:  '/account/signup', 
     

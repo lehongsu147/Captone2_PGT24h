@@ -1,10 +1,11 @@
-import React, { useState, useEffect, createContext } from "react";
+import React, { useState, useEffect, createContext, useContext } from "react";
 import { GoogleAuthProvider, onAuthStateChanged, signInWithRedirect, signOut } from "firebase/auth";
 import { auth } from "../firebase";
+import { NotificationContext } from "./Notification.context";
 export const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(() => JSON.parse(localStorage.getItem("user")));
-  const [loading, setLoading] = useState(true);
+
   // Sign in with Google
   const signInWithGoogle = () => {
     const provider = new GoogleAuthProvider();
@@ -16,15 +17,7 @@ export const AuthProvider = ({ children }) => {
     // Also clear the local storage
     localStorage.removeItem("user");
   };
-  // Set currentUser
-  // useEffect(() => {
-  //   const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-  //     setUser(currentUser);
-  //     localStorage.setItem("user", JSON.stringify(currentUser));
-  //     setLoading(false);
-  //   });
-  //   return unsubscribe;
-  // }, []);
+  
   useEffect(() => {
     const handleStorageChange = () => {
       const storedUser = localStorage.getItem("user");

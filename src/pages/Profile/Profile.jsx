@@ -7,7 +7,6 @@ import Footer from "../../components/Footer/Footer";
 
 const Profile = () => {
   const [changeContent, setChangeContent] = useState({});
-  console.log(changeContent);
   const user = JSON.parse(localStorage.getItem("user"));
 
   const onChangeContentHandler = (data) => {

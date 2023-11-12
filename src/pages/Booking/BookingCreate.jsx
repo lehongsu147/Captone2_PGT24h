@@ -6,6 +6,8 @@ import TextArea from "antd/es/input/TextArea";
 import { convertStringToNumber } from './../../utils/Utils';
 import { toast } from "react-toastify";
 import PgtFactories from "../../services/PgtFatories";
+import { addDoc, collection, serverTimestamp } from "firebase/firestore";
+import { db } from "../../firebase";
 
 const BookingCreate = (props) => {
   const user = JSON.parse(localStorage.getItem("user"));
@@ -69,13 +71,13 @@ const BookingCreate = (props) => {
   useEffect(() => {
     if (rangeTimeBooking) {
       const newTime = rangeTimeBooking[1]?.$H - rangeTimeBooking[0]?.$H;
-      const startTime  = rangeTimeBooking[0]?.$d;
+      const startTime = rangeTimeBooking[0]?.$d;
       const timeCurrent = new Date();
       // if ( startTime < timeCurrent){
       //   setErrorMessage('Thời gian bắt đầu phải là thời gian trong tương lai.');
       // }
       // else
-       if (newTime === 0) {
+      if (newTime === 0) {
         setErrorMessage('Vui lòng chọn thời gian thuê lớn hơn 1 giờ.')
       }
       else {
@@ -85,10 +87,29 @@ const BookingCreate = (props) => {
     }
   }, [rangeTimeBooking])
 
+  const createNotification = async (toUserId, type, action_id, title, body) => {
+    console.log(toUserId, type, action_id, title, body);
+    try {
+      await addDoc(collection(db, "notifications"), {
+        toUserId: toUserId,
+        title: title,
+        body: body,
+        createdAt: serverTimestamp(),
+        type: type,
+        action_id: action_id,
+        read: false,
+      });
+      console.log("Thông báo yêu cầu booking mới");
+    } catch (e) {
+      console.error("Lỗi khi tạo thông báo: ", e);
+    }
+  };
+
   const requestBooking = async (data) => {
     try {
       const response = await PgtFactories.requestBooking(data);
       if (response.status === 200) {
+        createNotification(data?.pgtId, 1, response?.data[0].id, "Bạn có yêu cầu booking mới", "Vui lòng xác nhận yêu cầu booking trong vòng 5 phút.");
         toast.success('Tạo lượt booking thành công, PGT sẽ phàn hồi lại trong 5 phút.')
         props.onCancelOpenHandler();
       }

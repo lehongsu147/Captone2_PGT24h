@@ -1,42 +1,32 @@
-import React, { useState, useEffect, useLayoutEffect } from 'react'
-import { Input, Image, Avatar } from 'antd';
+import React, { useState, useEffect, useLayoutEffect, startTransition, useDeferredValue } from 'react'
+import { Input, Avatar } from 'antd';
 import classes from './SearchModal.module.css'
-import { Link, useNavigate } from "react-router-dom";
-
-import { getKols } from "../../../services/KolService";
-import { getEnts } from "../../../services/EnterpriseService";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import PgtFactories from '../../../services/PgtFatories';
 
 const { Search } = Input;
 
 const SearchModal = () => {
-  const user = JSON.parse(localStorage.getItem("user"));
   const navigate = useNavigate();
-  const [searchInput, setSearchInput] = useState("");
-  const [changeSearch, setChangeSearch] = useState(false);
-  const [kols, setKols] = useState([]);
-  const [ents, setEnts] = useState([]);
-  const [show, setShow] = useState(false);
+  const [value, setValue] = useState()
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const keyword = searchParams.get("keyword");
 
   useEffect(() => {
-    // Promise.all([
-    //   getKols(),
-    //   getEnts()
-    // ]).then(([kolList, entList]) => {
-    //   setKols(kolList);
-    //   setEnts(entList);
-    // });
-  }, [])
+    if (keyword){
+      setValue(keyword)
+    }
+  }, [keyword])
 
   const onChangeInputHandler = (e) => {
-    setSearchInput(e.target.value)
-    setShow(true)
-    setChangeSearch(true)
+    const value = e.target.value.trim();
+    setValue(value);
   }
 
-  const onSearch = (value) => {
-    navigate(`/home?keyword=${value}`)
-    setSearchInput(value)
-    setShow(true)
+  const onSearch = () => {
+    navigate(`/pgt?keyword=${value}`)
+    setValue('')
   }
 
   let x = window.innerWidth;
@@ -65,80 +55,16 @@ const SearchModal = () => {
     });
   }, [x])
 
-  const filteredEnts = ents?.filter((ent) => {
-    if (ent) {
-      return searchInput === ""
-        ? ent
-        : ent.firstName.includes(searchInput) || ent.lastName.includes(searchInput)
-          ? ent
-          : null;
-    }
-  });
-
-  const filteredKols = kols?.filter((kol) => {
-    if (kol) {
-      return searchInput === ""
-        ? kol
-        : kol.firstName.includes(searchInput) || kol.lastName.includes(searchInput)
-          ? kol
-          : null;
-    }
-  });
 
   return (
-    <div className={classes['search-modal']}
-      style={{ left: windowChange.leftSearch, }}
-    >
+    <div className={classes['search-modal']} style={{ left: windowChange.leftSearch, }}  >
       <Search
         size="medium"
-        placeholder="input search text"
+        placeholder="Tìm kiếm PGT"
         onSearch={onSearch}
         onChange={onChangeInputHandler}
-        style={{
-          width: windowChange.widthSearch,
-        }}
+        style={{ width: windowChange.widthSearch, }}
       />
-      {show && <div className={classes.backdrop} onClick={() => { setShow(false) }}></div>}
-      {show && <div className={classes['result-search']} >
-        <div className={classes['wrap-result-search']}>
-          {searchInput && kols &&
-            filteredKols.length > 0 && (
-              filteredKols
-                .map((kol) => (
-                  <div key={kol.id}>
-                    <Link key={kol.id} to={`kols/${kol.id}`} className={classes["item-search-user"]}>
-                      <Avatar size={40} src={kol?.avatar}>
-                        {kol?.avatar ? "" : kol?.firstName?.charAt(0)?.toUpperCase()}
-                      </Avatar>
-                      <div>
-                        <div className={classes['name-item-user']}>{kol.firstName.toLowerCase()} {kol.lastName}</div>
-                        <div className={classes['role-item-user']}>Kol</div>
-                      </div>
-                    </Link>
-                  </div>
-                )))
-          }
-          {user && searchInput && ents &&
-            filteredEnts.length > 0 && (
-              filteredEnts
-                .map((ent) => (
-                  <div key={ent.id}>
-                    <Link key={ent.id} to={`ents/${ent.id}`} className={classes["item-search-user"]}>
-                      <Avatar size={40} src={ent.avatar}>
-                        {ent?.avatar ? "" : ent?.firstName.charAt(0)?.toUpperCase()}
-                      </Avatar>
-                      <div>
-                        <div className={classes['name-item-user']}>{ent.firstName.toLowerCase()} {ent.lastName}</div>
-                        <div className={classes['role-item-user']}>Enterprise</div>
-                      </div>
-                    </Link>
-                  </div>
-                )))
-          }
-          {changeSearch && filteredKols.length === 0 && <div>Không có kết quả tìm kiếm</div>}
-          {changeSearch && !searchInput && <div>Hãy nhập tên cần tìm</div>}
-        </div>
-      </div>}
     </div >
   )
 }

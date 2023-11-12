@@ -36,6 +36,12 @@ const BookingFactories = {
       data: data,
     });
   },
+  getBookingDetail: async data => {
+    return ApiOperation.request({
+      url: `${ApiConstants.BOOKING_PGT}/${data}`,
+      method: "GET",
+    });
+  },
 };
 
 export default BookingFactories;

@@ -15,6 +15,13 @@ const AccountFactories = {
       method: "POST",
       data: data
     });
+  },
+  requestUpdate: async (id,data) => {
+    return ApiOperation.request({
+      url: `${ApiConstants.ACCOUNT}/${id}`,
+      method: "PUT",
+      data: data
+    });
   }
 };
 
