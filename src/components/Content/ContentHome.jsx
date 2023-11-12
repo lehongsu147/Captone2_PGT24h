@@ -3,7 +3,7 @@ import styles from './content.module.scss';
 import HotPgt from "./hot-pgt/HotPgt";
 import { CollapseContext } from "../../context/collapse.context";
 import ScrollAuto from "../Banner/ScrollAuto";
-import OutStandingPGT from "./outstanding-kol/OutStandingPgt";
+import OutStandingPGT from "./outstanding-pgt/OutStandingPgt";
 
 const ContentHome = (props) => {
   const { isCollapse } = useContext(CollapseContext);

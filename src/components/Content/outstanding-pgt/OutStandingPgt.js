@@ -1,5 +1,5 @@
 import React, { useEffect, useLayoutEffect, useState } from 'react';
-import styles from './OutStandingKol.module.scss'
+import styles from './OutStandingPgt.module.scss'
 import CardKol from '../../card/CardKOL/CardKol';
 import PgtFactories from '../../../services/PgtFatories';
 const OutStandingPGT = () => {
@@ -16,7 +16,7 @@ const OutStandingPGT = () => {
     return (
         
         <div className={styles.container}>
-            <span className={styles.title}>OutStandingKol</span>
+            <span className={styles.title}>OutStanding PGT</span>
 
             <div className={styles["boxContent"]}>
                 <div className={styles["content"]}>
