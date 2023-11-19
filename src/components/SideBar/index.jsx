@@ -16,7 +16,6 @@ const SideBar = ({ onChangeCollapse }) => {
             setFields(response);
         };
         fetchData();
-        // setFields(Constants.optionsCategory)
     }, []);
     
     const { isCollapse, setIsCollapse } = useContext(CollapseContext);

@@ -1,7 +1,5 @@
 import React, { useState } from 'react'
 import { Link } from "react-router-dom";
-import { forgotPassword } from '../../services/authentication'
-
 import ButtonFull from '../../components/UI/Button/ButtonFull';
 import Modals from "../../components/UI/Modal/Modals";
 import logo from "../../assets/logo/LogoPage.png";

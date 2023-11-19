@@ -25,7 +25,6 @@ export default function App() {
               theme="light"
             />
             <Router />
-            <ToastContainer />
           </CollapseProvider>
         </MessageProvider>
       </NotificationProvider>

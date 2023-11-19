@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { Avatar } from "antd";
@@ -6,17 +6,16 @@ import NotLogin from "../BtnNotLogin/NotLogin";
 import Menu from "./Menu";
 import NavBar from "../Navbar/NavBar";
 import SearchModal from "./Search/SearchModal";
-
 import LogoPage from "../../assets/logo/LogoPage.png";
 import home from "../../assets/logo/icon-home.svg";
 import campaign from "../../assets/logo/icon-compaign.svg";
 import chat from "../../assets/logo/icon-chat.svg";
 import "./style.css";
 import Notification from "../Notification";
-import Temp from "../../utils/temp";
 import { AuthContext } from "../../context/auth.context";
 import { NotificationContext } from "../../context/Notification.context";
-import { toast } from "react-toastify";
+import { ToastInfo } from "../../utils/Utils";
+import useOnClickOutside from "../../hook/use-onclick-outside";
 
 const Header = (props) => {
   const navigate = useNavigate();
@@ -51,23 +50,29 @@ const Header = (props) => {
     setIsOpen(!isOpen);
   }
   function handleClose() {
-    setIsOpen(!isOpen);
+    setIsOpen(false);
   }
-  
   const { notifications } = useContext(NotificationContext);
   const [countNotification, setCountNotification] = useState();
-
+  const countNotificationRef = useRef(countNotification);
   useEffect(() => {
-    const unreadMessages = notifications.filter(message => message.read === false);
-    console.log("🚀 ~ file: index.jsx:62 ~ useEffect ~ unreadMessages:", unreadMessages)
-    const numUnreadMessages = unreadMessages.length;
-    if ( countNotification === 0 && numUnreadMessages > 0 ){
-      unreadMessages?.map((item,index) =>
-        toast.info(item?.title)
-      )
+    if (notifications) {
+      const unreadMessages = notifications.filter(message => message.read === false);
+      const numUnreadMessages = unreadMessages.length;
+      if (countNotificationRef.current === 0 && numUnreadMessages > 0) {
+        ToastInfo(unreadMessages[unreadMessages.length - 1].title)
+      }
+      setCountNotification(numUnreadMessages);
+      countNotificationRef.current = numUnreadMessages;
     }
-    setCountNotification(numUnreadMessages);
-  }, [notifications])
+  }, [notifications]);
+  
+  const dropRef = useRef();
+  useOnClickOutside(dropRef, handleClickOutside);
+
+  function handleClickOutside() {
+    handleClose();
+  }
 
   return (
     <div className="header">
@@ -88,8 +93,8 @@ const Header = (props) => {
           <span className={"noti-badge"}>{countNotification}</span>
         )}
         {user && (
-          <div className="avata">
-            <NavBar role={user?.role} isOpen={isOpen} onchangeOpen={handleClose} logOutHandler={logOutHandler}></NavBar>
+          <div className="avata" ref={dropRef}>
+            <NavBar role={user?.role} isOpen={isOpen}  logOutHandler={logOutHandler}></NavBar>
             <Avatar
               size={40}
               onClick={handleOpen}
@@ -98,7 +103,6 @@ const Header = (props) => {
               }
             >
               {user?.avatar ? "" : user?.firstName?.charAt(0)?.toUpperCase()}
-              {/* {user?.image ? "" : user?.email.slice(0, 1).toUpperCase()} */}
             </Avatar>
           </div>
         )}

@@ -15,11 +15,10 @@ import PgtFactories from "../../../services/PgtFatories";
 import { toast } from "react-toastify";
 import { convertStringToNumber } from "../../../utils/Utils";
 
-const PageKOLDetail = () => {
-  const { user, setUser } = useContext(AuthContext);
-
+const PagePgtDetail = () => {
+  const { user } = useContext(AuthContext);
   const { id } = useParams();
-  const [kolInfo, setKolInfo] = useState();
+  const [pgtInfo, setPgtInfo] = useState();
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const [statusPGT, setStatus] = useState("");
@@ -30,11 +29,11 @@ const PageKOLDetail = () => {
   };
 
   useEffect(() => {
-    window.scroll(0,0)
+    window.scroll(0, 0)
     const fetchData = async () => {
       try {
         const response = await PgtFactories.getPGTDetail(id);
-        setKolInfo(response[0]);
+        setPgtInfo(response[0]);
         setStatus(response[0].status);
       } catch (error) {
         toast.error('Hệ thống lỗi, vui lòng thử lại sau')
@@ -66,9 +65,6 @@ const PageKOLDetail = () => {
     } else setStatus("BOOK");
   };
 
-  const navigateToChat = () => {
-    navigate(`/chat`, { state: kolInfo.kol });
-  };
 
   const bookingHandler = () => {
     if (!user) {
@@ -76,8 +72,15 @@ const PageKOLDetail = () => {
     }
     setOpen(true);
   };
-  const hanleClickChat = () => {
-    navigate(`/chat/${id}`)
+
+  const handleClickChat = () => {
+    navigate(`/chat`, {
+      state: {
+        chatId: id,
+        toUserAvatar: pgtInfo?.image,
+        toUserName: pgtInfo?.username,
+      }
+    })
   };
 
   const onChange = (key) => {
@@ -85,7 +88,7 @@ const PageKOLDetail = () => {
   };
 
   const onRedirect = () => {
-    const booking = kolInfo.bookings.find(
+    const booking = pgtInfo.bookings.find(
       (booking) => booking.status === statusPGT && booking.user.id === user.id
     );
     if (booking) {
@@ -96,7 +99,7 @@ const PageKOLDetail = () => {
   const renderCategopryGame = () => {
     return (
       <>
-        {kolInfo?.listgame?.map((item, index) => (
+        {pgtInfo?.listgame?.map((item, index) => (
           <CardType
             key={index}
             id={item.id}
@@ -148,7 +151,7 @@ const PageKOLDetail = () => {
     {
       key: '1',
       label: 'Giới thiệu',
-      children: <IntroduceKOL introduction={kolInfo?.introduction} />,
+      children: <IntroduceKOL introduction={pgtInfo?.introduction} />,
     },
     {
       key: '2',
@@ -162,7 +165,7 @@ const PageKOLDetail = () => {
     <>
       <main className={styles["main-details"]} >
         <BookingCreate
-          kol={kolInfo ?? ''}
+          kol={pgtInfo ?? ''}
           onCancelOpenHandler={onCancelOpenHandler}
           open={open}
         />
@@ -174,8 +177,8 @@ const PageKOLDetail = () => {
             <div className={styles.stickyProfile}>
               <div className={styles.profileContainer}>
                 <Avatar
-                  avatar={kolInfo?.image ?? ''}
-                  photoList={kolInfo?.listImage ?? ''}
+                  avatar={pgtInfo?.image ?? ''}
+                  photoList={pgtInfo?.listImage ?? ''}
                 />
               </div>
 
@@ -193,7 +196,7 @@ const PageKOLDetail = () => {
           <div className={styles.info}>
             <div className={styles.profileInfo}>
               <div className={styles.title}>
-                <span className={` ${styles.userName}  `} >{kolInfo?.username}  </span>
+                <span className={` ${styles.userName}  `} >{pgtInfo?.username}  </span>
                 <buton className={` ${styles.buttonFollow}  `} >Theo dõi </buton>
               </div>
 
@@ -203,7 +206,7 @@ const PageKOLDetail = () => {
                     SỐ NGƯỜI THEO DÕI
                   </span>
                   <span className={styles.number}>
-                    {kolInfo?.follower}
+                    {pgtInfo?.follower}
                   </span>
                 </div>
 
@@ -212,7 +215,7 @@ const PageKOLDetail = () => {
                     ĐÃ ĐƯỢC THUÊ
                   </span>
                   <span className={styles.number}>
-                    {kolInfo?.countRental}
+                    {pgtInfo?.countRental}
                   </span>
                 </div>
 
@@ -221,7 +224,7 @@ const PageKOLDetail = () => {
                     TỶ LỆ HOÀN THÀNH
                   </span>
                   <span className={styles.number}>
-                    {kolInfo?.rate}%
+                    {pgtInfo?.rate}%
                   </span>
                 </div>
               </div>
@@ -239,16 +242,16 @@ const PageKOLDetail = () => {
           <div className={styles.contact}>
             <div className={styles.stickyBox}>
               <div className={styles.boxContainer}>
-                <p>{convertStringToNumber(kolInfo?.price)}/h</p>
+                <p>{convertStringToNumber(pgtInfo?.price)}/h</p>
                 <div className={styles['rateting-style']}>
-                  <StarRating starCount={kolInfo?.star} />
-                  <span>{kolInfo?.countComment} Đánh giá</span>
+                  <StarRating starCount={pgtInfo?.star} />
+                  <span>{pgtInfo?.countComment} Đánh giá</span>
                 </div>
                 <div className={styles['text-center']}>
                   <Button type="primary" size={'large'} onClick={bookingHandler} block danger>
                     Thuê
                   </Button>
-                  <Button type="primary" size={'large'} onClick={hanleClickChat} block  >
+                  <Button type="primary" size={'large'} onClick={handleClickChat} block  >
                     Chat
                   </Button>
                 </div>
@@ -262,4 +265,4 @@ const PageKOLDetail = () => {
     </>
   );
 };
-export default PageKOLDetail;
+export default PagePgtDetail;

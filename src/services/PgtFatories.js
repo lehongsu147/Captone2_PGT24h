@@ -2,7 +2,7 @@ import ApiConstants from "../adapter/ApiConstants";
 import ApiOperation from "../adapter/ApiOperation";
 
 const PgtFactories = {
-  getListPGT: async ( Type = 10  , KeyWord, Category ) => {
+  getListPGT: async ( Type = 10  , KeyWord, Category) => {
     let params = {} ; 
     if (KeyWord){
       params.KeyWord = KeyWord;
@@ -13,7 +13,6 @@ const PgtFactories = {
     if (Type){
       params.Type = Type;
     }
-
     return ApiOperation.request({
       url: ApiConstants.PGT,
       method: "GET",

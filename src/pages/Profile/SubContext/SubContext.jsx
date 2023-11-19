@@ -1,6 +1,6 @@
 import React from "react";
-import FormProfileKOL from "../FormContent/FormProfileKOL";
-import FormProfileEnterprise from "../FormContent/FormProfileEnterprise";
+import FormProfilepGT from "../FormContent/FormProfileKOL";
+import FormProfileUser from "../FormContent/FormProfileUser";
 import FormEmail from "../FormContent/FormEmail";
 import FormPassword from "../FormContent/FormPassword";
 import FormActivity from "../FormContent/FormActivity";
@@ -9,7 +9,7 @@ import PaymentWallett from "../FormContent/Payment/PaymentWallett";
 import RequestBooking from "../FormContent/Book/RequestBooking";
 
 const componentKOL = [
-  { key: "1", component: <FormProfileKOL /> },
+  { key: "1", component: <FormProfilepGT /> },
   { key: "sub1", component: <FormEmail /> },
   { key: "sub2", component: <FormPassword /> },
   { key: "3", component: <FormActivity /> },
@@ -19,7 +19,7 @@ const componentKOL = [
 ];
 
 const componentEnt = [
-  { key: "1", component: <FormProfileEnterprise /> },
+  { key: "1", component: <FormProfileUser /> },
   { key: "sub1", component: <FormEmail /> },
   { key: "sub2", component: <FormPassword /> },
   { key: "3", component: <FormActivity /> },
@@ -31,7 +31,7 @@ const SubContext = (props) => {
   return (
     <div className="sub-context" style={{ width: "100%"  , height: 'calc(100vh - 60px)' , overflow: 'scroll' }}>
       {props.user.role_id === 2 &&
-        Object.keys(props.changeContent).length === 0 && <FormProfileKOL />}
+        Object.keys(props.changeContent).length === 0 && <FormProfilepGT />}
       {props.user.role_id === 2 &&
         componentKOL.map((component) => {
           if (component.key === props.changeContent) return component.component;
@@ -39,7 +39,7 @@ const SubContext = (props) => {
 
       {props.user.role_id === 1 &&
         Object.keys(props.changeContent).length === 0 && (
-          <FormProfileEnterprise />
+          <FormProfileUser />
         )}
       {props.user.role_id === 1 &&
         componentEnt.map((component) => {

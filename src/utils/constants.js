@@ -1,7 +1,6 @@
 export default class Constants {
   static data = {
     labels: ["Red", "Orange", "Blue"]
-    // datasets is an array of objects where each object represents a set of data to display corresponding to the labels above. for brevity, we'll keep it at one object
   };
 
   static optionSex = [
@@ -12,45 +11,60 @@ export default class Constants {
     {
       label: "Nữ",
       value: 2
-    }
+    },
+    {
+      label: "Khác",
+      value: 3
+    },
   ];
 
-  static optionStatus = [
+  static optionStatusAccount = [
     {
       label: "Đang hoạt động",
-      value: true
+      value: 1
     },
     {
-      label: "Bị khóa",
-      value: false
+      label: "Khóa tài khoản",
+      value: 2,
     }
   ];
 
-  static optionsCategory = [
+  static optionsStatusBooking = [
     {
-      name: "Truy Kích PC",
-      image:
-        "https://playerduo.net/api/upload-service/game_avatars/715867c6-698f-411a-b4f9-1e9093130b60__0ba80060-2b58-11ee-a657-a54d6be1d46a__game_avatars.jpg",
-      id: 1
+        value: 1,
+        label: 'Chờ xác nhận'
     },
     {
-      name: "Liên minh huyền thoại",
-      image:
-        "https://files.playerduo.net/production/game_avatars/715867c6-698f-411a-b4f9-1e9093130b60__f364f2e0-34ce-11ed-838c-b120e70abb59__game_avatars.jpg",
-      id: 2
+        value: 2,
+        label: 'PGT đã xác nhận'
     },
     {
-      name: "Đấu trường công lý",
-      image:
-        "https://files.playerduo.net/production/game_avatars/715867c6-698f-411a-b4f9-1e9093130b60__a844a8e0-34cf-11ed-838c-b120e70abb59__game_avatars.jpg",
-      id: 3
+        value: 3,
+        label: 'PGT đã từ chối'
     },
     {
-      image:
-        "https://files.playerduo.net/production/game_avatars/715867c6-698f-411a-b4f9-1e9093130b60__c5802ad0-33e2-11ed-838c-b120e70abb59__game_avatars.jpg",
-      name: "PUBG",
-      id: 4
-    }
+        value: 4,
+        label: 'Hoàn thành'
+    },
+  ];
+
+  static optionsFilterStatusBooking = [
+    {
+        value: 1,
+        text: 'Chờ xác nhận'
+    },
+    {
+        value: 2,
+        text: 'PGT đã xác nhận'
+    },
+    {
+        value: 3,
+        text: 'PGT đã từ chối'
+    },
+    {
+        value: 4,
+        text: 'Hoàn thành'
+    },
   ];
 
   static vietnamProvinces = [

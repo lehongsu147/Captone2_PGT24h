@@ -3,29 +3,17 @@ import { useNavigate } from "react-router-dom";
 import classes from "./Booking.module.css";
 import { Modal, DatePicker, Form, Select, Input, TimePicker, Space, Button } from "antd";
 import TextArea from "antd/es/input/TextArea";
-import { convertStringToNumber } from './../../utils/Utils';
+import { ToastNotiError, convertStringToNumber } from './../../utils/Utils';
 import { toast } from "react-toastify";
-import PgtFactories from "../../services/PgtFatories";
 import { addDoc, collection, serverTimestamp } from "firebase/firestore";
 import { db } from "../../firebase";
+import BookingFactories from "../../services/BookingFactories";
 
 const BookingCreate = (props) => {
   const user = JSON.parse(localStorage.getItem("user"));
-  const kol = props.kol;
+  const pgt = props.kol;
   const [category, setCategory] = useState();
-
-  // const { sendPrivateNotification } = useContext(MessageContext);
   const navigate = useNavigate();
-  const [booking, setBooking] = useState({
-    timestamp: "",
-    postPrice: 0,
-    postNumber: 0,
-    videoPrice: 0,
-    videoNumber: 0,
-    totalPrice: 0,
-    description: "",
-  });
-
 
   const onCloseModal = () => {
     props.onCancelOpenHandler();
@@ -37,13 +25,13 @@ const BookingCreate = (props) => {
   const [rangeTimeBooking, setRangeTimeBooking] = useState();
 
   const [note, setNote] = useState();
-  const [priceTotalShow, setPriceShow] = useState(convertStringToNumber(parseInt(kol?.price)));
+  const [priceTotalShow, setPriceShow] = useState(convertStringToNumber(parseInt(pgt?.price)));
   const [priceTotal, setPrice] = useState();
 
   useEffect(() => {
-    setPriceShow(convertStringToNumber(parseInt(kol?.price) * timeBooking))
-    setPrice(kol?.price * timeBooking)
-  }, [kol?.price, timeBooking])
+    setPriceShow(convertStringToNumber(parseInt(pgt?.price) * timeBooking))
+    setPrice(pgt?.price * timeBooking)
+  }, [pgt?.price, timeBooking])
 
   const checkDateBooking = (value) => {
     const now = new Date();
@@ -88,7 +76,6 @@ const BookingCreate = (props) => {
   }, [rangeTimeBooking])
 
   const createNotification = async (toUserId, type, action_id, title, body) => {
-    console.log(toUserId, type, action_id, title, body);
     try {
       await addDoc(collection(db, "notifications"), {
         toUserId: toUserId,
@@ -107,7 +94,7 @@ const BookingCreate = (props) => {
 
   const requestBooking = async (data) => {
     try {
-      const response = await PgtFactories.requestBooking(data);
+      const response = await BookingFactories.requestBooking(data);
       if (response.status === 200) {
         createNotification(data?.pgtId, 1, response?.data[0].id, "Bạn có yêu cầu booking mới", "Vui lòng xác nhận yêu cầu booking trong vòng 5 phút.");
         toast.success('Tạo lượt booking thành công, PGT sẽ phàn hồi lại trong 5 phút.')
@@ -126,29 +113,25 @@ const BookingCreate = (props) => {
   };
 
   const onSubmit = () => {
-    const data = {
-      userId: user?.id,
-      pgtId: kol?.id,
-      price: parseInt(priceTotal),
-      date: dateBooking,
-      timeStart: rangeTimeBooking[0]?.$d,
-      timeEnd: rangeTimeBooking[1]?.$d,
-      category: category,
-      note: note,
+    if (user?.id === pgt?.id) {
+      ToastNotiError('Không thể tự tạo booking cho bản thân')
+      return ;
     }
-    requestBooking(data);
+    else {
+      const data = {
+        userId: user?.id,
+        pgtId: pgt?.id,
+        price: parseInt(priceTotal),
+        date: dateBooking,
+        timeStart: rangeTimeBooking[0]?.$d,
+        timeEnd: rangeTimeBooking[1]?.$d,
+        category: category,
+        note: note,
+      }
+      requestBooking(data);
+    }
   };
 
-  const optionCategory = kol?.listgame?.map((field) => {
-    return {
-      value: field.id,
-      label: field.name,
-    };
-  });
-
-  const handleChangeleGame = (value) => {
-    setCategory(value);
-  }
 
   return (
     <Modal
@@ -171,7 +154,7 @@ const BookingCreate = (props) => {
           autoComplete="off"
           onFinish={onSubmit}
         >
-          <Form.Item label="Player" >{kol.firstName} {kol?.username}</Form.Item>
+          <Form.Item label="Player" >{pgt.firstName} {pgt?.username}</Form.Item>
           <Form.Item label="Ngày" name='dateBooking'
             rules={[
               { required: true, message: 'Bắt buộc chọn ngày' },

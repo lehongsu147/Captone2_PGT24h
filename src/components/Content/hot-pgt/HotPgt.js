@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import styles from './HotPgt.module.scss';
-import CardKol from '../../card/CardKOL/CardKol';
+import CardPgt from '../../card/CardPgt/CardPgt';
 import PgtFactories from '../../../services/PgtFatories';
 
 const HotHOL = () => {
-    const [hotKols, setHotKols] = useState([]);
+    const [hotPgts, setHotPgtList] = useState([]);
     const [apiCalled, setApiCalled] = useState(false);
 
     useEffect(() => {
@@ -12,7 +12,7 @@ const HotHOL = () => {
             const fetchData = async () => {
                 try {
                     const response = await PgtFactories.getListPGT(10);
-                    setHotKols(response);
+                    setHotPgtList(response);
                     setApiCalled(true);
                 } catch (error) {
                     // Handle errors here
@@ -29,9 +29,9 @@ const HotHOL = () => {
 
             <div className={styles["boxContent"]}>
                 <div className={styles["content"]}>
-                    {hotKols?.map((kol, i) => {
+                    {hotPgts?.map((pgt, i) => {
                         return (
-                            <CardKol key={i} kol={kol} />
+                            <CardPgt key={i} pgt={pgt} />
                         );
                     })}
                 </div>

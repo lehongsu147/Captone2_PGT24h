@@ -1,20 +1,12 @@
 import { Avatar, Badge, DatePicker, Select, Table } from "antd";
 import { useEffect, useState } from "react";
-import { getBookingHistory } from "../../../services/getApiProfile";
-import { displayDateTime } from "../../../services/DateTimeUtil";
-import Temp from "../../../utils/temp";
 import Constants from "../../../utils/constants";
 import BookingFactories from "../../../services/BookingFactories";
 import { getDate, getTime } from "../../../utils/Utils";
-
-
-
 export default function FormActivity() {
   const user = JSON.parse(localStorage.getItem("user"));
   const [dateTable, setDataTable] = useState();
 
-  const [activity, setActivity] = useState();
-  const [statusBooking, setStatusBooking] = useState("dabook");
   const [monthSelect, setMonthSelect] = useState("");
   const [nameKOL, setNameKOL] = useState("");
 
@@ -86,12 +78,6 @@ export default function FormActivity() {
     },
   ];
 
-  const optionCategory = Constants.optionsCategory.map((field) => {
-    return {
-      value: field.id,
-      label: field.name,
-    };
-  });
 
   const handleOnChangeDate = (e) => {
     console.log(e);
@@ -110,11 +96,6 @@ export default function FormActivity() {
       <div className="booking-title"><span>Lịch sử booking</span></div>
 
       <div className="booking-search" style={{justifyContent: 'flex-end'}} >
-        <Select
-          placeholder='Chọn lĩnh vực'
-          onChange={(e) => handleOnChangeMonth(e)}
-          options={optionCategory}
-        />
         <DatePicker
           placeholder='Chọn ngày'
           onChange={(e) => handleOnChangeDate(e?.$d)}

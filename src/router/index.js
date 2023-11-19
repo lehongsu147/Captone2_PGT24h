@@ -5,13 +5,11 @@ import {
 } from "react-router-dom";
 
 import Home from "../pages/Home";
-import Campaign from "../pages/Campaign";
 import Login from "../pages/Login";
 import Register from "../pages/Register/Register";
 import Profile from "../pages/Profile/Profile";
 import ForgotPassword from "../pages/ForgotPassword/ForgotPassword";
-import PageKOLDetail from "../pages/Details/PageKolDetail/PageKolDetail";
-import VerifyRegister from "../pages/VerifyRegister/VerifyRegister";
+import PagePgtDetail from "../pages/Details/PageKolDetail/PageKolDetail";
 import ResetPassword from "../pages/ForgotPassword/ResetPassword";
 import Chat from "../pages/Chat/Chat";
 import NotFound from "../pages/NotFound/NotFound";
@@ -19,11 +17,10 @@ import PageDetail from "../pages/Details/PageEntDetail/PageDetail";
 import HomeAdmin from "../pages/Admin/HomeAdmin";
 import PaymentResult from "../pages/Payment/PaymentResult";
 import BookingDetails from "../pages/Booking/BookingDetails";
-
 import { ProtectedRoute } from "../context/ProtectedRoute.context";
 import LayoutSideBar from "../Layout/LayoutSideBar/LayoutSideBar";
 import LayoutHeader from "../Layout/LayoutOnlyHeader/LayoutHeader";
-import ResgisterKol from "../pages/ResgisterKol/ResgisterKol";
+import ResgisterPgt from "../pages/ResgisterKol/ResgisterPgt";
 import ProfileUser from "../pages/Details/PageEntDetail/Introduce/ProfileUser";
 import TrendingPage from "../pages/Trending/TrendingPage";
 import SearchPgt from "../pages/SearchPgt/SearchPgt";
@@ -58,10 +55,10 @@ const Router = () => {
             </LayoutSideBar>}
         />
         <Route
-          path="kols/:id"
+          path="pgt/:id"
           element={
             <LayoutSideBar>
-              <PageKOLDetail />
+              <PagePgtDetail />
             </LayoutSideBar>}
         />
         <Route
@@ -75,7 +72,7 @@ const Router = () => {
           path="registet-pgt"
           element={
             <LayoutHeader>
-              <ProtectedRoute Component={ResgisterKol} />
+              <ProtectedRoute Component={ResgisterPgt} />
             </LayoutHeader>}
         />
         <Route
@@ -86,7 +83,7 @@ const Router = () => {
             </LayoutSideBar>}
         />
         <Route
-          path="chat/:id"
+          path="chat"
           element={
             <LayoutHeader>
               <ProtectedRoute Component={Chat} />
@@ -114,22 +111,17 @@ const Router = () => {
         />
         <Route
           path="/resigter-kol"
-          element={<ProtectedRoute Component={ResgisterKol} />}
+          element={<ProtectedRoute Component={ResgisterPgt} />}
         />
         <Route path="/forgot_password" element={<ForgotPassword />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/verify_account" element={<VerifyRegister />} />
-        <Route path="/campaign" element={<Campaign />} />
         <Route path="/login" element={<Login />} />
         <Route path="*" element={<NotFound />} />
         <Route path="/reset_password" element={<ResetPassword />} />
-
         <Route
           path="/admin"
-          element=<ProtectedRoute Component={HomeAdmin}  role={"ADMIN"}   />
-        // element=<ProtectedRoute Component={HomeAdmin} role={"ADMIN"} />
+          element=<ProtectedRoute Component={HomeAdmin} role={"ADMIN"} />
         />
-
         <Route
           path="/vnpay/return"
           element={<ProtectedRoute Component={PaymentResult} />}

@@ -1,10 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import {
-  addBookingFeedback,
-  getBookingByBookingId,
-  updateBookingStatus,
-} from "../../services/BookingService";
 import { BookingStatus } from "../../utils/Enums";
 import { createVnPayPayment } from "../../services/PaymentService";
 import { Descriptions, Button, TextArea, Rate, message } from "antd";
@@ -14,7 +9,6 @@ import { displayDateTime, formatDate } from "../../services/DateTimeUtil";
 import BookingCreate from "./BookingCreate";
 import { useContext } from "react";
 import { MessageContext } from "../../context/Message.context";
-import Header from "../../components/Header/index";
 import Footer from "../../components/Footer/Footer";
 
 const BookingDetails = () => {
@@ -141,12 +135,12 @@ const BookingDetails = () => {
     setRenderFeedback(true);
     feedback.timestamp = formatDate(new Date());
 
-    addBookingFeedback(id, feedback).then((res) => {
-      messageApi.open({
-        type: "success",
-        content: "Phản hồi thành công!",
-      });
-    });
+    // addBookingFeedback(id, feedback).then((res) => {
+    //   messageApi.open({
+    //     type: "success",
+    //     content: "Phản hồi thành công!",
+    //   });
+    // });
   };
 
   return (

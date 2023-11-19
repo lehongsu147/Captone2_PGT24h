@@ -1,5 +1,4 @@
-import React, { useState, useEffect, useRef, useContext } from "react";
-
+import React, { useState, useEffect, useContext } from "react";
 import {
   UserOutlined,
   CheckCircleTwoTone,
@@ -9,8 +8,6 @@ import {
 } from "@ant-design/icons";
 import { Menu } from "antd";
 import { Link } from "react-router-dom";
-
-import useOnClickOutside from "../../hook/use-onclick-outside";
 import AccountFactories from "../../services/AccountFactories";
 import { toast } from "react-toastify";
 import { AuthContext } from "../../context/auth.context";
@@ -25,10 +22,8 @@ function getItem(label, key, icon, children) {
 }
 
 const NavBar = (props) => {
-  const { user ,setUser} = useContext(AuthContext);
-
+  const { user, setUser } = useContext(AuthContext);
   const [isOnline, setIsOnline] = useState();
-
   const fetchDataUpdate = async (data) => {
     try {
       await AccountFactories.requestUpdate(user?.id, data);
@@ -37,7 +32,6 @@ const NavBar = (props) => {
         localStorage.setItem("user", JSON.stringify(user));
         const storedUser = localStorage.getItem("user");
         setUser(JSON.parse(storedUser));
-
       } else {
         console.error("User not found in localStorage");
       }
@@ -53,6 +47,7 @@ const NavBar = (props) => {
     fetchDataUpdate(data)
   }
   function handleChangeStatusOff() {
+    console.log('tam ngi');
     setIsOnline(false);
     const data = { status: 2 }
     fetchDataUpdate(data)
@@ -66,13 +61,6 @@ const NavBar = (props) => {
       setIsOnline(false);
     }
   }, [user])
-
-  const dropRef = useRef();
-  useOnClickOutside(dropRef, handleClickOutside);
-
-  function handleClickOutside() {
-    props.onchangeOpen(false);
-  }
 
   let items2 = [
     getItem(
@@ -92,7 +80,6 @@ const NavBar = (props) => {
       <UserOutlined />
     ),
   ];
-
   if (user?.role_id === 1) {
     items2 = items2.concat(
       getItem(
@@ -104,6 +91,18 @@ const NavBar = (props) => {
         <RightSquareOutlined />
       )
     );
+    items2 = items2.concat(
+      getItem(
+        <>
+          <Link style={{}} onClick={props.logOutHandler}>
+            Đăng xuất
+          </Link>
+        </>, '2',
+        <RightSquareOutlined />
+      )
+    );
+  }
+  else if (user?.role_id === 4) {
     items2 = items2.concat(
       getItem(
         <>
@@ -154,7 +153,7 @@ const NavBar = (props) => {
     );
   }
   return (
-    <>
+    <div dropRef>
       {props?.isOpen &&
         <div >
           <Menu
@@ -162,8 +161,13 @@ const NavBar = (props) => {
               width: 256,
               position: 'absolute',
               top: 60,
-              right: 20
+              right: 20,
+              boxShadow: '0 1px 3.125rem 0 rgb(0 0 0 / 20%)',
+              animation: 'Notification_FadeIn__k62HB ease 0.4s',
+              cursor: 'default',
+              borderRadius: 10,
             }}
+            mode="inline"
             defaultSelectedKeys={['1']}
             defaultOpenKeys={['sub1']}
             items={items2}
@@ -171,7 +175,7 @@ const NavBar = (props) => {
           />
         </div>
       }
-    </>
+    </div>
   );
 };
 

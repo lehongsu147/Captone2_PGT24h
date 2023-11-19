@@ -41,9 +41,8 @@ const ModalView = (props) => {
                     <Col span={19}>
                         <Row>
                             <Col span={12}>
-                                <InfoItem label="Họ và tên" content={`${props.data?.LastName} ${props.data?.FirstName}`} />
+                                <InfoItem label="Tên tài khoản" content={props.data?.user_name} />
                                 <InfoItem label="Email" content={props.data?.email} />
-                                {/* <InfoItem label="Khu vực" content={props.data?.cityName} /> */}
                                 <InfoItem label="Khu vực" content={'Đà Nẵng'} />
 
                                 {props?.type === 'PGT' ?
@@ -59,28 +58,24 @@ const ModalView = (props) => {
                                     </>
                                     :
                                     <>
-                                        <InfoItem label="Trạng thái" content={props.data?.status ? 'Đang hoạt động' : 'Đang khóa'} />
+                                        <InfoItem label="Trạng thái" content={props.data?.flag  === 1 ? 'Đang hoạt động' : 'Đang khóa'} />
                                     </>
                                 }
-
                             </Col>
                             <Col span={12}>
-                                <InfoItem label="Tên tài khoản" content={props.data?.username} />
+                                <InfoItem label="Họ và tên" content={`${props.data?.first_name ?? ''} ${props.data?.last_name ?? ''}`} />
                                 <InfoItem label="Số điện thoại" content={props.data?.phone} />
-                                <InfoItem label="Địa chỉ cụ thể" content={props.data?.addressDetails} />
-
+                                <InfoItem label="Địa chỉ cụ thể" content={props.data?.address} />
                                 {props?.type === 'PGT' ?
                                     <>
                                         <InfoItem label="Đánh giá" content={<StarRating starCount={props.data?.star}/>}/>
-                                        <InfoItem label="Só người theo dõi" content={props.data?.follow} />
-                                        <InfoItem label="Trạng thái" content={props.data?.status ? 'Đang hoạt động' : 'Đang khóa'} />
+                                        <InfoItem label="Số người theo dõi" content={props.data?.follow} />
+                                        <InfoItem label="Trạng thái" content={props.data?.flag === 1 ? 'Đang hoạt động' : 'Đang khóa'} />
                                     </>
                                     :
                                     <>
                                     </>
                                 }
-
-
                             </Col>
                         </Row>
                     </Col>

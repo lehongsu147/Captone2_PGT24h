@@ -1,36 +1,39 @@
 import React, { useEffect, useState } from "react";
-
-import { Table, Input, Modal, Button } from "antd";
-import { getFields, getKolFields, getEntFields } from "../../../../services/FieldService";
-
+import { Upload, Table, Input, Modal, Typography, Button } from "antd";
 import classes from './Fields.module.css'
-import Constants from "../../../../utils/constants";
-
+import CategoriesFactories from "../../../../services/CategoriesFatories";
+import ImgCrop from 'antd-img-crop';
+import { ToastNoti, ToastNotiError } from "../../../../utils/Utils";
+const { Text } = Typography;
 
 const Fields = () => {
-    const [kolFields, setKolFields] = useState([])
-    const [entFields, setEntFields] = useState([])
-
+    const [fields, setFields] = useState()
     const [inputSearch, setInputSearch] = useState("");
-    const [typeFieldSearch, setTypeFieldSearch] = useState("PGT");
-
     const [openModalAdd, setOpenModalAdd] = useState(false)
-    const [dataAdd, setDataAdd] = useState({
-        name: "",
-        id: "PGT"
-    })
+    const [categoryAddName, setCategoryAddName] = useState()
+    const [categoryAddImage, setcategotyAddImage] = useState()
+    const [error, setError] = useState();
+    const [categoryInfo, setCategoryInfo] = useState();
+    const [showModalUpdate, setShowModalUpdate] = useState();
 
-    // useEffect(() => {
-    //     getKolFields().then((res) => { setKolFields(res) })
-    //     getEntFields().then((res) => { setEntFields(res) })
-    // }, [])
+    const fetchData = async (Keyword) => {
+        const response = await CategoriesFactories.getListCategories(Keyword);
+        setFields(response);
+    };
+
+    useEffect(() => {
+        fetchData();
+    }, []);
 
     const columns = [
         {
-            title: "Mã lĩnh vực",
-            dataIndex: "id",
-            key: "Code",
-            render: (text, data) => <div className="name-title-table">{text}</div>,
+            title: '#',
+            dataIndex: 'id',
+            key: 'id',
+            width: 50,
+            align: 'center',
+            render: (id, record, index) => { ++index; return index; },
+            showSorterTooltip: false,
         },
         {
             title: "Tên Lĩnh vực",
@@ -45,12 +48,12 @@ const Fields = () => {
                 <div className="btn-action-group" >
                     <Button
                         style={{ marginRight: 10 }}
-                        onClick={() => onDeleteFiledHandler(record)}
+                        onClick={() => onDeleteFiledHandler(record?.id)}
                     >
                         Xóa
                     </Button>
                     <Button
-                        onClick={() => onUpdateFiledHandler(record)}
+                        onClick={() => onUpdateCategory(record)}
                     >
                         Sửa
                     </Button>
@@ -61,33 +64,37 @@ const Fields = () => {
 
     const handleKeyDown = (event) => {
         if (event.key === "Enter" || event.keyCode === 13) {
-            setInputSearch(event.target.value);
+            fetchData(inputSearch);
         }
     };
-
-    const onChangeTypeFieldHandler = (event) => {
-        setTypeFieldSearch(event.target.value);
+    function handleReset() {
+        setInputSearch();
+        fetchData();
+    }
+    function handleSearch() {
+        fetchData(inputSearch);
+    }
+    const handleOnChangeInput = (event) => {
+        setInputSearch(event.target.value);
     }
 
-    const onDeleteFiledHandler = (data) => {
-        console.log(data);
-    }
-
-    const onUpdateFiledHandler = (data) => {
-        console.log(data);
-    }
-
-    const resultSearch = () => {
-        let data = []
-        if (typeFieldSearch === "PGT") {
-            data = Constants.optionsCategory
-            // data = kolFields.filter((field) => {
-            //     return (inputSearch === "" ? field : field.name.includes(inputSearch))
-            // })
+    const onDeleteFiledHandler = async (id) => {
+        try {
+            const resp = await CategoriesFactories.deleteCategory(id);
+            if (resp.status){ ToastNoti();}
+        } catch (error) {
+            ToastNotiError();
         }
-        return data
     }
 
+
+    const onUpdateCategory = (data) => {
+        setCategoryInfo(data)
+        setShowModalUpdate(true);
+    }
+    const onCloseModalUpdate = (id) => {
+        setShowModalUpdate(false);
+    }
     const onOpenModalAddField = () => {
         setOpenModalAdd(true)
     }
@@ -97,46 +104,82 @@ const Fields = () => {
     }
 
     const onChangeDataAddField = (event) => {
-        setDataAdd((prevState) => {
-            return {
-                ...prevState,
-                [event.target.name]: event.target.value,
-            };
-        });
+        setError()
+        setCategoryAddName(event.target.value)
     }
 
-    const onAddFieldHandler = () => {
-        console.log(dataAdd);
+    const onAddFieldHandler = async () => {
+        if (!categoryAddName || categoryAddName?.trim() === '') {
+            setError("Điền tên lĩnh vực")
+        }
+        else {
+            setError();
+            const data = {
+                name: categoryAddName,
+                image: categoryAddImage,
+            }
+            try {
+                const resp = await CategoriesFactories.createCategory(data);
+                console.log("🚀 ~ file: Fields.jsx:105 ~ onAddFieldHandler ~ resp:", resp)
+            } catch (error) {
+            }
+        }
     }
 
+    const [fileList, setFileList] = useState([
+        {
+            uid: '-1',
+            name: 'image.png',
+            status: 'done',
+            url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
+        },
+    ]);
+    const onChangeSelectFile = ({ fileList: newFileList }) => {
+        setFileList(newFileList);
+    };
+    const onPreview = async (file) => {
+        let src = file.url;
+        if (!src) {
+            src = await new Promise((resolve) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file.originFileObj);
+                reader.onload = () => resolve(reader.result);
+            });
+        }
+        const image = new Image();
+        image.src = src;
+        const imgWindow = window.open(src);
+        imgWindow?.document.write(image.outerHTML);
+    };
     return (
-        <>
-            <div className={classes["admin-field-container"]}>
-                <div className={classes["modal-search"]}>
-                    <Input
-                        type="text"
-                        placeholder="Nhập lĩnh vực cần tìm ..."
-                        onKeyDown={handleKeyDown}
-                        className={classes["modal-search-input"]}
-                    />
-                    <select
-                        className={classes['search-modal-select']}
-                        value={typeFieldSearch}
-                        onChange={onChangeTypeFieldHandler}
-                    >
-                        <option key="PGT" value="PGT">
-                            PGT
-                        </option>
-                        <option key="ENTERPRISE" value="ENTERPRISE">
-                            ENTERPRISE
-                        </option>
-                    </select>
-                    <Button onClick={onOpenModalAddField} >Thêm lĩnh vực</Button>
-                </div>
-
+        <div className="booking-container" style={{ height: '100vh', overflow: 'scroll' }}>
+            <div className="booking-title"><span>Nổi Bật</span></div>
+            <div className="booking-search">
+                <Input
+                    placeholder="Tìm kiếm lĩnh vực"
+                    size="middle "
+                    value={inputSearch}
+                    onKeyDown={(e) => handleKeyDown(e)}
+                    onChange={(e) => handleOnChangeInput(e)}
+                />
+                <Button
+                    type='default'
+                    onClick={handleReset}
+                >
+                    Mặc định
+                </Button>
+                <Button
+                    type='primary'
+                    onClick={handleSearch}
+                >
+                    Tìm kiếm
+                </Button>
+                <Button type='primary' onClick={onOpenModalAddField} >Thêm lĩnh vực</Button>
+            </div>
+            <div className="booking-table">
                 <Table
                     columns={columns}
-                    dataSource={resultSearch()}
+                    dataSource={fields ?? []}
                     pagination={{
                         defaultPageSize: 10,
                         showSizeChanger: true,
@@ -144,37 +187,81 @@ const Fields = () => {
                     }}
                 />
             </div>
-
             <Modal
                 width={800}
-                title=""
+                title="Thêm lĩnh vực"
                 open={openModalAdd}
                 onCancel={onCloseModalAddField}
                 footer={[]}
             >
-                <input
-                    type="text"
-                    placeholder="Nhập tên"
-                    className={classes['add-modal-input']}
-                    onChange={onChangeDataAddField}
-                    name="name"
-                />
-                <select
-                    className={classes['add-modal-select']}
-                    onChange={onChangeDataAddField}
-                    name="id"
-                >
-                    <option key="PGT" value="PGT">
-                        PGT
-                    </option>
-                    <option key="ENTERPRISE" value="ENTERPRISE">
-                        ENTERPRISE
-                    </option>
-                </select>
-                <Button onClick={onAddFieldHandler}>Thêm</Button>
-            </Modal>
-        </>
+                <div style={{ display: 'flex', flexDirection: 'column' }}>
+                    <ImgCrop rotationSlider style={{ width: '20%' }} >
+                        <Upload
+                            action="https://run.mocky.io/v3/435e224c-44fb-4773-9faf-380c5e6a2188"
+                            listType="picture-card"
+                            fileList={fileList}
+                            onChange={onChangeSelectFile}
+                            onPreview={onPreview}
+                            maxCount={1}
+                            multiple={false}
+                        >
+                            {fileList.length < 2 && '+ Upload'}
+                        </Upload>
+                    </ImgCrop>
+
+                    <div style={{ display: 'flex', margin: '20px 0px',flexDirection: 'row' }}>
+                        <Input
+                            type="text"
+                            style={{ width: '100%' }}
+                            placeholder="Nhập tên lĩnh vực"
+                            className={classes['add-modal-input']}
+                            onChange={onChangeDataAddField}
+                            name="name"
+                        />
+                        {error && <Text type="danger">{error}</Text>}
+                    </div>
+                    <Button type='primary' style={{ width: '100%', float: 'right' }} onClick={onAddFieldHandler}>Thêm</Button>
+                </div>
+            </Modal >
+
+            <Modal
+                width={800}
+                title="Sửa thông tin lĩnh vực"
+                open={showModalUpdate}
+                onCancel={onCloseModalUpdate}
+                footer={[]}
+            >
+                <div style={{ display: 'flex', flexDirection: 'column' }}>
+                    <ImgCrop rotationSlider style={{ width: '20%' }} >
+                        <Upload
+                            action="https://run.mocky.io/v3/435e224c-44fb-4773-9faf-380c5e6a2188"
+                            listType="picture-card"
+                            fileList={fileList}
+                            onChange={onChangeSelectFile}
+                            onPreview={onPreview}
+                            maxCount={1}
+                            multiple={false}
+                        >
+                            {fileList.length < 2 && '+ Upload'}
+                        </Upload>
+                    </ImgCrop>
+                    <div style={{ display: 'flex', margin: '20px 0px',flexDirection: 'row' }}>
+                        <Input
+                            type="text"
+                            style={{ width: '100%' }}
+                            placeholder="Nhập tên lĩnh vực"
+                            className={classes['add-modal-input']}
+                            onChange={onChangeDataAddField}
+                            value={categoryInfo?.name}
+                            name="name"
+                        />
+                        {error && <Text type="danger">{error}</Text>}
+                    </div>
+                    <Button type='primary' style={{ width: '100%', float: 'right' }} onClick={onAddFieldHandler}>Thêm</Button>
+                </div>
+            </Modal >
+
+        </div >
     )
 }
-
 export default Fields

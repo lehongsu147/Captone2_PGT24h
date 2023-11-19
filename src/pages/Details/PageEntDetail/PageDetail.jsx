@@ -1,16 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { getEnts, getEnt } from "../../../services/EnterpriseService";
 import classes from "./PageEntDetail.module.css";
 import { Button, Layout, Menu } from "antd";
 import Sider from "antd/es/layout/Sider";
-import PageKOLDetail from "../PageKolDetail/PageKolDetail";
 import ProfileUser from "./Introduce/ProfileUser";
 import ChangePassword from "./ChangePassword/ChangePassword";
 import PaymentWallett from "./Payment/PaymentWallett";
 import HistoryBooking from "./HistoryBooking/Booking";
 import UpdateProfile from "./UpdateProfile/UpdateProfile";
-import FormActivity from "../../Profile/FormContent/FormActivity";
 import RequireBooking from "./RequireBooking/RequireBooking";
 
 const PageDetail = () => {

@@ -1,3 +1,5 @@
+.notiContainer{
+}
 .noti-button {
   width: 40px;
   height: 40px;
@@ -99,26 +101,26 @@
 }
 
 .titleNoti {
-  font-size: 20px;
+  font-size: 15px;
   font-weight: 600;
-  padding-bottom: 5px;
+}
+.body{
+  font-size: 14px;
+  font-weight: 400;
 }
 
 .item-wrap {
   display: flex;
+  flex-direction: column;
   justify-content: space-between;
-  padding: 10px;
+  padding: 5px 10px;
   width: 95%;
-  border-radius: 4px;
+  border-radius: 8px;
   cursor: pointer;
-  background-color: rgb(240, 245, 248);
-
   &:hover {
     background-color: aliceblue;
   }
 }
-
-
 
 .avatar {
   margin-left: 10px;
@@ -127,33 +129,24 @@
 
 .item-content {
   text-align: left;
-  width: 300px;
+  width: 100%;
   display: flex;
   border-radius: 10px;
   flex-direction: column;
-  justify-content: space-between;
-  width: 100%;
+  justify-content: flex-start;
+  gap: 10px;
 }
 
 .item-btn {
   display: flex;
   justify-content: flex-end;
-  margin-top: 4px;
   gap: 20px;
+  padding-bottom: 5px;
 }
 
-.item-content.read {
+.read {
   background-color: #eff5f7;
   padding: 10px;
-}
-
-.item-content p {
-  margin: 0;
-  font-size: 16px;
-}
-
-.item-content b {
-  font-weight: 550;
 }
 
 .noti-list::-webkit-scrollbar {

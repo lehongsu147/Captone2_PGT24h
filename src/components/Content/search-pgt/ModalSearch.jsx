@@ -5,7 +5,7 @@ import styled from "styled-components";
 import { Button, Input, Select } from 'antd';
 import { ReloadOutlined, SearchOutlined } from '@ant-design/icons'
 import PgtFactories from "../../../services/PgtFatories";
-import CardKol from "../../card/CardKOL/CardKol";
+import CardPgt from "../../card/CardPgt/CardPgt";
 import CategoriesFactories from "../../../services/CategoriesFatories";
 import { toast } from "react-toastify";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -139,7 +139,7 @@ const ModalSearch = () => {
             <div className={styles['boxContent']}>
               <div className={styles['search-content']}>
                 {pgtList?.map((pgt, i) => (
-                  <CardKol key={i} kol={pgt} />
+                  <CardPgt key={i} pgt={pgt} />
                 ))}
               </div>
             </div>

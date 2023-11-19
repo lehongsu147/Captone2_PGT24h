@@ -3,7 +3,6 @@
     flex-direction: column;
     position: absolute;
     top: 44px;
-    left: -53px;
     padding: var(--8px, 8px);
     align-items: flex-start;
     gap: var(--4px, 4px);
@@ -62,6 +61,7 @@
     .content {
         margin-top: 8px;
         min-height: 20px;
+        width: 350px;
         color: var(--neutral-900-text, #141414);
     }
 

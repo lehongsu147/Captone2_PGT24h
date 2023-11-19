@@ -1,7 +1,6 @@
 import React, { useState, useEffect, createContext, useContext } from "react";
 import { GoogleAuthProvider, onAuthStateChanged, signInWithRedirect, signOut } from "firebase/auth";
 import { auth } from "../firebase";
-import { NotificationContext } from "./Notification.context";
 export const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(() => JSON.parse(localStorage.getItem("user")));
@@ -27,7 +26,7 @@ export const AuthProvider = ({ children }) => {
     };
     window.addEventListener("storage", handleStorageChange);
     return () => window.removeEventListener("storage", handleStorageChange);
-  }, []);
+  }, [user]);
   return (
     <AuthContext.Provider value={{ user, setUser, signInWithGoogle, logout }}>
       {children}

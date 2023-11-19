@@ -1,6 +1,6 @@
 import { Table } from "antd";
 import { useEffect, useState } from "react";
-import { getPaymentHistory } from "../../../services/getApiProfile";
+// import { getPaymentHistory } from "../../../services/getApiProfile";
 import { displayDateTime } from "../../../services/DateTimeUtil";
 import { formatCurrency } from "../../../services/CurrencyUtil";
 

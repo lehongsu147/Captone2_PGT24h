@@ -1,10 +1,10 @@
 import { Col, Row } from "antd";
-import { useEffect, useState } from "react";
+import {  useEffect, useState } from "react";
 import Message from "../../../components/UI/Message/Message";
-
 import classes from "./Form.module.css";
-import { updateUserEmail } from "../../../services/UserService";
-
+import AccountFactories from "../../../services/AccountFactories";
+import { ToastNoti } from "../../../utils/Utils";
+import { toast } from "react-toastify";
 export default function FormEmail(props) {
   const user = JSON.parse(localStorage.getItem("user"));
   const [email, setEmail] = useState();
@@ -25,10 +25,6 @@ export default function FormEmail(props) {
 
   const createErrorMessage = (msg) => {
     setShowMessage({ status: true, type: "error", content: msg });
-  };
-
-  const createSuccessMessage = (msg) => {
-    setShowMessage({ status: true, type: "success", content: msg });
   };
 
   useEffect(() => {
@@ -54,17 +50,26 @@ export default function FormEmail(props) {
     return res;
   };
 
-  const submitHandler = (event) => {
+  const submitHandler = async (event) => {
     event.preventDefault();
     if (!validateFormData(email)) return;
+    console.log(email);
+    try {
+      const data = {
+        email: email,
+      }
+      const response = await AccountFactories.requestUpdate(user?.id, data);
+      if (response?.status === 200) {
+        ToastNoti();
+        setEmail(email);
+        localStorage.setItem("user", JSON.stringify({ ...user, email }));
+        window.dispatchEvent(new Event('storage'))
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error('Hệ thống lỗi.')
+    }
 
-    updateUserEmail(email).then((res) => {
-      if (res.error) createErrorMessage(res.message);
-      createSuccessMessage("Cập nhật thành công!");
-      setEmail(email);
-      localStorage.setItem("user", JSON.stringify({ ...user, email }));
-      window.dispatchEvent(new Event('storage'))
-    });
   };
 
   return (
@@ -85,9 +90,7 @@ export default function FormEmail(props) {
                 placeholder="Nhập Email của bạn"
                 className={classes.input_profile}
                 onChange={inputChangeHandler}
-                name="email"
-                type="email"
-                defaultValue={email}
+                value={email}
               />
             </Col>
           </Row>

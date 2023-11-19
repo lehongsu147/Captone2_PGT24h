@@ -3,9 +3,27 @@ import ApiOperation from "../adapter/ApiOperation";
 
 const CategoriesFactories = {
   getListCategories: async data => {
+    let params = {};
+    if (data) {
+      params.Keyword = data;
+    }
     return ApiOperation.request({
       url: ApiConstants.CATEGORIES,
       method: "GET",
+      params: params
+    });
+  },
+  createCategory: async data => {
+    return ApiOperation.request({
+      url: ApiConstants.CATEGORIES,
+      method: "POST",
+      data: data,
+    });
+  },
+  deleteCategory: async id => {
+    return ApiOperation.request({
+      url: `${ApiConstants.CATEGORIES}/${id}`,
+      method: "DELETE",
     });
   }
 };

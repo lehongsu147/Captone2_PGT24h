@@ -1,13 +1,95 @@
-// import { getAuth, postAuth } from "./Common";
+import { addDoc, collection, doc, getDocs, onSnapshot, orderBy, query, serverTimestamp, setDoc, updateDoc, where } from "firebase/firestore";
+import { db } from "../firebase";
 
-// export function getChats() {
-//     return getAuth("chats");
-// }
+export const createNotification = async (toUserId, type, action_id, title, body) => {
+    // type :
+    // 1 : có yêu cầu booking mới 
+    // 2 : pgt chấp nhận / từ chối yêu cầu booking
+    // 3 : admin  chấp nhận yêu cầu pgt
+    // 4 : admin  từ chối  yêu cầu pgt
+    try {
+        await addDoc(collection(db, "notifications"), {
+            toUserId: toUserId,
+            title: title,
+            body: body,
+            createdAt: serverTimestamp(),
+            type: type,
+            action_id: action_id,
+            read: false,
+        });
+    } catch (e) {
+        console.error("Lỗi khi tạo thông báo: ", e);
+    }
+};
 
-// export function getChat(chatId) {
-//     return getAuth(`chats/${chatId}`);
-// }
+export const sendNewMessageToNewUser = async (firstUserId, secondUserId, firstName, secondName, firstAvatar, secondAvatar, message) => {
+    // Create a new chat document in the "chat" collection
+    await addDoc(collection(db, "chats"), {
+        chatId: `${firstUserId}_${secondUserId}`,
+        firstUserId: firstUserId,
+        secondUserId: secondUserId,
+        firstName: firstName,
+        secondName: secondName,
+        firstAvatar: firstAvatar,
+        secondAvatar: secondAvatar,
+        createdAt: serverTimestamp(),
+        lastMessage: message,
+        read: false,
+    });
 
-// export function createChat(chat) {
-//     return postAuth("chats", chat)
-// }
+    // Send a new message to the newly created chat
+    await addDoc(collection(db, "messages"), {
+        chatId: `${firstUserId}_${secondUserId}`, // This should be the document ID, not the document reference
+        senderId: firstUserId,
+        message: message,
+        createdAt: serverTimestamp(),
+        read: false,
+    });
+};
+
+export const sendNewMessageToExistingUser = async (chatId, userId, recipientUserId, message) => {
+    const q = query(collection(db, "chats"), where("chatId", "==", chatId));
+    const querySnapshot = await getDocs(q);
+    querySnapshot.forEach(async (doc) => {
+        const existingChatDocRef = doc.ref;
+        await updateDoc(existingChatDocRef, {
+            read: false,
+            lastMessage: message,
+        });
+    });
+
+    await addDoc(collection(db, "messages"), {
+        chatId: chatId,
+        senderId: userId,
+        message: message,
+        createdAt: serverTimestamp(),
+        read: false,
+    });
+};
+
+export const getMessagesForChat = (chatId, callback) => {
+    // Check if chatId is defined before creating the query
+    if (chatId) {
+        const q = query(
+            collection(db, "messages"),
+            where("chatId", "==", chatId)
+        );
+
+        const unsubscribe = onSnapshot(q, (querySnapshot) => {
+            const messages = [];
+            querySnapshot.forEach((doc) => {
+                messages.push({ id: doc.id, ...doc.data() });
+            });
+
+            // Sort messages by createdAt in descending order
+            messages.sort((a, b) => a.createdAt - b.createdAt);
+
+            callback(messages);
+        });
+
+        return unsubscribe; // Return the unsubscribe function
+    } else {
+        console.error("Invalid chatId. Cannot create Firestore query.");
+        return () => { }; // Return a dummy unsubscribe function if chatId is undefined
+    }
+};      

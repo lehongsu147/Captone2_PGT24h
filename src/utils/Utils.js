@@ -3,33 +3,60 @@ import moment from 'moment'
 import regex from './regex'
 import { addDoc, collection, serverTimestamp } from 'firebase/firestore'
 import { db } from '../firebase'
+import { toast } from 'react-toastify'
 
 export const convertStringToNumber = (value, delimiter = '.') => {
     if (value || value === 0) {
-        return `${value.toString().replace(regex.formatMoney, delimiter)} Vnđ`
+        return `${value.toString().replace(regex.formatMoney, delimiter)} VND`
     }
     return '0'
 }
 
-export const createNotification = async (toUserId, type, action_id, title, body) => {
-  // type :
-  // 1 : có yêu cầu booking mới 
-  // 2 : pgt chấp nhận / từ chối yêu cầu booking
-  try {
-    await addDoc(collection(db, "notifications"), {
-      toUserId: toUserId,
-      title: title,
-      body: body,
-      createdAt: serverTimestamp(),
-      type: type,
-      action_id: action_id,
-      read: false,
-    });
-  } catch (e) {
-    console.error("Lỗi khi tạo thông báo: ", e);
-  }
-};
+export const partStringToNumber = (value, delimiter = '.') => {
+    if (value || value === 0) {
+        return `${value.toString().replace(regex.formatMoney, delimiter)}`
+    }
+    return '0'
+}
 
+
+export const ToastInfo= (mes = 'Thông báo mới') =>{
+    toast.info(mes, {
+        position: "top-right",
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+    });
+}
+
+export const ToastNoti= (mes = 'Lưu dữ liệu thành công') =>{
+    toast.success(mes, {
+        position: "top-right",
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+    });
+}
+export const ToastNotiError= (mes = 'Hệ thống lỗi') =>{
+    toast.error(mes, {
+        position: "top-right",
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+    });
+}
 
 export const getDate = (timestamp, type = 1) => {
     if (timestamp == null) {

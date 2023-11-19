@@ -14,7 +14,6 @@ const RequestBooking = () => {
   const [monthSelect, setMonthSelect] = useState("");
   const [nameKOL, setNameKOL] = useState("");
  
- 
   const fetchData = async () => {
     try {
       const response = await BookingFactories.getListRequestBookingForPGT(user?.id);
@@ -70,16 +69,6 @@ const RequestBooking = () => {
       align: "left",
       render: (text, data) => <div>{getTime(data?.time_from)} - {getTime(data.time_to)}</div>,
     },
-    // {
-    //   title: "Lĩnh Vực",
-    //   dataIndex: "category_link",
-    //   key: "category_link",
-    //   align: 'center',
-    //   width: 120,
-    //   render: (text) => (
-    //     <Avatar src={text ?? ''} width={20} height={20} />
-    //   ),
-    // },
     {
       title: "Tình trạng",
       key: "status",
@@ -124,14 +113,6 @@ const RequestBooking = () => {
     setNameKOL(e.target.value);
   };
 
-  const optionCategory = Constants.optionsCategory.map((field) => {
-    return {
-      value: field.id,
-      label: field.name,
-    };
-  });
-
-
   return (
     <div className="booking-container">
       <div className="booking-title"><span>Booking</span></div>
@@ -140,11 +121,6 @@ const RequestBooking = () => {
           placeholder="Tìm kiếm theo mã, tên người thuê, ..."
           size="middle "
           onChange={(e) => handleOnChangeInput(e)} />
-        <Select
-          placeholder='Chọn lĩnh vực'
-          onChange={(e) => handleOnChangeMonth(e)}
-          options={optionCategory}
-        />
         <DatePicker
           placeholder='Chọn ngày'
           onChange={(e) => handleOnChangeDate(e?.$d)}
@@ -160,24 +136,6 @@ const RequestBooking = () => {
             pageSizeOptions: ["10", "20", "30"]
           }}
           dataSource={bookingList ?? []}
-        // dataSource={booking
-        //   .filter((item) => {
-        //     return monthSelect + statusBooking === ""
-        //       ? item
-        //       : (item.thoigianbook.slice(3, 5) + item.status).includes(
-        //         monthSelect + statusBooking
-        //       );
-        //   })
-        //   .filter((item) => {
-        //     return nameKOL.toLowerCase() === ""
-        //       ? item
-        //       : item.tenKOL.toLowerCase().includes(nameKOL.toLowerCase());
-        //   })}
-        // pagination={{
-        //   defaultPageSize: 10,
-        //   showSizeChanger: false,
-        //   pageSizeOptions: ["10", "20", "30"],
-        // }}
         />
       </div>
 

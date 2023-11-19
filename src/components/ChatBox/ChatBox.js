@@ -4,37 +4,60 @@ import styles from './ChatBox.module.scss';
 import { Input } from 'antd';
 import { Spin } from 'antd';
 import Temp from '../../utils/temp';
+import { getMessagesForChat, sendNewMessageToExistingUser, sendNewMessageToNewUser } from '../../services/ChatService';
 const { Search } = Input;
 
-const ChatBox = ({ id }) => {
-    const [userInfo, setUserInfo] = useState();
-    const [mesList, setMeslist] = useState([]);
-    const [message, setMessage] = useState();
-    const [sending, setSending] = useState();
-    const [loading, setLoading] = useState(false);
-    const [typing, setTyping] = useState(true);
+const ChatBox = (props) => {
+    const { chatInfo, userId, isNewChat = false, id } = props;
+    console.log("🚀 ~ file: ChatBox.js:12 ~ ChatBox ~ userId:", userId)
+    const [messageList, setMessageList] = useState([]);
+    console.log("🚀 ~ file: ChatBox.js:13 ~ ChatBox ~ messageList:", messageList)
+    const [messageInput, setMessageInput] = useState("");
+    const [userNameMes, setUseNameMes] = useState("");
+    const [userAvatarMes, setUseAvatarMes] = useState("");
+    const [loading, setLoading] = useState(true); // Set initial loading state
 
     useEffect(() => {
-        if (id === 1) {
-            setUserInfo(Temp.UserPGT)
-            setMeslist(Temp.dataMes2)
-        }
-        else if (id === 2) {
-            setUserInfo(Temp.UserDemo)
-            setMeslist(Temp.dataMes)
-        }
-    }, [id])
-    function handleSendMessage() {
-        // setSending(true);
-        if (message) {
-            const newMessage = {
-                id: mesList.length + 1,
-                userSend: false,
-                content: message,
+        if (id) {
+            setLoading(true);
+            const updateMessages = (newMessages) => {
+                setMessageList(newMessages);
+                setLoading(false);
             };
-            setMeslist([...mesList, newMessage]);
-            setMessage("");
+            const unsubscribe = getMessagesForChat(id, updateMessages);
+
+            return () => {
+                unsubscribe(); // Unsubscribe when the component is unmounted or when id changes
+            };
         }
+        else{
+            setLoading(false);
+            setMessageList([])
+        }
+    }, [id]);
+
+    useEffect(() => {
+        const userName = userId === chatInfo?.firstUserId ? chatInfo?.secondName : chatInfo?.firstName;
+        const userAvatar = userId === chatInfo?.firstUserId ? chatInfo?.secondAvatar : chatInfo?.firstAvatar;
+        setUseAvatarMes(userAvatar);
+        setUseNameMes(userName);
+    }, [chatInfo?.chatId]);
+
+    function handleSendMessage() {
+        if (messageInput && isNewChat) {
+            sendNewMessageToNewUser(
+                chatInfo?.firstUserId,
+                chatInfo?.secondUserId,
+                chatInfo?.firstName,
+                chatInfo?.secondName,
+                chatInfo?.firstAvatar,
+                chatInfo?.secondAvatar,
+                messageInput
+            );
+        } else {
+            sendNewMessageToExistingUser(chatInfo?.chatId,  userId, chatInfo?.secondUserId, messageInput);
+        }
+        setMessageInput("");
     }
 
     return (
@@ -42,25 +65,25 @@ const ChatBox = ({ id }) => {
             {!loading ? (
                 <>
                     <Row className={styles.header}>
-                        <span className={styles.userName}>{userInfo?.userName}</span>
+                        <span className={styles.userName}>{userNameMes ?? ''}</span>
                     </Row>
 
                     <div className={styles.mainMessage} >
                         <div className={styles.messageBox}>
                             <div className={`${styles.welcomeMes}`}>
                                 <div className={`${styles.textMes} ${styles.Kol}`}>
-                                    <img src={userInfo?.avatar} alt='imageAlt' />
+                                    <img src={userAvatarMes ?? ''} alt='imageAlt' />
                                     <span>Chào mừng bạn đến với cuộc trò chuyện.</span>
                                 </div>
                             </div>
-                            {mesList?.map((mes) => (
-                                <div key={mes?.id} className={`${styles.alignMessage} ${styles[mes?.userSend ? 'mesReciver' : '']} `}  >
-                                    <div className={`${styles.messageItem} ${styles[mes?.userSend ? 'Kol' : '']} `} >
-                                        <span>{mes?.content}</span>
+                            {messageList?.map((mes) => (
+                                <div key={mes?.id} className={`${styles.alignMessage} ${styles[mes?.senderId !== userId ? 'mesReciver' : '']} `}  >
+                                    <div className={`${styles.messageItem} ${styles[mes?.senderId !== userId ? 'Kol' : '']} `} >
+                                        <span>{mes?.message}</span>
                                     </div>
                                 </div>
                             ))}
-                            {typing &&
+                            {/* {typing &&
                                 <div className={`${styles.alignMessage} ${styles.mesReciver}  `}  >
                                     <div className={styles['chat-bubble']}>
                                         <div className={styles['typing']}>
@@ -69,14 +92,14 @@ const ChatBox = ({ id }) => {
                                             <div className={styles['dot']}></div>
                                         </div>
                                     </div>
-                                </div>}
+                                </div>} */}
                         </div>
 
                         <Row className={styles.sendBox}>
-                            <Search onChange={(e) => setMessage(e.target.value)}
+                            <Search onChange={(e) => setMessageInput(e.target.value)}
                                 onSearch={() => handleSendMessage()} placeholder="Nhập tin nhắn"
                                 enterButton="Gửi"
-                                value={message}
+                                value={messageInput}
                             // loading={sending}
                             />
                         </Row>

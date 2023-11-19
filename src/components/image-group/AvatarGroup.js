@@ -16,12 +16,11 @@ const AvatarGroup = (props) => {
                 {list?.map((item, index) => (
                     <Tooltip title={item?.name} key={index} placement="top">
                         <Avatar
-                            src={item?.link}
+                            src={item?.image}
                             icon={item?.link}
                         >
                         </Avatar>
                     </Tooltip>
-
                 ))}
             </Avatar.Group >
         </>

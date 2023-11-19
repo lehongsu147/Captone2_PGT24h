@@ -16,13 +16,45 @@ const AccountFactories = {
       data: data
     });
   },
-  requestUpdate: async (id,data) => {
+  requestUpdate: async (id, data) => {
     return ApiOperation.request({
       url: `${ApiConstants.ACCOUNT}/${id}`,
       method: "PUT",
       data: data
     });
-  }
+  },
+  requestPgt: async (id, data) => {
+    return ApiOperation.request({
+      url: `${ApiConstants.PGT}/${id}`,
+      method: "POST",
+      data: data
+    });
+  },
+  updateStatusRequestPgt: async (id,Type) => {
+    let params = {};
+    if (Type){
+      params.Type = Type;
+    }
+    return ApiOperation.request({
+      url: `${ApiConstants.PGT}/${id}`,
+      method: "PUT",
+      params: params
+    });
+  },
+  getListAccount: async (data,type = 10) => {
+    let params={};
+    if (data) {
+      params.Keyword = data
+    }
+    if (type ){
+      params.Type = type
+    }
+    return ApiOperation.request({
+      url: `${ApiConstants.ACCOUNT}`,
+      method: "GET",
+      params: params
+    });
+  },
 };
 
 export default AccountFactories;

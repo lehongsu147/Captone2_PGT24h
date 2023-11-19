@@ -3,12 +3,12 @@ import { Col, Row } from "antd";
 
 import classes from "./Form.module.css";
 import Message from "../../../components/UI/Message/Message";
-import { updateUserPassword } from "../../../services/UserService";
-
+import AccountFactories from "../../../services/AccountFactories";
+import { ToastNoti, ToastNotiError } from "../../../utils/Utils";
+import { toast } from "react-toastify";
 export default function FormPassword(props) {
   const user = JSON.parse(localStorage.getItem("user"));
   const [passwordInput, setPasswordInput] = useState({});
-
   const [showMessage, setShowMessage] = useState({
     status: false,
     type: "",
@@ -61,16 +61,25 @@ export default function FormPassword(props) {
     return res;
   };
 
-  const submitHandler = (event) => {
+  const submitHandler = async (event) => {
     event.preventDefault();
     if (!validateFormData(passwordInput)) return;
-
-    updateUserPassword(passwordInput)
-      .then((res) => {
-        console.log(res);
-        if (res.error) createErrorMessage(res.message);
-        else createSuccessMessage("Cập nhật thành công!");
-      });
+    try {
+      const data = {
+        password: passwordInput?.oldPassword,
+        new_password: passwordInput?.newPassword,
+      }
+      const response = await AccountFactories.requestUpdate(user?.id, data);
+      if (response?.status === 200) {
+        ToastNoti();
+      }
+      else if (response?.status === 210) {
+        ToastNotiError(response?.message);
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error('Hệ thống lỗi.')
+    }
   };
 
   return (

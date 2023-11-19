@@ -1,19 +1,10 @@
 import { EditOutlined, PlusOutlined, UserOutlined } from "@ant-design/icons";
 import { Avatar, Col, Row, Select } from "antd";
 import { useEffect, useState } from "react";
-
 import classes from "./Form.module.css";
 import Message from "../../../components/UI/Message/Message";
 import ImageSlider from "../../../components/UI/ImageSlider/ImageSlider";
-import {
-  updateKolImages,
-  updateKolProfile,
-} from "../../../services/KolService";
-import { updateUserAvatar } from "../../../services/UserService";
 import { GenderOptions } from "../../../utils/Enums";
-import { getKolProfile } from "../../../services/KolService";
-import { getCities } from "../../../services/CityService";
-import { getKolFields } from "../../../services/FieldService";
 
 export default function FormProfileKOL(props) {
   const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")));

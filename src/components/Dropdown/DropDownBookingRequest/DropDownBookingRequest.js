@@ -6,26 +6,39 @@ import useOnClickOutside from '../../../hook/use-onclick-outside';
 import { Button, Modal, message } from 'antd';
 import BookingFactories from '../../../services/BookingFactories';
 import { toast } from 'react-toastify';
+import { createNotification, sendNewMessageToNewUser } from '../../../services/ChatService';
 const { confirm } = Modal;
 const destroyAll = () => {
     Modal.destroyAll();
 };
 
-const DropDownBookingRequest = ({ icon, options, id,  onFetchData = () => { }, type = 'user' }) => {
+const DropDownBookingRequest = ({ icon, options, id,user_id,  onFetchData = () => { }, type = 'user' }) => {
     const [isOpen, setIsOpen] = useState(false);
     const handleOpen = () => {
         setIsOpen(!isOpen)
     }
     const dropRef = useRef();
-    const [openViewModal, setOpenViewModal] = useState(false);
-    const [openUpdateModal, setOpenUpdateModal] = useState(false);
-    const [messageApi, contextHolder] = message.useMessage();
-
+   
     const fetchDataUpdateBooking = async (id,type) => {
         try {
             const response = await BookingFactories.updateBooking(id, type);
             if ( response?.status === 200){
                 toast.success('Cập nhật yêu cầu booking thành công.')
+                if (type === 2){
+                    createNotification(user_id, 2, id, "PGT đã chấp nhận yêu cầu booking của bạn", "Liên hệ với PGT để biết thêm chi tiết.");
+                    // sendNewMessageToNewUser(
+                    //     user_id,
+                    //     parseInt(booking?.user_id),
+                    //     user?.userName,
+                    //     booking?.user_name,
+                    //     user?.avatar,
+                    //     '',
+                    //     'Xin chào bạn! Cảm ơn bạn đã sử dụng dịch vụ của mình. Nếu bạn có bất kỳ câu hỏi hoặc yêu cầu gì, đừng ngần ngại nói cho tôi biết. Mình luôn sẵn sàng hỗ trợ bạn một cách tốt nhất.',
+                    //   );
+                }
+                else{
+                    createNotification(user_id, 2, id, "PGT đã từ chối yêu cầu booking của bạn", "Liên hệ với PGT để biết thêm chi tiết.");
+                }
                 onFetchData();
             }
         } catch (error) {

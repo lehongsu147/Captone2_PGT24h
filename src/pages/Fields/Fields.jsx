@@ -1,14 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import SideBar from "../../components/SideBar/index";
-import Header from "../../components/Header";
 import PageField from "./PageField/PageField";
 import { Pagination } from "antd";
-
 import "./Fields.css";
-import { getKols, getKolsByFieldIds } from "../../services/KolService";
-import Footer from "../../components/Footer/Footer";
-
 const Fields = () => {
   let { id } = useParams();
 

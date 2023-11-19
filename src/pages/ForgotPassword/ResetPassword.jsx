@@ -1,12 +1,8 @@
 import React, { useState } from 'react'
-import { resetPassword } from '../../services/authentication'
 import { useNavigate } from "react-router-dom";
-import { refreshToken } from '../../services/authentication';
 import { Link } from "react-router-dom";
-
 import { Input, message } from 'antd';
 import { EyeTwoTone, EyeInvisibleOutlined } from '@ant-design/icons'
-
 import ButtonFull from '../../components/UI/Button/ButtonFull';
 import Modals from "../../components/UI/Modal/Modals";
 import logo from "../../assets/logo/LogoPage.png";

@@ -1,6 +1,6 @@
 import React, { createContext, useState, useEffect, useContext, useCallback } from 'react';
 import { collection, onSnapshot, orderBy, query, where } from 'firebase/firestore';
-import {  db } from '../firebase';
+import { db } from '../firebase';
 import { AuthContext } from './auth.context';
 export const NotificationContext = createContext();
 export const NotificationProvider = ({ children }) => {

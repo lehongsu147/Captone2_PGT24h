@@ -266,7 +266,7 @@ const ProfileUser = ({ type }) => {
                                         {editPrice ?
                                             <div>
                                                 <InputNumber
-                                                    addonAfter="VNĐ"
+                                                    addonAfter="VND"
                                                     style={{ width: '100%' }}
                                                     // placeholder={pricePgt}
                                                     value={pricePgt}

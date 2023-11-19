@@ -1,14 +1,13 @@
 import React, { useEffect, useLayoutEffect, useState } from 'react';
 import styles from './OutStandingKol.module.scss'
-import CardKol from '../../card/CardKOL/CardKol';
+import CardPgt from '../../card/CardPgt/CardPgt';
 import PgtFactories from '../../../services/PgtFatories';
 const OutStandingPGT = () => {
-    const [hotPgtList, setHotPgtList] = useState([]);
-
+    const [pgtList, setPgtList] = useState([]);
     useLayoutEffect(() => {
         const fetchData = async () => {
             const response = await PgtFactories.getListPGT(20);
-            setHotPgtList(response);
+            setPgtList(response);
         };
         fetchData();
     }, []);
@@ -17,12 +16,11 @@ const OutStandingPGT = () => {
         
         <div className={styles.container}>
             <span className={styles.title}>OutStandingKol</span>
-
             <div className={styles["boxContent"]}>
                 <div className={styles["content"]}>
-                    {hotPgtList?.map((kol, i) => {
+                    {pgtList?.map((pgt, i) => {
                         return (
-                            <CardKol key={i} kol={kol} />
+                            <CardPgt key={i} pgt={pgt} />
                         )
                     })}
                 </div>

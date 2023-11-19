@@ -1,13 +1,11 @@
 import React, { useContext, useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { login } from "../../services/AuthService";
 import { EyeTwoTone, EyeInvisibleOutlined } from "@ant-design/icons";
 import logo from "../../assets/logo/LogoPage.png";
 import ButtonFull from "../../components/UI/Button/ButtonFull";
 import Message from "../../components/UI/Message/Message";
 import { AuthContext } from "../../context/auth.context";
 import "./style.css";
-import Temp from "../../utils/temp";
 import AccountFactories from "../../services/AccountFactories";
 import { sendEmailVerification, signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../../firebase";
@@ -95,28 +93,29 @@ const Login = (props) => {
           content: response?.error,
         });
       }
-      if (response?.user?.role_id !== 3) {
-        signInWithEmailAndPassword(auth, userInput.email, userInput.password)
-          .then((userCredential) => {
-            const userFireBase = userCredential.user;
-            setUserFirebase(userFireBase);
-            // setEmailVerified(userFireBase?.emailVerified)
-            // if (userFireBase?.emailVerified) {
-            if (true) {
-              setProfileForUser(response?.user, userFireBase);
-            }
-          })
-          .catch((error) => {
-            // Lỗi trong quá trình đăng nhập
-            const errorCode = error.code;
-            const errorMessage = error.message;
-            // Hiển thị thông báo lỗi
-            // setCheck({
-            //   status: true,
-            //   type: "error",
-            //   content: errorMessage,
-            // });
-          });
+      else if (response?.user?.role_id !== 3) {
+        setProfileForUser(response?.user);
+        // signInWithEmailAndPassword(auth, userInput.email, userInput.password)
+        //   .then((userCredential) => {
+        //     const userFireBase = userCredential.user;
+        //     setUserFirebase(userFireBase);
+        //     // setEmailVerified(userFireBase?.emailVerified)
+        //     // if (userFireBase?.emailVerified) {
+        //     if (true) {
+        //       setProfileForUser(response?.user);
+        //     }
+        //   })
+        //   .catch((error) => {
+        //     // Lỗi trong quá trình đăng nhập
+        //     const errorCode = error.code;
+        //     const errorMessage = error.message;
+        //     // Hiển thị thông báo lỗi
+        //     // setCheck({
+        //     //   status: true,
+        //     //   type: "error",
+        //     //   content: errorMessage,
+        //     // });
+        //   });
       }
       else if (response?.user?.role_id === 3) {
         setProfileForUser(response?.user)
@@ -129,8 +128,9 @@ const Login = (props) => {
     let user = {
       id: userDb?.id,
       email: userDb?.email,
-      firstName: userDb?.firstName,
-      lastName: userDb?.lastName,
+      userName: userDb?.user_name,
+      firstName: userDb?.first_name,
+      lastName: userDb?.last_name,
       avatar: userDb?.avatar,
       role_id: userDb?.role_id,
       role: userDb?.role_name,

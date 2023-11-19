@@ -1,16 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { createPayment } from "../../services/PaymentService.js";
-
 import classes from "./PaymentResult.module.css";
 import { Col, Row } from "antd";
 import { CheckCircleFilled, CloseCircleFilled } from "@ant-design/icons";
 import { useContext } from "react";
 import { MessageContext } from "../../context/Message.context.js";
-import {
-  getBookingByTxnRef,
-  updateBookingStatus,
-} from "../../services/BookingService.js";
 import { formatDate } from "../../services/DateTimeUtil.js";
 import { formatCurrency } from "../../services/CurrencyUtil.js";
 import Footer from "../../components/Footer/Footer.jsx";

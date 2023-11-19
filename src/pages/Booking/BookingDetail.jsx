@@ -1,28 +1,34 @@
-import React, {  useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import classes from "./Booking.module.css";
 import { Modal, Form, Input, Button } from "antd";
 import TextArea from "antd/es/input/TextArea";
-import { convertStringToNumber, createNotification, getDate, getTime } from '../../utils/Utils';
+import { convertStringToNumber, getDate, getTime } from '../../utils/Utils';
 import { toast } from "react-toastify";
 import BookingFactories from "../../services/BookingFactories";
+import { createNotification, sendNewMessageToExistingUser, sendNewMessageToNewUser } from "../../services/ChatService";
 
 const BookingDetail = (props) => {
   const { bookingId } = props;
   const [booking, setBooking] = useState();
+
   const user = JSON.parse(localStorage.getItem("user"))
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await BookingFactories.getBookingDetail(bookingId);
-        if (response?.status === 200) {
-          setBooking(response?.data);
-        }
-      } catch (error) {
-        // Handle errors here
+
+  const fetchData = async (bookingId) => {
+    try {
+      const response = await BookingFactories.getBookingDetail(bookingId);
+      if (response?.status === 200) {
+        setBooking(response?.data);
       }
-    };
-    fetchData();
-  }, []);
+    } catch (error) {
+      // Handle errors here
+    }
+  };
+
+  useEffect(() => {
+    if (bookingId) {
+      fetchData(bookingId);
+    }
+  }, [bookingId]);
 
   const onCloseModal = () => {
     props.onCancelOpenHandler();
@@ -35,6 +41,16 @@ const BookingDetail = (props) => {
       if (response?.status === 200) {
         toast.success('Chấp nhận yêu cầu booking thành công.')
         createNotification(booking?.user_id, 2, response?.data[0].id, "PGT đã chấp nhận yêu cầu booking của bạn", "Liên hệ với PGT để biết thêm chi tiết.");
+
+        sendNewMessageToNewUser(
+          user?.id,
+          parseInt(booking?.user_id),
+          user?.userName,
+          booking?.user_name,
+          user?.avatar,
+          '',
+          'Xin chào bạn! Cảm ơn bạn đã sử dụng dịch vụ của mình. Nếu bạn có bất kỳ câu hỏi hoặc yêu cầu gì, đừng ngần ngại nói cho tôi biết. Mình luôn sẵn sàng hỗ trợ bạn một cách tốt nhất.',
+        );
         onCloseModal();
       }
     } catch (error) {
@@ -81,8 +97,8 @@ const BookingDetail = (props) => {
           <Form.Item label="Người thuê"> <span style={{ float: 'right' }}> {booking?.user_name}  </span> </Form.Item>
           <Form.Item label="Trạng thái"     >
             {booking?.status === 1 && <span style={{ color: 'green', float: 'right' }} > Chờ xác nhận</span>}
-            {booking?.status === 2 && <span style={{ color: 'blue', float: 'right' }} > { user?.id === booking?.user_id ? 'PGT' : 'Bạn'} đã chấp nhận yêu cầu booking này</span>}
-            {booking?.status === 3 && <span style={{ float: 'right', color: 'red' }} > { user?.id === booking?.user_id ? 'PGT' : 'Bạn'} đã từ chối yêu cầu booking này</span>}
+            {booking?.status === 2 && <span style={{ color: 'blue', float: 'right' }} > {user?.id === booking?.user_id ? 'PGT' : 'Bạn'} đã chấp nhận yêu cầu booking này</span>}
+            {booking?.status === 3 && <span style={{ float: 'right', color: 'red' }} > {user?.id === booking?.user_id ? 'PGT' : 'Bạn'} đã từ chối yêu cầu booking này</span>}
           </Form.Item>
           <Form.Item label="Ngày" >
             <Input

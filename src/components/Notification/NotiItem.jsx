@@ -1,17 +1,11 @@
-import { Avatar, Button } from "antd";
-
+import { Button } from "antd";
 import classes from "./Notification.module.css";
-import { updateNotificationStatus } from "../../services/NotificationService";
 import { useNavigate } from "react-router-dom";
-import { calculateDaysAgo } from "../../services/DateTimeUtil";
 import { useEffect, useState } from "react";
-import BookingDetail from "../../pages/Booking/BookingDetail";
 
-export default function NotiItem({ noti }) {
+export default function NotiItem({ noti, onClickBookingId = () => { } }) {
   const [daysPassed, setDaysPassed] = useState(null);
-  const [open, setOpen] = useState(false);
   const navigate = useNavigate();
-
   useEffect(() => {
     const calculateDaysPassed = () => {
       const currentTimestamp = Math.floor(new Date().getTime() / 1000);
@@ -31,7 +25,7 @@ export default function NotiItem({ noti }) {
   };
 
   const handleClickBookingDetail = () => {
-    setOpen(true);
+    onClickBookingId(noti?.action_id);
   };
 
   function handleNavigate() {
@@ -40,34 +34,36 @@ export default function NotiItem({ noti }) {
     // window.location.replace(`/chat/${id}`)
   }
 
-  const onCancelOpenHandler = () => {
-    setOpen(false);
-  };
-
+  const logoutHandler = () => {
+    localStorage.removeItem("user");
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("refreshToken");
+    navigate("../login");
+  }
   return (
-    <div className={classes["item-wrap"]} >
-      <div className={`${classes["item-content"]} ${!noti?.read && classes["read"]}`}  >
-        <p className={classes.titleNoti}>{noti?.title}</p>
-        <p>{noti?.body}</p>
-        <p>{daysText(daysPassed)}</p>
-        <div
-          className={classes["item-btn"]}
-        >
+    <div className= {`${classes["item-wrap"]}  ${!noti?.read && classes["read"]} `}>
+      <div className={`${classes["item-content"]}`}  >
+        <span className={classes.titleNoti}>{noti?.title}</span>
+        <span className={classes.body} >{noti?.body}</span>
+        <span style={{ color: '#0866FF', fontWeight: '600', fontSize: 12 }}>{daysText(daysPassed)}</span>
+      </div>
+      <div
+        className={classes["item-btn"]}
+      >
+        {(noti?.type === 1 || noti?.type === 2) && <>
           <Button type='default' onClick={handleNavigate}>
             Nhắn  tin ngay
           </Button>
           <Button type='primary' onClick={handleClickBookingDetail}>
             Xem thông tin
           </Button>
-        </div>
+        </>}
+        {(noti?.type === 3 || noti?.type === 4) && <>
+          <Button type='primary' onClick={logoutHandler}>
+            Đăng xuất
+          </Button>
+        </>}
       </div>
-      {open &&
-        <BookingDetail
-          bookingId={noti?.action_id}
-          onCancelOpenHandler={onCancelOpenHandler}
-          open={open}
-        />
-      }
-    </div>
+    </div >
   );
 }
