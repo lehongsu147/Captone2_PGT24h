@@ -1,5 +1,5 @@
 import React, { useEffect, useLayoutEffect, useState } from 'react';
-import styles from './OutStandingKol.module.scss'
+import styles from './OutStandingPgt.module.scss'
 import CardPgt from '../../card/CardPgt/CardPgt';
 import PgtFactories from '../../../services/PgtFatories';
 const OutStandingPGT = () => {

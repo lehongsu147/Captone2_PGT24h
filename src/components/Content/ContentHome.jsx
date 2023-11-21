@@ -2,10 +2,10 @@ import React, { useContext, useEffect, useState } from "react";
 import styles from './content.module.scss';
 import HotPgt from "./hot-pgt/HotPgt";
 import { CollapseContext } from "../../context/collapse.context";
-import OutStandingPGT from "./outstanding-kol/OutStandingPgt";
 import Banner from "../Banner/Banner";
 import BannerFactories from "../../services/BannerFactories";
 import { ToastNotiError } from "../../utils/Utils";
+import OutStandingPGT from "./outstanding-pgt/OutStandingPgt";
 
 const ContentHome = (props) => {
   const { isCollapse } = useContext(CollapseContext);
