@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { Upload, Table, Input, Modal, Typography, Button } from "antd";
+import { Table, Input, Modal, Typography, Button, Avatar } from "antd";
 import classes from './Fields.module.css'
 import CategoriesFactories from "../../../../services/CategoriesFatories";
-import ImgCrop from 'antd-img-crop';
 import { ToastNoti, ToastNotiError } from "../../../../utils/Utils";
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage"
+import { storage } from "../../../../firebase";
+import { v4 } from 'uuid';
+
 const { Text } = Typography;
 
 const Fields = () => {
@@ -11,9 +14,11 @@ const Fields = () => {
     const [inputSearch, setInputSearch] = useState("");
     const [openModalAdd, setOpenModalAdd] = useState(false)
     const [categoryAddName, setCategoryAddName] = useState()
-    const [categoryAddImage, setcategotyAddImage] = useState()
+    const [categoryUpdateId, setCategoryUpdateId] = useState()
+
+    const [categoryUpdateName, setCategoryUpdateName] = useState()
+    const [categoryUpdateImage, setcategotyUpdateImage] = useState()
     const [error, setError] = useState();
-    const [categoryInfo, setCategoryInfo] = useState();
     const [showModalUpdate, setShowModalUpdate] = useState();
 
     const fetchData = async (Keyword) => {
@@ -81,7 +86,10 @@ const Fields = () => {
     const onDeleteFiledHandler = async (id) => {
         try {
             const resp = await CategoriesFactories.deleteCategory(id);
-            if (resp.status){ ToastNoti();}
+            if (resp.status) {
+                ToastNoti();
+                fetchData();
+            }
         } catch (error) {
             ToastNotiError();
         }
@@ -89,18 +97,25 @@ const Fields = () => {
 
 
     const onUpdateCategory = (data) => {
-        setCategoryInfo(data)
+        setCategoryUpdateName(data?.name)
+        setCategoryUpdateId(data?.id)
+        setcategotyUpdateImage(data?.image)
         setShowModalUpdate(true);
     }
     const onCloseModalUpdate = (id) => {
         setShowModalUpdate(false);
+        setCategoryUpdateId();
+        fetchData();
     }
     const onOpenModalAddField = () => {
         setOpenModalAdd(true)
+        setFileUploadLink();
     }
 
     const onCloseModalAddField = () => {
         setOpenModalAdd(false)
+        setFileUploadLink();
+        fetchData();
     }
 
     const onChangeDataAddField = (event) => {
@@ -108,7 +123,12 @@ const Fields = () => {
         setCategoryAddName(event.target.value)
     }
 
-    const onAddFieldHandler = async () => {
+    const onChangeDataUpdateField = (event) => {
+        setCategoryUpdateName(event.target.value);
+    }
+
+
+    const onAddCategorySubmit = async () => {
         if (!categoryAddName || categoryAddName?.trim() === '') {
             setError("Điền tên lĩnh vực")
         }
@@ -116,41 +136,64 @@ const Fields = () => {
             setError();
             const data = {
                 name: categoryAddName,
-                image: categoryAddImage,
+                image: fileUploadLink,
             }
             try {
                 const resp = await CategoriesFactories.createCategory(data);
-                console.log("🚀 ~ file: Fields.jsx:105 ~ onAddFieldHandler ~ resp:", resp)
+                if (resp?.status === 200) {
+                    ToastNoti();
+                    onCloseModalAddField()
+                } else {
+                    ToastNotiError('resp?.message');
+                }
             } catch (error) {
+                ToastNotiError();
             }
         }
     }
 
-    const [fileList, setFileList] = useState([
-        {
-            uid: '-1',
-            name: 'image.png',
-            status: 'done',
-            url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
-        },
-    ]);
-    const onChangeSelectFile = ({ fileList: newFileList }) => {
-        setFileList(newFileList);
-    };
-    const onPreview = async (file) => {
-        let src = file.url;
-        if (!src) {
-            src = await new Promise((resolve) => {
-                const reader = new FileReader();
-                reader.readAsDataURL(file.originFileObj);
-                reader.onload = () => resolve(reader.result);
-            });
+    const onUpdateCategorySubmit = async () => {
+        if (!categoryUpdateName || categoryUpdateName?.trim() === '') {
+            setError("Điền tên lĩnh vực")
         }
-        const image = new Image();
-        image.src = src;
-        const imgWindow = window.open(src);
-        imgWindow?.document.write(image.outerHTML);
-    };
+        else {
+            setError();
+            const data = {
+                name: categoryUpdateName,
+                image: fileUploadLink ? fileUploadLink : categoryUpdateImage,
+            }
+            try {
+                const resp = await CategoriesFactories.updateCategory(categoryUpdateId, data);
+                if (resp?.status === 200) {
+                    ToastNoti();
+                    onCloseModalUpdate()
+                } else {
+                    ToastNotiError('resp?.message');
+                }
+            } catch (error) {
+                ToastNotiError();
+            }
+        }
+    }
+
+    const [fileUploadLink, setFileUploadLink] = useState();
+
+
+    function handleChangeImage(file) {
+        if (file === null || !file) {
+            console.log('No file selected.');
+            return;
+        }
+        const uniqueFileName = `${file.name}_${v4()}`;
+        const imageRef = ref(storage, `avatar/${uniqueFileName}`);
+        uploadBytes(imageRef, file).then((snapshot) => {
+            getDownloadURL(snapshot.ref).then((downloadURL) => {
+                setFileUploadLink(downloadURL)
+            });
+        }).catch((error) => {
+            console.error('Error uploading file:', error);
+        });
+    }
     return (
         <div className="booking-container" style={{ height: '100vh', overflow: 'scroll' }}>
             <div className="booking-title"><span>Nổi Bật</span></div>
@@ -195,21 +238,25 @@ const Fields = () => {
                 footer={[]}
             >
                 <div style={{ display: 'flex', flexDirection: 'column' }}>
-                    <ImgCrop rotationSlider style={{ width: '20%' }} >
-                        <Upload
-                            action="https://run.mocky.io/v3/435e224c-44fb-4773-9faf-380c5e6a2188"
-                            listType="picture-card"
-                            fileList={fileList}
-                            onChange={onChangeSelectFile}
-                            onPreview={onPreview}
-                            maxCount={1}
-                            multiple={false}
-                        >
-                            {fileList.length < 2 && '+ Upload'}
-                        </Upload>
-                    </ImgCrop>
+                    <div>
+                        <label style={{ padding: '2px 5px', border: '1px solid #FAF8F1', borderRadius: 5 }} htmlFor="uploadInput" className={classes.uploadButton}>
+                            Upload Image
+                        </label>
+                        <input
+                            id="uploadInput"
+                            type="file"
+                            className={classes.uploadInput}
+                            style={{ display: 'none' }}
+                            onChange={(e) => handleChangeImage(e.target.files[0])}
+                        />
+                    </div>
+                    <Avatar
+                        src={fileUploadLink ?? ''}
+                        alt="avatar"
+                        style={{ width: 200, height: 200 }}
+                    />
 
-                    <div style={{ display: 'flex', margin: '20px 0px',flexDirection: 'row' }}>
+                    <div style={{ display: 'flex', margin: '10px 0px', flexDirection: 'row' }}>
                         <Input
                             type="text"
                             style={{ width: '100%' }}
@@ -218,9 +265,9 @@ const Fields = () => {
                             onChange={onChangeDataAddField}
                             name="name"
                         />
-                        {error && <Text type="danger">{error}</Text>}
                     </div>
-                    <Button type='primary' style={{ width: '100%', float: 'right' }} onClick={onAddFieldHandler}>Thêm</Button>
+                        {error && <Text type="danger">{error}</Text>}
+                    <Button type='primary' style={{ width: '100%', float: 'right' }} onClick={onAddCategorySubmit}>Thêm</Button>
                 </div>
             </Modal >
 
@@ -232,32 +279,36 @@ const Fields = () => {
                 footer={[]}
             >
                 <div style={{ display: 'flex', flexDirection: 'column' }}>
-                    <ImgCrop rotationSlider style={{ width: '20%' }} >
-                        <Upload
-                            action="https://run.mocky.io/v3/435e224c-44fb-4773-9faf-380c5e6a2188"
-                            listType="picture-card"
-                            fileList={fileList}
-                            onChange={onChangeSelectFile}
-                            onPreview={onPreview}
-                            maxCount={1}
-                            multiple={false}
-                        >
-                            {fileList.length < 2 && '+ Upload'}
-                        </Upload>
-                    </ImgCrop>
-                    <div style={{ display: 'flex', margin: '20px 0px',flexDirection: 'row' }}>
+                    <div>
+                        <label style={{ padding: '2px 5px', border: '1px solid #FAF8F1', borderRadius: 5 }} htmlFor="uploadInput" className={classes.uploadButton}>
+                            Upload Image
+                        </label>
+                        <input
+                            id="uploadInput"
+                            type="file"
+                            className={classes.uploadInput}
+                            style={{ display: 'none' }}
+                            onChange={(e) => handleChangeImage(e.target.files[0])}
+                        />
+                    </div>
+                    <Avatar
+                        src={fileUploadLink ? fileUploadLink : categoryUpdateImage}
+                        alt="avatar"
+                        style={{ width: 200, height: 200 }}
+                    />
+                    <div style={{ display: 'flex', margin: '10px 0px', flexDirection: 'row' }}>
                         <Input
                             type="text"
                             style={{ width: '100%' }}
                             placeholder="Nhập tên lĩnh vực"
                             className={classes['add-modal-input']}
-                            onChange={onChangeDataAddField}
-                            value={categoryInfo?.name}
+                            onChange={onChangeDataUpdateField}
+                            value={categoryUpdateName}
                             name="name"
                         />
-                        {error && <Text type="danger">{error}</Text>}
                     </div>
-                    <Button type='primary' style={{ width: '100%', float: 'right' }} onClick={onAddFieldHandler}>Thêm</Button>
+                    {error && <Text type="danger">{error}</Text>}
+                    <Button type='primary' style={{ width: '100%', float: 'right' }} onClick={onUpdateCategorySubmit}>Thêm</Button>
                 </div>
             </Modal >
 

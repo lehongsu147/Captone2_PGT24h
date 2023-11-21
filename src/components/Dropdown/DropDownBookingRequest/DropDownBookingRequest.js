@@ -1,43 +1,51 @@
 
 import { ExclamationCircleFilled, ExclamationCircleOutlined, SettingOutlined } from '@ant-design/icons';
-import React, { useRef, useState } from 'react';
+import React, { useContext, useRef, useState } from 'react';
 import styles from './DropDownBookingRequest.module.scss'
 import useOnClickOutside from '../../../hook/use-onclick-outside';
 import { Button, Modal, message } from 'antd';
 import BookingFactories from '../../../services/BookingFactories';
 import { toast } from 'react-toastify';
 import { createNotification, sendNewMessageToNewUser } from '../../../services/ChatService';
+import { AuthContext } from '../../../context/auth.context';
 const { confirm } = Modal;
 const destroyAll = () => {
     Modal.destroyAll();
 };
 
-const DropDownBookingRequest = ({ icon, options, id,user_id,  onFetchData = () => { }, type = 'user' }) => {
+const DropDownBookingRequest = ({ status,booking, icon, options, id, onFetchData = () => { }, type = 'user' }) => {
+    const { user, setUser } = useContext(AuthContext);
+
     const [isOpen, setIsOpen] = useState(false);
     const handleOpen = () => {
         setIsOpen(!isOpen)
     }
     const dropRef = useRef();
-   
-    const fetchDataUpdateBooking = async (id,type) => {
+
+    
+    const fetchDataUpdateBooking = async (id, type) => {
         try {
+            const user_id = booking?.user_id
             const response = await BookingFactories.updateBooking(id, type);
-            if ( response?.status === 200){
+            if (response?.status === 200) {
                 toast.success('Cập nhật yêu cầu booking thành công.')
-                if (type === 2){
+                if (type === 2) {
                     createNotification(user_id, 2, id, "PGT đã chấp nhận yêu cầu booking của bạn", "Liên hệ với PGT để biết thêm chi tiết.");
-                    // sendNewMessageToNewUser(
-                    //     user_id,
-                    //     parseInt(booking?.user_id),
-                    //     user?.userName,
-                    //     booking?.user_name,
-                    //     user?.avatar,
-                    //     '',
-                    //     'Xin chào bạn! Cảm ơn bạn đã sử dụng dịch vụ của mình. Nếu bạn có bất kỳ câu hỏi hoặc yêu cầu gì, đừng ngần ngại nói cho tôi biết. Mình luôn sẵn sàng hỗ trợ bạn một cách tốt nhất.',
-                    //   );
+                    sendNewMessageToNewUser(
+                        user_id,
+                        parseInt(booking?.user_id),
+                        user?.userName,
+                        booking?.user_name,
+                        user?.avatar,
+                        '',
+                        'Xin chào bạn! Cảm ơn bạn đã sử dụng dịch vụ của mình. Nếu bạn có bất kỳ câu hỏi hoặc yêu cầu gì, đừng ngần ngại nói cho tôi biết. Mình luôn sẵn sàng hỗ trợ bạn một cách tốt nhất.',
+                      );
                 }
-                else{
+                else if (type === 3 ) {
                     createNotification(user_id, 2, id, "PGT đã từ chối yêu cầu booking của bạn", "Liên hệ với PGT để biết thêm chi tiết.");
+                }
+                else if (type === 4){
+                    createNotification(user_id, 5, id, "Lượt booking đã hoàn thành", "Vui lòng đánh giá cho PGT.");
                 }
                 onFetchData();
             }
@@ -53,6 +61,19 @@ const DropDownBookingRequest = ({ icon, options, id,user_id,  onFetchData = () =
 
 
     useOnClickOutside(dropRef, handleClickOutside);
+
+    const showConfirmDone = () => {
+        confirm({
+            icon: <ExclamationCircleOutlined />,
+            content: <Button onClick={destroyAll}>Bạn xác nhận hoàn thành yêu cầu booking?</Button>,
+            onOk() {
+                fetchDataUpdateBooking(id, 4)
+                onFetchData();
+            },
+            onCancel() {
+            },
+        });
+    };
 
     const showConfirm = () => {
         confirm({
@@ -85,8 +106,15 @@ const DropDownBookingRequest = ({ icon, options, id,user_id,  onFetchData = () =
             <SettingOutlined style={{ fontSize: '25px' }} onClick={handleOpen} />
             {isOpen &&
                 <div className={styles.selectOptions} ref={dropRef} >
-                    <div className={styles.option} onClick={showConfirm}>Chấp nhận</div>
-                    <div className={styles.option} onClick={showConfirmDenied} >Không chấp nhận</div>
+                    {status === 1 &&
+                        <>
+                            <div className={styles.option} onClick={showConfirm}>Chấp nhận</div>
+                            <div className={styles.option} onClick={showConfirmDenied} >Không chấp nhận</div>
+                        </>
+                    }
+                    {status === 2 && <>
+                        <div className={styles.option} onClick={showConfirmDone}>Hoàn thành</div>
+                    </>}
                 </div>
             }
         </div>

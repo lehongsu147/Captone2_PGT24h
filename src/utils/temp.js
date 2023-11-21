@@ -20,8 +20,9 @@ export default class Temp {
             code: 'MBSDSD.232123',
             date: '22/11/2023',
             send: false,
-            content: 'Hủy yêu cầu booking PGT #1231',
+            content: 'booking PGT #1231',
             money: "100.000",
+            status: 1,
             type: 1,
         },
         {
@@ -30,14 +31,16 @@ export default class Temp {
             send: true,
             content: 'booking PGT #1421',
             money: "100.000",
+            status: 2,
             type: 3,
         },
         {
             code: 'MBSDSD.232123',
             date: '22/11/2023',
-            content: ' Hủy yêu cầu booking PGT #1421',
+            content: 'PGT #1421',
             send: false,
             money: "100.000",
+            status: 2,
             type: 1,
         },
         {
@@ -45,6 +48,7 @@ export default class Temp {
             date: '22/11/2023',
             content: 'booking PGT #1421',
             send: true,
+            status: 2,
             money: "120.000",
             type: 3,
         },
@@ -54,17 +58,9 @@ export default class Temp {
             send: true,
             content: 'booking PGT #1121',
             money: "130.000",
+            status: 2,
             type: 2,
         },
-        {
-            code: 'MBSDSD.92349',
-            date: '22/11/2023',
-            send: false,
-            content: 'Nạp tiền vào ví',
-            money: "1.000.000",
-            type: 2,
-        },
-
     ]
     static bookingRequest = [
         {

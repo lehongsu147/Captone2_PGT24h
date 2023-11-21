@@ -17,6 +17,7 @@ export default function Notification(props) {
   const [detailBookingId, setDetailBookingId] = useState();
   const dropRef = useRef();
   const [open, setOpen] = useState(false);
+  const [isHaveComment, setIsHaveComment] = useState(false);
 
   const handleClickOutside = (event) => {
     setIsActive(false);
@@ -52,7 +53,7 @@ export default function Notification(props) {
     setOpen(false);
   };
   return (
-    <div className={classes.notiContainer}   ref={dropRef} >
+    <div className={classes.notiContainer} ref={dropRef} >
       <div
         className={classes["noti-button"]}
         onClick={handlerActive}
@@ -65,10 +66,15 @@ export default function Notification(props) {
           {notifications?.length === 0 && (<>   <p className={classes["noti-mgs"]}>Không có thông báo</p>   </>)}
           {notifications?.length > 0 && (<>
             {notifications?.map((noti, index) => (
-              <NotiItem key={index} noti={noti} onClickBookingId={(e) => {
+              <NotiItem key={index} noti={noti} onClickBookingId={(e, type) => {
+                setIsHaveComment(false);
                 setDetailBookingId(e)
                 setOpen(true)
                 setIsActive(false);
+                if (type){
+                  setIsHaveComment(true);
+                }
+                
               }} />
             ))}
           </>)}
@@ -77,6 +83,7 @@ export default function Notification(props) {
       <BookingDetail
         bookingId={detailBookingId}
         onCancelOpenHandler={onCancelOpenHandler}
+        isHaveComment={isHaveComment}
         open={open}
       />
     </div>

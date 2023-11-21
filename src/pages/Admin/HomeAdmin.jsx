@@ -12,6 +12,7 @@ import RequestPGT from "./Options/RequestPGT/RequestPGT";
 import HotPgtAdmin from "./Options/HotPgtAdmin/HotPgtAdmin";
 import AccountFactories from "../../services/AccountFactories";
 import { ToastNotiError } from "../../utils/Utils";
+import BannerPage from "./Options/BannerPage/BannerPage";
 const { Sider } = Layout;
 
 const HomeAdmin = () => {
@@ -68,6 +69,7 @@ const HomeAdmin = () => {
             <Menu.Item key="5">Lĩnh vực </Menu.Item>
             <Menu.Item key="6">{`Yêu cầu PGT (${countBooking}) `}</Menu.Item>
             <Menu.Item key="7">Thống kê</Menu.Item>
+            <Menu.Item key="8">Banner</Menu.Item>
             <Button
               onClick={logoutHandler}
               className={classes['btn-logout']}
@@ -85,9 +87,7 @@ const HomeAdmin = () => {
             {selectedMenuItem === "5" && <Fields />}
             {selectedMenuItem === "6" && <RequestPGT onReload={fetchApiList} />}
             {selectedMenuItem === "7" && <Statistical />}
-            {/* {selectedMenuItem === "4" && <CreateCombo />} */}
-            {/* {selectedMenuItem === "5" && <Campaign />} */}
-            {/* {selectedMenuItem === "" && <OutStanding />} */}
+            {selectedMenuItem === "8" && <BannerPage />}
           </Layout.Content>
         </Layout>
       </Layout>

@@ -3,8 +3,15 @@ const ApiConstants = {
     CATEGORIES :`/categories`,
     BOOKING_USER :`/booking/user`,
     BOOKING_PGT :`/booking/pgt`,
+    
+    PAYMENT_URL: 'payment/create_payment_url',
+
     BOOKING :`/booking`,
+    BOOKING_CHART :`/booking/chart`,
+    BOOKING_TOP :`/booking/top`,
+    BOOKING_TIME :`/booking/time`,
     PGT :`/pgt`,
+    BANNER :`/banner`,
     ACCOUNT:  '/account', 
     ACCOUNT_PGT:  '/account/pgt', 
     LOGIN:  '/account/login', 

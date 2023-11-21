@@ -2,14 +2,13 @@ import React, { useEffect, useState } from 'react';
 import styles from './Payment.module.scss'
 import { Button, Input, Row, Space, Table, message } from 'antd';
 import { toast } from 'react-toastify';
-import { DownloadOutlined, EyeInvisibleOutlined, EyeTwoTone, MoneyCollectTwoTone, WalletTwoTone } from '@ant-design/icons';
+import { MoneyCollectTwoTone, WalletTwoTone } from '@ant-design/icons';
 import Title from 'antd/es/typography/Title';
 const PaymentWallett = () => {
     const [profile, setProfile] = useState({});
     const [loading, setLoading] = useState(false);
     const [messageApi, contextHolder] = message.useMessage();
     const [passwordVisible, setPasswordVisible] = React.useState(true);
-
 
     const validateFormData = (formData) => {
         let res = true;
@@ -34,15 +33,7 @@ const PaymentWallett = () => {
     function onUpdate(event) {
         if (!validateFormData(profile)) return;
         setLoading(true);
-        // updateEntProfile(profile).then(
-        //     (res) => {
-        //         console.log(res);
-        //     }
-        //     // messageApi.open({
-        //     //     type: 'success',
-        //     //     content: "Cập nhật thành công!",
-        //     // })
-        // )
+     
         toast.success('🦄 Lưu dữ liệu thành công!', {
             position: "top-right",
             autoClose: 5000,

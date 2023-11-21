@@ -9,7 +9,6 @@ import Login from "../pages/Login";
 import Register from "../pages/Register/Register";
 import Profile from "../pages/Profile/Profile";
 import ForgotPassword from "../pages/ForgotPassword/ForgotPassword";
-import PagePgtDetail from "../pages/Details/PageKolDetail/PageKolDetail";
 import ResetPassword from "../pages/ForgotPassword/ResetPassword";
 import Chat from "../pages/Chat/Chat";
 import NotFound from "../pages/NotFound/NotFound";
@@ -24,6 +23,7 @@ import ResgisterPgt from "../pages/ResgisterKol/ResgisterPgt";
 import ProfileUser from "../pages/Details/PageEntDetail/Introduce/ProfileUser";
 import TrendingPage from "../pages/Trending/TrendingPage";
 import SearchPgt from "../pages/SearchPgt/SearchPgt";
+import PagePgtDetail from "../pages/Details/PageKolDetail/PagePgtDetail";
 
 const Router = () => {
 

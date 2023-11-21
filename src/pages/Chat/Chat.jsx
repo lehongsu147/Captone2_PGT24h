@@ -26,42 +26,35 @@ const Chat = (props) => {
       parseInt(item.firstUserId) === parseInt(id) || parseInt(item.secondUserId) === parseInt(id)
     );
   };
-
-
-
-  // useEffect(() => {
-  //   if (id) {
-  //     const exitsChat = isUserInMesList(messengerList, id);
-  //     if (!exitsChat) {
-  //       const newChat = {
-  //         chatId: `${user?.id}_${parseInt(id)}`,
-  //         firstUserId: user?.id,
-  //         secondUserId: parseInt(id),
-  //         firstName: user?.userName,
-  //         secondName: toUserName,
-  //         firstAvatar: user?.avatar,
-  //         secondAvatar: toUserAvatar,
-  //         createdAt: serverTimestamp(),
-  //         lastMessage: '',
-  //         read: false,
-  //       }
-  //       const updatedMessengerList = [...messengerList, newChat];
-  //       setChatList(updatedMessengerList)
-  //       // setChatInfoExist(newChat)
-  //       setIsNewChat(true);
-
-  //       // setChatList(messengerList)
-  //       // setIsNewChat(false);
-  //     } else {
-  //       setChatList(messengerList)
-  //       setIsNewChat(false);
-  //     }
-  //   }
-  //   else {
-  //     setChatList(messengerList)
-  //     setIsNewChat(false);
-  //   }
-  // }, [id])
+  console.log('chat'.newChatInfo);
+  useEffect(() => {
+    if (id && toUserAvatar && toUserName) {
+      const exitsChat = isUserInMesList(messengerList, id);
+      if (!exitsChat) {
+        const newChat = {
+          chatId: `${user?.id}_${parseInt(id)}`,
+          firstUserId: user?.id,
+          secondUserId: parseInt(id),
+          firstName: user?.userName,
+          secondName: toUserName,
+          firstAvatar: user?.avatar,
+          secondAvatar: toUserAvatar,
+          createdAt: serverTimestamp(),
+          lastMessage: '',
+          read: false,
+        }
+        setNewChatInfo(newChat);
+        setIsNewChat(true);
+      } else {
+        setChatList(messengerList)
+        setIsNewChat(false);
+      }
+    }
+    else {
+      setChatList(messengerList)
+      setIsNewChat(false);
+    }
+  }, [id])
 
   useEffect(() => {
     const chatInfo = messengerList?.find(item => item?.chatId === messageId)
@@ -112,11 +105,11 @@ const Chat = (props) => {
           </div>
         </Col>
         <Col span={18}>
-          {/* {isNewChat ?
+          {isNewChat ?
             <ChatBox isNewChat userId={user?.id} chatInfo={newChatInfo ?? {}} id={messageId} />
-            : */}
-          <ChatBox userId={user?.id} chatInfo={chatInfoExits ?? {}} id={messageId} />
-          {/* } */}
+            :
+            <ChatBox userId={user?.id} chatInfo={chatInfoExits ?? {}} id={messageId} />
+          }
         </Col>
       </Row>
     </div>

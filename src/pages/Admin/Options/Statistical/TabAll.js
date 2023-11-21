@@ -1,13 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Bar } from "react-chartjs-2";
 import { Select, DatePicker } from "antd";
-
 const labels = ["January", "February", "March", "April", "May", "June"];
-
-
 const fetchData = (selectedCategory, selectedDate) => {
-  // Dựa vào selectedCategory và selectedDate để tải dữ liệu thực tế từ API hoặc trả về dữ liệu thay thế.
-  // Ví dụ dữ liệu thay thế:
   if (selectedCategory === "1") {
     return {
       labels: labels,
@@ -19,7 +14,8 @@ const fetchData = (selectedCategory, selectedDate) => {
         }
       ]
     };
-  } else {
+  }
+  else if (selectedCategory === "2") {
     return {
       labels: labels,
       datasets: [
@@ -31,11 +27,21 @@ const fetchData = (selectedCategory, selectedDate) => {
       ]
     };
   }
+  else {
+    return {
+      labels: labels,
+      datasets: [
+        {
+          label: "Xếp hạn thời gian thuê",
+          backgroundColor: "rgb(54, 162, 235)",
+          data: [4000, 2000, 1300, 2900, 2040, 7000]
+        }
+      ]
+    };
+  }
 };
 
-
 const TabAll = ({ selectedCategory, selectedDate }) => {
-
   const data1 = {
     labels: labels,
     datasets: [
@@ -59,16 +65,17 @@ const TabAll = ({ selectedCategory, selectedDate }) => {
 
   const [barData1, setBarData1] = useState(data1);
   const [barData2, setBarData2] = useState(data2);
+  const [barData3, setBarData3] = useState(data2);
 
   useEffect(() => {
     if (selectedCategory && selectedDate) {
-      // Tại đây, bạn cần cập nhật barData1 và barData2 dựa trên selectedCategory và selectedDate.
-      // Ví dụ: Tạo hàm fetchData(selectedCategory, selectedDate) để tải dữ liệu từ API hoặc dữ liệu thay thế.
-      // Sau đó, cập nhật barData1 và barData2 bằng dữ liệu mới từ fetchData.
       const updatedData1 = fetchData(selectedCategory, selectedDate); // Gọi hàm fetchData với các tham số tương ứng.
-      const updatedData2 = fetchData(selectedCategory, selectedDate); // Gọi hàm fetchData với các tham số tương ứng.
+      const updatedData2 = fetchData(selectedCategory, selectedDate);
+      const updatedData3 = fetchData(selectedCategory, selectedDate);
+      console.log("🚀 ~ file: TabAll.js:62 ~ useEffect ~ selectedDate:", selectedDate)
       setBarData1(updatedData1);
       setBarData2(updatedData2);
+      setBarData3(updatedData3);
     }
   }, [selectedCategory, selectedDate]);
 
@@ -97,6 +104,11 @@ const TabAll = ({ selectedCategory, selectedDate }) => {
           data={barData2}
           options={options}
         />
+        {/* <Bar
+          style={{ height: 200, width: "45%" }}
+          data={barData3}
+          options={options}
+        /> */}
       </div>
     </div>
   );

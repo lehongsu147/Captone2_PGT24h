@@ -3,7 +3,7 @@ import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 import { getMessaging, getToken, onMessage } from "firebase/messaging";
-
+import { getStorage,  ref as storageRef, uploadBytes, getDownloadURL } from "firebase/storage";
 const firebaseConfig = {
     apiKey: "AIzaSyCgMTIxR4XvDbsbcnI-PSujI_F2FGgjBNQ",
     authDomain: "pgt-capton2.firebaseapp.com",
@@ -46,3 +46,5 @@ export const onMessageListener = () => {
 }
 export const auth = getAuth(app);
 export const db = getFirestore(app);
+export const storage = getStorage(app);
+

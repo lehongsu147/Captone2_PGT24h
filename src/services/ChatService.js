@@ -7,6 +7,7 @@ export const createNotification = async (toUserId, type, action_id, title, body)
     // 2 : pgt chấp nhận / từ chối yêu cầu booking
     // 3 : admin  chấp nhận yêu cầu pgt
     // 4 : admin  từ chối  yêu cầu pgt
+    // 5 : hoàn thành  yêu cầu pgt
     try {
         await addDoc(collection(db, "notifications"), {
             toUserId: toUserId,

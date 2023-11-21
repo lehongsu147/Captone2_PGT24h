@@ -1,7 +1,8 @@
-import { Button } from "antd";
+import { Button, Modal } from "antd";
 import classes from "./Notification.module.css";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
+import BookingDetail from "../../pages/Booking/BookingDetail";
 
 export default function NotiItem({ noti, onClickBookingId = () => { } }) {
   const [daysPassed, setDaysPassed] = useState(null);
@@ -34,6 +35,10 @@ export default function NotiItem({ noti, onClickBookingId = () => { } }) {
     // window.location.replace(`/chat/${id}`)
   }
 
+  function showModalFeedback() {
+    onClickBookingId(noti?.action_id,true)
+  }
+
   const logoutHandler = () => {
     localStorage.removeItem("user");
     localStorage.removeItem("accessToken");
@@ -41,7 +46,7 @@ export default function NotiItem({ noti, onClickBookingId = () => { } }) {
     navigate("../login");
   }
   return (
-    <div className= {`${classes["item-wrap"]}  ${!noti?.read && classes["read"]} `}>
+    <div className={`${classes["item-wrap"]}  ${!noti?.read && classes["read"]} `}>
       <div className={`${classes["item-content"]}`}  >
         <span className={classes.titleNoti}>{noti?.title}</span>
         <span className={classes.body} >{noti?.body}</span>
@@ -63,6 +68,12 @@ export default function NotiItem({ noti, onClickBookingId = () => { } }) {
             Đăng xuất
           </Button>
         </>}
+        {(noti?.type === 5) && <>
+          <Button type='primary' onClick={showModalFeedback}>
+            Đánh giá
+          </Button>
+        </>}
+
       </div>
     </div >
   );

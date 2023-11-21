@@ -1,12 +1,11 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
 import { CollapseContext } from '../../../../context/collapse.context';
 import { AuthContext } from '../../../../context/auth.context';
 import Feedback from '../../../../components/Feedback/Feedback';
-import { BackTop, Button, Input, InputNumber, Pagination, Tabs, Upload, message } from 'antd';
+import { Alert, Avatar, BackTop, Button, Input, InputNumber, Pagination, Tabs, Upload, message } from 'antd';
 import IntroduceKOL from '../../PageKolDetail/IntroduceKOL/IntroduceKOL';
 import styles from './Profile.module.scss'
-import Avatar from '../../../../components/Avatar/Avatar';
 import CardType from '../../../../components/catgegory/CardType';
 import StarRating from '../../../../components/start-rating/StarRating';
 import { EditFilled, UploadOutlined } from '@ant-design/icons';
@@ -16,26 +15,29 @@ import { convertStringToNumber } from '../../../../utils/Utils';
 import PgtFactories from '../../../../services/PgtFatories';
 import { toast } from 'react-toastify';
 import AccountFactories from '../../../../services/AccountFactories';
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage"
+import { storage, uploadImage } from '../../../../firebase';
+import { v4 } from 'uuid';
 
 const ProfileUser = ({ type }) => {
-    const { user } = useContext(AuthContext);
+    const { user, setUser } = useContext(AuthContext);
     const [userInfo, setUserInfo] = useState();
-
     const [items, setItems] = useState();
     const [editPrice, setEditPrice] = useState();
     const [pricePgt, setPricePgt] = useState();
-    const { isCollapse } = useContext(CollapseContext);
+    const [loading, setLoading] = useState(false);
+    const { isCollapse } = useContext(CollapseContext)
 
+    const fetchData = async () => {
+        try {
+            const response = await PgtFactories.getPGTDetail(user?.id);
+            setUserInfo(response[0]);
+        } catch (error) {
+            toast.error('Hệ thống lỗi, vui lòng thử lại sau')
+            // Handle errors here
+        }
+    };
     useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const response = await PgtFactories.getPGTDetail(user?.id);
-                setUserInfo(response[0]);
-            } catch (error) {
-                toast.error('Hệ thống lỗi, vui lòng thử lại sau')
-                // Handle errors here
-            }
-        };
         fetchData();
         document.title = `Thồng tin cá nhân`;
     }, []);
@@ -95,7 +97,7 @@ const ProfileUser = ({ type }) => {
     };
 
     useEffect(() => {
-        document.title = `PGT24h | ${userInfo?.username}`;
+        document.title = `PGT24h | ${userInfo?.user_name}`;
         return () => {
             document.title = "PGT24h";
         };
@@ -136,8 +138,16 @@ const ProfileUser = ({ type }) => {
         try {
             const response = await AccountFactories.requestUpdate(user?.id, data);
             if (response?.status === 200) {
+                user.status = data?.status;
+                user.avatar = data?.avatar;
+                user.price = data?.price;
+                localStorage.setItem("user", JSON.stringify(user));
+                const storedUser = localStorage.getItem("user");
+                setUser(JSON.parse(storedUser));
                 toast.success('Cập nhật thông tin thành công')
                 setPricePgt(response?.user?.price);
+                setFileUploadLink();
+                fetchData()
             }
         } catch (error) {
             console.log(error);
@@ -155,25 +165,33 @@ const ProfileUser = ({ type }) => {
         setEditPrice(!editPrice);
     };
 
-    const props = {
-        name: 'file',
-        action: 'https://run.mocky.io/v3/435e224c-44fb-4773-9faf-380c5e6a2188',
-        headers: {
-            authorization: 'authorization-text',
-        },
-        onChange(info) {
-            if (info.file.status !== 'uploading') {
-                console.log(info.file, info.fileList);
-            }
-            if (info.file.status === 'done') {
-                message.success(`${info.file.name} file uploaded successfully`);
-            } else if (info.file.status === 'error') {
-                message.error(`${info.file.name} file upload failed.`);
-            }
-        },
-    };
-
     const { width, height } = useWindowSize();
+    const [fileUploadLink, setFileUploadLink] = useState();
+
+    useEffect(() => {
+        if (fileUploadLink) {
+            updateImageProfileUser(fileUploadLink)
+        }
+    }, [fileUploadLink])
+    function updateImageProfileUser() {
+        const data = { image: fileUploadLink, }
+        fetchDataUpdate(data)
+    }
+    function handleChangeImage(file) {
+        if (file === null || !file) {
+            console.log('No file selected.');
+            return;
+        }
+        const uniqueFileName = `${file.name}_${v4()}`;
+        const imageRef = ref(storage, `avatar/${uniqueFileName}`);
+        uploadBytes(imageRef, file).then((snapshot) => {
+            getDownloadURL(snapshot.ref).then((downloadURL) => {
+                setFileUploadLink(downloadURL)
+            });
+        }).catch((error) => {
+            console.error('Error uploading file:', error);
+        });
+    }
     return (
         <>
             <main className={styles["main-details"]} >
@@ -184,25 +202,35 @@ const ProfileUser = ({ type }) => {
                     <div className={styles.profile}>
                         <div className={styles.stickyProfile}>
                             <div className={styles.profileContainer}>
-                                <div >
-                                    <Upload {...props}>
-                                        <Button icon={<UploadOutlined />}>Click to Upload</Button>
-                                    </Upload>
+                                <div>
+                                    <label style={{ padding: '2px 5px', border: '1px solid #FAF8F1', borderRadius: 5 }} htmlFor="uploadInput" className={styles.uploadButton}>
+                                        Upload Image
+                                    </label>
+                                    <input
+                                        id="uploadInput"
+                                        type="file"
+                                        className={styles.uploadInput}
+                                        style={{ display: 'none' }}
+                                        onChange={(e) => handleChangeImage(e.target.files[0])}
+                                    />
                                 </div>
                                 <Avatar
-                                    avatar={userInfo?.image ?? ''}
+                                    src={userInfo?.image}
+                                    alt="avatar"
+                                    style={{ width: 200, height: 200 }}
                                     photoList={userInfo?.listImage ?? ''}
                                 />
                             </div>
 
-                            <div className={styles.statusInfo}>
-                                <div className={` ${styles.boxStatus} ${user?.status === 1 ? '' : styles.Pause}  `} >
-                                    <div className={`${styles.textStatus} ${user?.status === 1 ? '' : styles.Pause}`}>
-                                        {user?.status === 1 ? 'Đang làm việc' : 'Đang tạm nghỉ'}
+                            {user?.role_id === 2 && (<>
+                                <div className={styles.statusInfo}>
+                                    <div className={` ${styles.boxStatus} ${user?.status === 1 ? '' : styles.Pause}  `} >
+                                        <div className={`${styles.textStatus} ${user?.status === 1 ? '' : styles.Pause}`}>
+                                            {(user?.status === 1) ? 'Đang làm việc' : 'Đang tạm nghỉ'}
+                                        </div>
                                     </div>
                                 </div>
-                                {/* <span className={styles.dateFrom}>Ngay tham gia: 22/06/2023</span> */}
-                            </div>
+                            </>)}
                         </div>
                     </div>
 
@@ -210,7 +238,7 @@ const ProfileUser = ({ type }) => {
                         <div className={styles.profileInfo}>
                             <div className={styles.title}>
                                 <span className={` ${styles.userName}  `} >
-                                    {userInfo?.username}
+                                    {userInfo?.user_name}
                                 </span>
 
                             </div>
@@ -270,7 +298,7 @@ const ProfileUser = ({ type }) => {
                                                     style={{ width: '100%' }}
                                                     // placeholder={pricePgt}
                                                     value={pricePgt}
-                                                    onChange={(e) => setPricePgt(e)} 
+                                                    onChange={(e) => setPricePgt(e)}
                                                     formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
                                                     parser={value => value.replace(/\$\s?|(,*)/g, '')}
                                                 />

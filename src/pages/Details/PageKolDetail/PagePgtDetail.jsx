@@ -78,7 +78,7 @@ const PagePgtDetail = () => {
       state: {
         chatId: id,
         toUserAvatar: pgtInfo?.image,
-        toUserName: pgtInfo?.username,
+        toUserName: pgtInfo?.user_name,
       }
     })
   };
@@ -164,11 +164,13 @@ const PagePgtDetail = () => {
   return (
     <>
       <main className={styles["main-details"]} >
-        <BookingCreate
-          kol={pgtInfo ?? ''}
-          onCancelOpenHandler={onCancelOpenHandler}
-          open={open}
-        />
+        {open === true &&
+          <BookingCreate
+            kol={pgtInfo ?? ''}
+            onCancelOpenHandler={onCancelOpenHandler}
+            open={open}
+          />
+        }
         <div
           className={`${styles["container"]} ${styles[isCollapse ? "isCollapse" : '']}  `}
         >
@@ -196,7 +198,7 @@ const PagePgtDetail = () => {
           <div className={styles.info}>
             <div className={styles.profileInfo}>
               <div className={styles.title}>
-                <span className={` ${styles.userName}  `} >{pgtInfo?.username}  </span>
+                <span className={` ${styles.userName}  `} >{pgtInfo?.user_name}  </span>
                 <buton className={` ${styles.buttonFollow}  `} >Theo dõi </buton>
               </div>
 

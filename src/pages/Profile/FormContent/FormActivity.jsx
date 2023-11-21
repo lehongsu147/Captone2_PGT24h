@@ -1,12 +1,13 @@
-import { Avatar, Badge, DatePicker, Select, Table } from "antd";
+import { Avatar, Badge, Button, DatePicker, Select, Table } from "antd";
 import { useEffect, useState } from "react";
 import Constants from "../../../utils/constants";
 import BookingFactories from "../../../services/BookingFactories";
 import { getDate, getTime } from "../../../utils/Utils";
+import PaymentFactories from "../../../services/PaymentFactories";
+import { WalletTwoTone } from "@ant-design/icons";
 export default function FormActivity() {
   const user = JSON.parse(localStorage.getItem("user"));
   const [dateTable, setDataTable] = useState();
-
   const [monthSelect, setMonthSelect] = useState("");
   const [nameKOL, setNameKOL] = useState("");
 
@@ -42,25 +43,15 @@ export default function FormActivity() {
       key: "date",
       dataIndex: "date",
       align: "left",
-      render: (text, data) => <div>{ getDate(data?.date,1)}</div>,
+      render: (text, data) => <div>{getDate(data?.date, 1)}</div>,
     },
     {
       title: "Thời gian",
       key: "time_from",
       dataIndex: "time_from",
       align: "left",
-      render: (text, data) => <div>{ getTime(data?.time_from)} - { getTime(data.time_to)}</div>,
+      render: (text, data) => <div>{getTime(data?.time_from)} - {getTime(data.time_to)}</div>,
     },
-    // {
-    //   title: "Lĩnh Vực",
-    //   dataIndex: "category_link",
-    //   key: "category_link",
-    //   align: 'center',
-    //   width: 120,
-    //   render: (text) => (
-    //     <Avatar src={text ?? ''} width={20} height={20} />
-    //   ),
-    // },
     {
       title: "Tình trạng",
       key: "status",
@@ -76,9 +67,39 @@ export default function FormActivity() {
           <Badge status="warning" text="Chờ xác nhận" />
         ) : null,
     },
+    {
+      title: "Thanh toán",
+      dataIndex: "category_link",
+      key: "category_link",
+      align: 'center',
+      width: 120,
+      render: (text, data) => (
+        <Button style={{ width: 170 }} onClick={() => handleAddMonney(data)} type="primary" icon={<WalletTwoTone width={70} />} size={'large'} >
+          <span>
+            Thanh Toán
+          </span>
+        </Button>
+      ),
+    },
   ];
 
 
+  const handleAddMonney = async (value) => {
+    try {
+      const data = {
+        amount: value?.price,
+        bookingId: value?.id,
+        pgtName: value?.pgt_name,
+        pgtId: value?.PgtId,
+      }
+      const resp = await PaymentFactories.createVnPayPayment(data)
+      if (resp.status === 200) {
+        window.location.href = resp?.url;
+      }
+    } catch (error) {
+
+    }
+  };
   const handleOnChangeDate = (e) => {
     console.log(e);
   };
@@ -95,7 +116,7 @@ export default function FormActivity() {
       {/* <h1 style={{ marginLeft: 30 }}>Lịch sử booking</h1> */}
       <div className="booking-title"><span>Lịch sử booking</span></div>
 
-      <div className="booking-search" style={{justifyContent: 'flex-end'}} >
+      <div className="booking-search" style={{ justifyContent: 'flex-end' }} >
         <DatePicker
           placeholder='Chọn ngày'
           onChange={(e) => handleOnChangeDate(e?.$d)}

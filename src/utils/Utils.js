@@ -20,7 +20,7 @@ export const partStringToNumber = (value, delimiter = '.') => {
 }
 
 
-export const ToastInfo= (mes = 'Thông báo mới') =>{
+export const ToastInfo = (mes = 'Thông báo mới') => {
     toast.info(mes, {
         position: "top-right",
         autoClose: 1000,
@@ -33,7 +33,7 @@ export const ToastInfo= (mes = 'Thông báo mới') =>{
     });
 }
 
-export const ToastNoti= (mes = 'Lưu dữ liệu thành công') =>{
+export const ToastNoti = (mes = 'Lưu dữ liệu thành công') => {
     toast.success(mes, {
         position: "top-right",
         autoClose: 1000,
@@ -45,7 +45,7 @@ export const ToastNoti= (mes = 'Lưu dữ liệu thành công') =>{
         theme: "light",
     });
 }
-export const ToastNotiError= (mes = 'Hệ thống lỗi') =>{
+export const ToastNotiError = (mes = 'Hệ thống lỗi') => {
     toast.error(mes, {
         position: "top-right",
         autoClose: 1000,

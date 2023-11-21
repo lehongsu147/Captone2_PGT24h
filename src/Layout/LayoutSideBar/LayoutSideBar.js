@@ -4,6 +4,7 @@ import Header from '../../components/Header';
 import { CollapseContext } from '../../context/collapse.context';
 import styles from './Layout.module.scss';
 import Footer from '../../components/Footer/Footer';
+import Banner from '../../components/Banner/Banner';
 
 const LayoutSideBar = ({ children }) => {
     const { isCollapse } = useContext(CollapseContext);
@@ -17,7 +18,7 @@ const LayoutSideBar = ({ children }) => {
                     {children}
                 </div>
             </div>
-            <Footer/>
+            <Footer />
         </div>
     );
 };

@@ -14,8 +14,9 @@ import "./style.css";
 import Notification from "../Notification";
 import { AuthContext } from "../../context/auth.context";
 import { NotificationContext } from "../../context/Notification.context";
-import { ToastInfo } from "../../utils/Utils";
+import { ToastInfo, ToastNotiError } from "../../utils/Utils";
 import useOnClickOutside from "../../hook/use-onclick-outside";
+import BookingFactories from "../../services/BookingFactories";
 
 const Header = (props) => {
   const navigate = useNavigate();
@@ -66,7 +67,7 @@ const Header = (props) => {
       countNotificationRef.current = numUnreadMessages;
     }
   }, [notifications]);
-  
+
   const dropRef = useRef();
   useOnClickOutside(dropRef, handleClickOutside);
 
@@ -74,6 +75,7 @@ const Header = (props) => {
     handleClose();
   }
 
+ 
   return (
     <div className="header">
       <div className="header__icon">
@@ -94,7 +96,7 @@ const Header = (props) => {
         )}
         {user && (
           <div className="avata" ref={dropRef}>
-            <NavBar role={user?.role} isOpen={isOpen}  logOutHandler={logOutHandler}></NavBar>
+            <NavBar role={user?.role} isOpen={isOpen} logOutHandler={logOutHandler}></NavBar>
             <Avatar
               size={40}
               onClick={handleOpen}

@@ -92,15 +92,6 @@ const UpdateProfile = (id, type) => {
     function onUpdate(event) {
         if (!validateFormData(profile)) return;
         setLoading(true);
-        // updateEntProfile(profile).then(
-        //     (res) => {
-        //         console.log(res);
-        //     }
-        //     // messageApi.open({
-        //     //     type: 'success',
-        //     //     content: "Cập nhật thành công!",
-        //     // })
-        // )
         toast.success('🦄 Lưu dữ liệu thành công!', {
             position: "top-right",
             autoClose: 5000,

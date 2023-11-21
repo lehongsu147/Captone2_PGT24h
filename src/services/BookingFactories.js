@@ -31,12 +31,6 @@ const BookingFactories = {
       method: "GET",
     });
   },
-  // getPGTDetail: async data => {
-  //   return ApiOperation.request({
-  //     url: `${ApiConstants.PGT}/${data}`,
-  //     method: "GET",
-  //   });
-  // },
   requestBooking: async data => {
     return ApiOperation.request({
       url: ApiConstants.BOOKING,
@@ -44,10 +38,22 @@ const BookingFactories = {
       data: data,
     });
   },
-  updateBooking: async (data,type) => {
+  checkrequestTimeBooking: async data => {
     return ApiOperation.request({
-      url: `${ApiConstants.BOOKING}/${data}`,
+      url: ApiConstants.BOOKING_TIME,
+      method: "POST",
+      data: data,
+    });
+  },
+  updateBooking: async (id,type,rate,comment) => {
+    const data ={
+      rate : rate,
+      comment: comment
+    }
+    return ApiOperation.request({
+      url: `${ApiConstants.BOOKING}/${id}`,
       method: "PUT",
+      data: data,
       params: {
         type: type
       }
@@ -61,8 +67,44 @@ const BookingFactories = {
   },
   getBookingDetail: async data => {
     return ApiOperation.request({
-      url: `${ApiConstants.BOOKING_PGT}/${data}`,
+      url: `${ApiConstants.BOOKING}/${data}`,
       method: "GET",
+    });
+  },
+  getBookingChart: async (year,month,date) => {
+    let params = {
+    };
+    if (year){
+      params.Year= year;
+    }
+    if (month){
+      params.Month= month;
+    }
+    if (date){
+      params.Date= date;
+    }
+    return ApiOperation.request({
+      url: `${ApiConstants.BOOKING_CHART}`,
+      method: "GET",
+      params: params , 
+    });
+  },
+  getBookingTopPgt: async (year,month,date) => {
+    let params = {
+    };
+    if (year){
+      params.Year= year;
+    }
+    if (month){
+      params.Month= month;
+    }
+    if (date){
+      params.Date= date;
+    }
+    return ApiOperation.request({
+      url: `${ApiConstants.BOOKING_TOP}`,
+      method: "GET",
+      params: params , 
     });
   },
 };

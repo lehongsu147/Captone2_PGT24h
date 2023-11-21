@@ -1,15 +1,16 @@
 import React, { useEffect, useState } from "react";
 import classes from "./Booking.module.css";
-import { Modal, Form, Input, Button } from "antd";
+import { Modal, Form, Input, Button, Rate } from "antd";
 import TextArea from "antd/es/input/TextArea";
-import { convertStringToNumber, getDate, getTime } from '../../utils/Utils';
+import { ToastNoti, ToastNotiError, convertStringToNumber, getDate, getTime } from '../../utils/Utils';
 import { toast } from "react-toastify";
 import BookingFactories from "../../services/BookingFactories";
 import { createNotification, sendNewMessageToExistingUser, sendNewMessageToNewUser } from "../../services/ChatService";
 
 const BookingDetail = (props) => {
-  const { bookingId } = props;
+  const { bookingId, isHaveComment } = props;
   const [booking, setBooking] = useState();
+  console.log("🚀 ~ file: BookingDetail.jsx:13 ~ BookingDetail ~ booking:", booking)
 
   const user = JSON.parse(localStorage.getItem("user"))
 
@@ -36,7 +37,7 @@ const BookingDetail = (props) => {
 
 
   const onAcceptSubmit = async () => {
-    try {
+    try {status
       const response = await BookingFactories.updateBooking(bookingId, 2);
       if (response?.status === 200) {
         toast.success('Chấp nhận yêu cầu booking thành công.')
@@ -71,13 +72,29 @@ const BookingDetail = (props) => {
     }
   }
   const dateBooking = (getDate(booking?.date))
+  const [valueRate, setValueRate] = useState();
+  const [valueComment, setValueComment] = useState();
+  const desc = ['terrible', 'bad', 'normal', 'good', 'wonderful'];
 
-
+  async function submitComment() {
+    try {
+      const response = await BookingFactories.updateBooking(bookingId, 5, valueRate, valueComment);
+      if (response?.status === 200) {
+        ToastNoti();
+        setBooking(response?.data);
+      }
+      else {
+        ToastNotiError();
+      }
+    } catch (error) {
+      ToastNotiError();
+    }
+  }
   return (
     <Modal
       width={600}
       open={props.open}
-      title="Tạo lượt thuê"
+      title="Thông tin lượt thuê"
       destroyOnClose={true}
       onCancel={onCloseModal}
       footer=""
@@ -95,10 +112,11 @@ const BookingDetail = (props) => {
           onFinish={onAcceptSubmit}
         >
           <Form.Item label="Người thuê"> <span style={{ float: 'right' }}> {booking?.user_name}  </span> </Form.Item>
-          <Form.Item label="Trạng thái"     >
+          <Form.Item label="Trạng thái"       >
             {booking?.status === 1 && <span style={{ color: 'green', float: 'right' }} > Chờ xác nhận</span>}
             {booking?.status === 2 && <span style={{ color: 'blue', float: 'right' }} > {user?.id === booking?.user_id ? 'PGT' : 'Bạn'} đã chấp nhận yêu cầu booking này</span>}
             {booking?.status === 3 && <span style={{ float: 'right', color: 'red' }} > {user?.id === booking?.user_id ? 'PGT' : 'Bạn'} đã từ chối yêu cầu booking này</span>}
+            { (booking?.status === 4 || booking?.status === 5  )&& <span style={{ float: 'right', color: 'green' }} > Hoàn thành</span>}
           </Form.Item>
           <Form.Item label="Ngày" >
             <Input
@@ -119,25 +137,51 @@ const BookingDetail = (props) => {
               value={convertStringToNumber(booking?.price)}
             />
           </Form.Item>
-          <Form.Item
-            label="Ghi chú"
-          >
-            <TextArea
-              rows={2}
-              placeholder=""
-              value={booking?.note}
-            />
-            {booking?.status === 1 &&
-              <div style={{ display: 'flex', gap: 20, float: 'right', marginTop: 20 }}>
-                <Button type="link" htmlType="button" onClick={deniedBooking}>
-                  Từ chối yêu cầu
-                </Button>
-                <Button type="primary" htmlType="submit">
-                  Chấp nhận
-                </Button>
-              </div>}
-          </Form.Item>
 
+
+          {isHaveComment ? <>
+            <Form.Item label="Đánh giá">
+              <span style={{ float: 'right' }}>
+                <Rate tooltips={desc} onChange={setValueRate} value={booking?.rate ? booking?.rate  : valueRate} />
+                {valueRate ? <span className="ant-rate-text">{desc[valueRate - 1]}</span> : ''}
+              </span>
+            </Form.Item>
+            <Form.Item label="Nhận xét">
+              <TextArea
+                rows={2}
+                placeholder="Nếu nhận xét của bạn ..."
+                value={booking?.comment ? booking?.comment : valueComment}
+                onChange={(e) => setValueComment(e.target.value)}
+              />
+              <div style={{ display: 'flex', gap: 20, float: 'right', marginTop: 20 }}>
+                {booking?.status === 4 &&
+                  <Button onClick={(e) => submitComment()} type="primary" >
+                    Gửi đánh giá
+                  </Button>
+                }
+              </div>
+            </Form.Item>
+          </>
+            : <>
+              <Form.Item
+                label="Ghi chú"
+              >
+                <TextArea
+                  rows={2}
+                  placeholder=""
+                  value={booking?.note}
+                />
+                {booking?.status === 1 &&
+                  <div style={{ display: 'flex', gap: 20, float: 'right', marginTop: 20 }}>
+                    <Button type="link" htmlType="button" onClick={deniedBooking}>
+                      Từ chối yêu cầu
+                    </Button>
+                    <Button type="primary" htmlType="submit">
+                      Chấp nhận
+                    </Button>
+                  </div>}
+              </Form.Item>
+            </>}
         </Form>
       </div>
     </Modal >

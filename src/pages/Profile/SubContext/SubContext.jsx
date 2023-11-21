@@ -1,5 +1,5 @@
 import React from "react";
-import FormProfilepGT from "../FormContent/FormProfileKOL";
+import FormProfilepGT from "../FormContent/FormProfilePGT";
 import FormProfileUser from "../FormContent/FormProfileUser";
 import FormEmail from "../FormContent/FormEmail";
 import FormPassword from "../FormContent/FormPassword";

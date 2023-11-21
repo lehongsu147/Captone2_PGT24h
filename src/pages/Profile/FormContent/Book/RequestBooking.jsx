@@ -10,10 +10,8 @@ import { convertStringToNumber, getDate, getTime } from "../../../../utils/Utils
 const RequestBooking = () => {
   const user = JSON.parse(localStorage.getItem("user"));
   const [bookingList, setBookingList] = useState([]);
-  const [statusBooking, setStatusBooking] = useState("dabook");
   const [monthSelect, setMonthSelect] = useState("");
   const [nameKOL, setNameKOL] = useState("");
- 
   const fetchData = async () => {
     try {
       const response = await BookingFactories.getListRequestBookingForPGT(user?.id);
@@ -29,14 +27,14 @@ const RequestBooking = () => {
 
   const columns = [
     {
-      title: "Mã",
-      dataIndex: "id",
+      title: '#',
+      dataIndex: 'id',
+      key: 'id',
       width: 50,
-      render: (text) => (
-        <div className="text-data">
-          {text}
-        </div>
-      ),
+      fixed: 'left',
+      align: 'center',
+      render: (id, record, index) => { ++index; return index; },
+      showSorterTooltip: false,
     },
     {
       title: "Người thuê",
@@ -91,14 +89,16 @@ const RequestBooking = () => {
       key: "price",
       align: 'right',
       width: 140,
-      render: (text) => <div className="text-data">{convertStringToNumber(text) }</div>,
+      render: (text) => <div className="text-data">{convertStringToNumber(text)}</div>,
     },
     {
       title: "Tác vụ",
       key: "action",
       width: 90,
       align: 'center',
-      render: (_, record) => <DropDownBookingRequest id={record?.id} onFetchData={fetchData} />
+      render: (_, data) => (
+        <DropDownBookingRequest booking={data} status={data?.status}id={data?.id} onFetchData={fetchData} />
+      )
     },
   ];
 

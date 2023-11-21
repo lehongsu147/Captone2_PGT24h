@@ -44,6 +44,7 @@
 .booking-table{
   border-radius: 16px;
   padding: 10px 14px;
+  min-height: 400px;
   background-color: #FFF;
 }
 :global{

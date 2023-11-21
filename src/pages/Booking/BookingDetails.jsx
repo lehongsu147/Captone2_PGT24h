@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { BookingStatus } from "../../utils/Enums";
-import { createVnPayPayment } from "../../services/PaymentService";
 import { Descriptions, Button, TextArea, Rate, message } from "antd";
 import classes from "./Booking.module.css";
-import NotFound from "../NotFound/NotFound";
 import { displayDateTime, formatDate } from "../../services/DateTimeUtil";
 import BookingCreate from "./BookingCreate";
 import { useContext } from "react";

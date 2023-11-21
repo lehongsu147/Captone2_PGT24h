@@ -20,6 +20,13 @@ const CategoriesFactories = {
       data: data,
     });
   },
+  updateCategory: async (id,data) => {
+    return ApiOperation.request({
+      url: `${ApiConstants.CATEGORIES}/${id}`,
+      method: "PUT",
+      data: data
+    });
+  },
   deleteCategory: async id => {
     return ApiOperation.request({
       url: `${ApiConstants.CATEGORIES}/${id}`,

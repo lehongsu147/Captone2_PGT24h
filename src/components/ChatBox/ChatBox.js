@@ -9,9 +9,8 @@ const { Search } = Input;
 
 const ChatBox = (props) => {
     const { chatInfo, userId, isNewChat = false, id } = props;
-    console.log("🚀 ~ file: ChatBox.js:12 ~ ChatBox ~ userId:", userId)
+    console.log("🚀 ~ file: ChatBox.js:12 ~ ChatBox ~ isNewChat:", isNewChat)
     const [messageList, setMessageList] = useState([]);
-    console.log("🚀 ~ file: ChatBox.js:13 ~ ChatBox ~ messageList:", messageList)
     const [messageInput, setMessageInput] = useState("");
     const [userNameMes, setUseNameMes] = useState("");
     const [userAvatarMes, setUseAvatarMes] = useState("");

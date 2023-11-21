@@ -1,30 +1,25 @@
+import { EditOutlined, PlusOutlined, UserOutlined } from "@ant-design/icons";
+import { Avatar, Col, Row, Select } from "antd";
 import { useEffect, useLayoutEffect, useState } from "react";
-import { Col, Row, Select } from "antd";
-
 import classes from "./Form.module.css";
 import Message from "../../../components/UI/Message/Message";
-import Constants from "../../../utils/constants";
-import CategoriesFactories from "../../../services/CategoriesFatories";
+import ImageSlider from "../../../components/UI/ImageSlider/ImageSlider";
+import { GenderOptions } from "../../../utils/Enums";
+import PgtFactories from "../../../services/PgtFatories";
 import AccountFactories from "../../../services/AccountFactories";
 import { ToastNoti, ToastNotiError } from "../../../utils/Utils";
-import PgtFactories from "../../../services/PgtFatories";
+import Constants from "../../../utils/constants";
+import CategoriesFactories from "../../../services/CategoriesFatories";
 
-export default function FormProfileUser(props) {
-  const [user] = useState(JSON.parse(localStorage.getItem("user")));
+export default function FormProfilePgt(props) {
+  const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")));
   const [profile, setProfile] = useState();
+  const [fields, setFields] = useState([]);
   const [showMessage, setShowMessage] = useState({
     status: false,
     type: "",
     content: "",
   });
-
-  useEffect(() => {
-    const fetchData = async () => {
-      const response = await PgtFactories.getPGTDetail(user?.id);
-      setProfile(response[0]);
-    };
-    fetchData();
-  }, []);
 
   const changeMessage = () => {
     setShowMessage({
@@ -33,63 +28,24 @@ export default function FormProfileUser(props) {
       content: "",
     });
   };
-  const createErrorMessage = (msg) => {
-    setShowMessage({ status: true, type: "error", content: msg });
-  };
 
-  const validateFormData = (formData) => {
-    let res = true;
-    let errMsg = "";
-    // if (!formData.firstName) {
-    //   errMsg = "Vui lòng nhập tên của bạn!";
-    // } else if (!formData.lastName) {
-    //   errMsg = "Vui lòng nhập họ của bạn!";
-    // } else if (!formData.name) {
-    //   errMsg = "Vui lòng nhập tên doanh nghiệp!";
-    // } else if (!formData.phone) {
-    //   errMsg = "Vui lòng nhập số điện thoại của bạn!";
-    // if (!formData.province) {
-    //   errMsg = "Vui lòng chọn tỉnh/thành phố địa chỉ!";
-    // } else 
-    if (!formData.listGame && user?.role_id === 2) {
-      errMsg = "Vui lòng chọn lĩnh vực hoạt động!";
-    }
-    if (errMsg) {
-      createErrorMessage(errMsg);
-      res = false;
-    }
-    return res;
-  };
+  useEffect(() => {
+    const newListGame = profile?.listgame?.map((item) => item?.id);
+    setProfile((prevState) => {
+      return {
+        ...prevState,
+        listGame: newListGame,
+      }
+    });
+}, [profile]);
 
-
-  const submitHandler = async (event) => {
-    event.preventDefault();
-    if (!validateFormData(profile)) return;
-    try {
-      const data = {
-        first_name: profile?.first_name,
-        last_name: profile?.last_name,
-        user_name: profile?.user_name,
-        email: profile?.email,
-        gender: profile?.gender,
-        address: profile?.address,
-        phone: profile?.phone,
-        flag: profile?.flag,
-        province: profile?.province,
-        listgame: profile?.listgame,
-      }
-      const response = await AccountFactories.requestUpdate(user?.id, data);
-      if (response?.status === 210){
-        ToastNotiError(response?.message);
-      }
-      else if (response) {
-        ToastNoti();
-      }
-    } catch (error) {
-      console.log(error);
-      ToastNotiError();
-    }
-  };
+  useEffect(() => {
+    const fetchData = async () => {
+      const response = await PgtFactories.getPGTDetail(user?.id);
+      setProfile(response[0]);
+    };
+    fetchData();
+  }, [user?.id]);
 
   const inputChangeHandler = (event, name) => {
     setProfile((prevState) => {
@@ -125,15 +81,62 @@ export default function FormProfileUser(props) {
       };
     });
   };
+  const createErrorMessage = (msg) => {
+    setShowMessage({ status: true, type: "error", content: msg });
+  };
 
-  const [fields, setFields] = useState()
+  const validateFormData = (formData) => {
+    let res = true;
+    let errMsg = "";
+    if (!formData.listGame && user?.role_id === 2) {
+      errMsg = "Vui lòng chọn lĩnh vực hoạt động!";
+    }
+    if (errMsg) {
+      createErrorMessage(errMsg);
+      res = false;
+    }
+    return res;
+  };
+
+  const submitHandler = async (event) => {
+    event.preventDefault();
+    if (!validateFormData(profile)) return;
+    try {
+      const data = {
+        first_name: profile?.first_name,
+        last_name: profile?.last_name,
+        user_name: profile?.user_name,
+        email: profile?.email,
+        gender: profile?.gender,
+        address: profile?.address,
+        phone: profile?.phone,
+        flag: profile?.flag,
+        province: profile?.province,
+        listgame: profile?.listGame,
+        facebook: profile?.facebook,
+        youtube: profile?.youtube,
+        tiktok: profile?.tiktok,
+        instagram: profile?.instagram,
+      }
+      const response = await AccountFactories.requestUpdate(user?.id, data);
+      if (response?.status === 210) {
+        ToastNotiError(response?.message);
+      }
+      else if (response) {
+        ToastNoti();
+      }
+    } catch (error) {
+      console.log(error);
+      ToastNotiError();
+    }
+  };
+
   useLayoutEffect(() => {
     const fetchData = async () => {
       const response = await CategoriesFactories.getListCategories();
       setFields(response);
     };
     fetchData();
-    // setFields(Constants.optionsCategory)
   }, []);
   const optionCategory = fields?.map((field) => {
     return {
@@ -141,7 +144,6 @@ export default function FormProfileUser(props) {
       label: field.name,
     };
   });
-
   return (
     <form className={classes.form} onSubmit={submitHandler}>
       <Row>
@@ -154,7 +156,7 @@ export default function FormProfileUser(props) {
           />
           <h1>Thông tin cá nhân</h1>
           <Row className={classes.form_control}>
-            <Col span={7}>Tên:</Col>
+            <Col span={6}>Tên:</Col>
             <Col span={17}>
               <input
                 className={classes.input_profile}
@@ -167,7 +169,7 @@ export default function FormProfileUser(props) {
           </Row>
 
           <Row className={classes.form_control}>
-            <Col span={7}>Họ:</Col>
+            <Col span={6}>Họ:</Col>
             <Col span={17}>
               <input
                 placeholder="Nhập họ"
@@ -178,8 +180,9 @@ export default function FormProfileUser(props) {
               />
             </Col>
           </Row>
-          <div className={classes.form_control}>
-            <Col span={7}>Giới tính:</Col>
+
+          <Row className={classes.form_control}>
+            <Col span={6}>Giới tính:</Col>
             <Col span={17}>
               <Select
                 placeholder="Giới tính"
@@ -190,9 +193,10 @@ export default function FormProfileUser(props) {
                 options={Constants.optionSex}
               />
             </Col>
-          </div>
+          </Row>
+
           <Row className={classes.form_control}>
-            <Col span={7}>Số điện thoại:</Col>
+            <Col span={6}>Số điện thoại:</Col>
             <Col span={17}>
               <input
                 placeholder="Số điện thoại"
@@ -204,22 +208,8 @@ export default function FormProfileUser(props) {
             </Col>
           </Row>
 
-          {user?.role === 2 &&
-            <Row className={classes.form_control}>
-              <Col span={7}>Lĩnh vực:</Col>
-              <Col span={17}>
-                <Select
-                  mode="multiple"
-                  style={{ width: "66.5%" }}
-                  placeholder="Chọn lĩnh Vực"
-                  options={optionCategory}
-                />
-              </Col>
-            </Row>
-          }
-
           <Row className={classes.form_control}>
-            <Col span={7}>Tỉnh/Thành phố:</Col>
+            <Col span={6}>Tỉnh/Thành phố:</Col>
             <Col span={17}>
               <Row>
                 <Select
@@ -235,7 +225,7 @@ export default function FormProfileUser(props) {
           </Row>
 
           <Row className={classes.form_control}>
-            <Col span={7}>Địa chỉ cụ thể:</Col>
+            <Col span={6}>Địa chỉ cụ thể:</Col>
             <Col span={17}>
               <input
                 placeholder="Địa chỉ cụ thể"
@@ -246,6 +236,83 @@ export default function FormProfileUser(props) {
               />
             </Col>
           </Row>
+
+          <Row className={classes.form_control}>
+            <Col span={6}>Lĩnh vực:</Col>
+            <Col span={17}>
+              <Select
+                mode="multiple"
+                style={{
+                  width: "66.5%",
+                }}
+                placeholder="Chọn lĩnh Vực"
+                onChange={onChangeFieldsHandler}
+                value={profile?.listgame?.map((item) => item.id)}
+                options={optionCategory}
+              />
+            </Col>
+          </Row>
+
+          <Row className={classes.form_control}>
+            <Col span={6}>Facebook url:</Col>
+            <Col span={18}>
+              <input
+                placeholder="Link trang Facebook cá nhân"
+                onChange={(e) => inputChangeHandler(e, 'facebook')}
+                value={profile?.facebook}
+                className={classes.input_profile}
+                defaultValue={profile?.facebook}
+                name="facebookUrl"
+                type="url"
+              />
+            </Col>
+          </Row>
+
+          <Row className={classes.form_control}>
+            <Col span={6}>Youtube url:</Col>
+            <Col span={18}>
+              <input
+                placeholder="Link kênh Youtube cá nhân"
+                onChange={(e) => inputChangeHandler(e, 'youtube')}
+                value={profile?.youtube}
+                className={classes.input_profile}
+                defaultValue={profile?.youtube}
+                name="youtube"
+                type="url"
+              />
+            </Col>
+          </Row>
+
+          <Row className={classes.form_control}>
+            <Col span={6}>Instagram url:</Col>
+            <Col span={18}>
+              <input
+                placeholder="Link kênh Instargram cá nhân"
+                onChange={(e) => inputChangeHandler(e, 'instagram')}
+                value={profile?.instagram}
+                className={classes.input_profile}
+                defaultValue={profile?.instagram}
+                name="instagram"
+                type="url"
+              />
+            </Col>
+          </Row>
+
+          <Row className={classes.form_control}>
+            <Col span={6}>TikTok url:</Col>
+            <Col span={18}>
+              <input
+                placeholder="Link trang TikTok cá nhân"
+                onChange={(e) => inputChangeHandler(e, 'tiktok')}
+                value={profile?.tiktok}
+                className={classes.input_profile}
+                defaultValue={profile?.tiktok}
+                name="tiktok"
+                type="url"
+              />
+            </Col>
+          </Row>
+
           <Row>
             <Col offset={4}></Col>
             <Col span={16}>

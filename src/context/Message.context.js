@@ -8,17 +8,17 @@ export const MessageContext = createContext();
 export const MessageProvider = ({ children }) => {
   const { user } = useContext(AuthContext);
   const [messengerList, setMessengerList] = useState([]);
-  
   const compareTimestamps = (a, b) => b.createdAt.toDate().getTime() - a.createdAt.toDate().getTime();
   // Hàm để bắt đầu lắng nghe thay đổi đối với collection 'messengerList'
+  
+  const userId = String(user?.id); 
   const startMessengerListListener = useCallback(() => {
-    // Đảm bảo người dùng đã đăng nhập và có đối tượng user
     if (user) {
       const notificationsQuery = query(
-        collection(db, "chats"),
-        // where("FirstUser", "==", parseInt(user.id)),
-        // where("SecondUser", "==", parseInt(user.id)),
-        orderBy("createdAt", "desc") // Sắp xếp từ mới đến cũ
+        collection(db,"chats"),
+        where("chatId", ">=", userId)
+        // where("chatId", "array-contains", userId),
+        // orderBy("createdAt", "desc")
       );
       // Lắng nghe thay đổi và cập nhật state
       return onSnapshot(notificationsQuery, (querySnapshot) => {
@@ -34,7 +34,6 @@ export const MessageProvider = ({ children }) => {
       return undefined;
     }
   }, [user]);
-
 
   useEffect(() => {
     const unsubscribe = startMessengerListListener();

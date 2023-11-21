@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
-import { createPayment } from "../../services/PaymentService.js";
 import classes from "./PaymentResult.module.css";
 import { Col, Row } from "antd";
 import { CheckCircleFilled, CloseCircleFilled } from "@ant-design/icons";
@@ -9,7 +8,6 @@ import { MessageContext } from "../../context/Message.context.js";
 import { formatDate } from "../../services/DateTimeUtil.js";
 import { formatCurrency } from "../../services/CurrencyUtil.js";
 import Footer from "../../components/Footer/Footer.jsx";
-import Header from "../../components/Header/index.jsx";
 import { AuthContext } from "../../context/auth.context.js";
 
 let count = 0;
@@ -33,33 +31,34 @@ function PaymentResult() {
       txnRef: params.get("vnp_TxnRef"),
     };
     setPayment(paymentResult);
-    getBookingByTxnRef(paymentResult.txnRef).then((res) => {
-      const booking = res[0];
-      createPayment(booking.id, paymentResult)
-      // .then(res => console.log(res));
-      setKol(booking.kol);
-      if (paymentResult.status === "SUCCESS") {
-        updateBookingStatus(booking.id, "PAID")
-          .then(res => {
-            setTimeout(() => {
-              connect();
-              if (count === 0) {
-                sendPrivateNotification({
-                  type: "BOOKING",
-                  bookingId: booking.id,
-                  content: `${user.firstName} đã thanh toán phí hợp tác cho bạn.`,
-                  timestamp: formatDate(new Date()),
-                  userId: booking.kol.userId,
-                });
-                count++;
-              } else {
-                count = 0;
-              }
-              console.log('NOTIFICATION SENT')
-            }, 3000);
-          })
-      }
-    });
+    console.log("🚀 ~ file: PaymentResult.jsx:33 ~ useEffect ~ paymentResult:", paymentResult)
+    // getBookingByTxnRef(paymentResult.txnRef).then((res) => {
+    //   const booking = res[0];
+    //   createPayment(booking.id, paymentResult)
+    //   // .then(res => console.log(res));
+    //   setKol(booking.kol);
+    //   if (paymentResult.status === "SUCCESS") {
+    //     updateBookingStatus(booking.id, "PAID")
+    //       .then(res => {
+    //         setTimeout(() => {
+    //           connect();
+    //           if (count === 0) {
+    //             sendPrivateNotification({
+    //               type: "BOOKING",
+    //               bookingId: booking.id,
+    //               content: `${user.firstName} đã thanh toán phí hợp tác cho bạn.`,
+    //               timestamp: formatDate(new Date()),
+    //               userId: booking.kol.userId,
+    //             });
+    //             count++;
+    //           } else {
+    //             count = 0;
+    //           }
+    //           console.log('NOTIFICATION SENT')
+    //         }, 3000);
+    //       })
+    //   }
+    // });
   }, []);
 
   return (
@@ -76,7 +75,7 @@ function PaymentResult() {
               )}
 
               <h3 class="text-muted">
-                {payment.status === "SUCCESS"
+                {payment?.status === "SUCCESS"
                   ? "Thanh toán thành công"
                   : "Thanh toán thất bại"}
               </h3>
