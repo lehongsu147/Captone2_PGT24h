@@ -73,7 +73,7 @@ const RequestBooking = () => {
       align: "left",
       width: 150,
       render: (text, data) =>
-        data.status === 4 ? (
+        (data.status === 4 || data.status === 5  )? (
           <Badge status="success" text="Hoàn thành" />
         ) : data.status === 3 ? (
           <Badge status="error" text="PGT Đã từ chối" />

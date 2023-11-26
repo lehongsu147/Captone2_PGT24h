@@ -3,7 +3,6 @@ import { DatePicker, Select, Tabs } from "antd";
 import ChartYear from "./ChartYear";
 
 const Statistical = () => {
-
   const [year, setYear] = useState(2023);
   const [month, setMonth] = useState();
   const [week, setWeek] = useState();

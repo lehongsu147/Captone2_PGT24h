@@ -6,16 +6,21 @@ import { FaDotCircle } from "react-icons/fa";
 import { useLocation } from "react-router-dom";
 import { MessageContext } from "../../context/Message.context";
 import { serverTimestamp } from "firebase/firestore";
+import AccountFactories from "../../services/AccountFactories";
+import PgtFactories from "../../services/PgtFatories";
 
 const Chat = (props) => {
   const user = JSON.parse(localStorage.getItem("user"));
   const { messengerList } = useContext(MessageContext);
   const location = useLocation();
-  const id = location.state?.chatId;
-  const toUserName = location.state?.toUserName;
-  const toUserAvatar = location.state?.toUserAvatar;
   const [messageId, setMessageId] = useState();
 
+  const id = location.state?.chatId;
+  const toUserAvatar = location.state?.toUserAvatar;
+  const toUserName = location.state?.toUserName;
+  const chat_user_id = location.state?.user_id;
+
+  const [secondUserInfo, setSecondUserInfo] = useState();
   const [chatList, setChatList] = useState();
   const [newChatInfo, setNewChatInfo] = useState();
   const [chatInfoExits, setChatInfoExist] = useState();
@@ -26,19 +31,29 @@ const Chat = (props) => {
       parseInt(item.firstUserId) === parseInt(id) || parseInt(item.secondUserId) === parseInt(id)
     );
   };
-  console.log('chat'.newChatInfo);
+
+  useEffect(()=>{
+    async function fetchdata (){
+      const resp = await PgtFactories.getPGTDetail(chat_user_id);
+      setSecondUserInfo(resp[0]);
+    }
+    if ( chat_user_id){
+      fetchdata();
+    } 
+  },[chat_user_id])
+
   useEffect(() => {
-    if (id && toUserAvatar && toUserName) {
+    if (secondUserInfo ) {
       const exitsChat = isUserInMesList(messengerList, id);
       if (!exitsChat) {
         const newChat = {
-          chatId: `${user?.id}_${parseInt(id)}`,
+          chatId: `${user?.id}_${parseInt(chat_user_id)}`,
           firstUserId: user?.id,
-          secondUserId: parseInt(id),
+          secondUserId: chat_user_id,
           firstName: user?.userName,
-          secondName: toUserName,
+          secondName: secondUserInfo?.user_name,
           firstAvatar: user?.avatar,
-          secondAvatar: toUserAvatar,
+          secondAvatar: secondUserInfo?.avatar,
           createdAt: serverTimestamp(),
           lastMessage: '',
           read: false,
@@ -54,7 +69,7 @@ const Chat = (props) => {
       setChatList(messengerList)
       setIsNewChat(false);
     }
-  }, [id])
+  }, [id,secondUserInfo])
 
   useEffect(() => {
     const chatInfo = messengerList?.find(item => item?.chatId === messageId)

@@ -10,8 +10,6 @@ import { createNotification, sendNewMessageToExistingUser, sendNewMessageToNewUs
 const BookingDetail = (props) => {
   const { bookingId, isHaveComment } = props;
   const [booking, setBooking] = useState();
-  console.log("🚀 ~ file: BookingDetail.jsx:13 ~ BookingDetail ~ booking:", booking)
-
   const user = JSON.parse(localStorage.getItem("user"))
 
   const fetchData = async (bookingId) => {
@@ -37,12 +35,17 @@ const BookingDetail = (props) => {
 
 
   const onAcceptSubmit = async () => {
-    try {status
+    try {
       const response = await BookingFactories.updateBooking(bookingId, 2);
       if (response?.status === 200) {
         toast.success('Chấp nhận yêu cầu booking thành công.')
-        createNotification(booking?.user_id, 2, response?.data[0].id, "PGT đã chấp nhận yêu cầu booking của bạn", "Liên hệ với PGT để biết thêm chi tiết.");
-
+        createNotification(booking?.user_id,
+           2,
+          booking?.id,
+          "PGT đã chấp nhận yêu cầu booking của bạn", "Liên hệ với PGT để biết thêm chi tiết.",
+          booking?.user_id,
+          booking?.pgt_id,
+        );
         sendNewMessageToNewUser(
           user?.id,
           parseInt(booking?.user_id),
@@ -64,7 +67,10 @@ const BookingDetail = (props) => {
       const response = await BookingFactories.updateBooking(bookingId, 3);
       if (response?.status === 200) {
         toast.success('Đã từ chối yêu cầu booking.')
-        createNotification(booking?.user_id, 2, response?.data[0].id, "PGT đã từ chối yêu cầu booking của bạn", "Liên hệ với PGT để biết thêm chi tiết.");
+        createNotification(booking?.user_id, 2, response?.data[0].id,
+          "PGT đã từ chối yêu cầu booking của bạn", "Liên hệ với PGT để biết thêm chi tiết.",
+          booking?.user_id,
+          booking?.pgt_id);
       }
       onCloseModal();
     } catch (error) {
@@ -116,7 +122,7 @@ const BookingDetail = (props) => {
             {booking?.status === 1 && <span style={{ color: 'green', float: 'right' }} > Chờ xác nhận</span>}
             {booking?.status === 2 && <span style={{ color: 'blue', float: 'right' }} > {user?.id === booking?.user_id ? 'PGT' : 'Bạn'} đã chấp nhận yêu cầu booking này</span>}
             {booking?.status === 3 && <span style={{ float: 'right', color: 'red' }} > {user?.id === booking?.user_id ? 'PGT' : 'Bạn'} đã từ chối yêu cầu booking này</span>}
-            { (booking?.status === 4 || booking?.status === 5  )&& <span style={{ float: 'right', color: 'green' }} > Hoàn thành</span>}
+            {(booking?.status === 4 || booking?.status === 5) && <span style={{ float: 'right', color: 'green' }} > Hoàn thành</span>}
           </Form.Item>
           <Form.Item label="Ngày" >
             <Input
@@ -142,7 +148,7 @@ const BookingDetail = (props) => {
           {isHaveComment ? <>
             <Form.Item label="Đánh giá">
               <span style={{ float: 'right' }}>
-                <Rate tooltips={desc} onChange={setValueRate} value={booking?.rate ? booking?.rate  : valueRate} />
+                <Rate tooltips={desc} onChange={setValueRate} value={booking?.rate ? booking?.rate : valueRate} />
                 {valueRate ? <span className="ant-rate-text">{desc[valueRate - 1]}</span> : ''}
               </span>
             </Form.Item>

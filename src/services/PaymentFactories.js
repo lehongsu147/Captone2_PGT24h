@@ -20,11 +20,26 @@ const PaymentFactories = {
       data: data,
     });
   },
-  createVnPayPayment: async (data) => {
+  getPaymentDetail: async (id) => {
     return ApiOperation.request({
-      url: ApiConstants.PAYMENT_URL,
-      method: "POST",
-      data: data,
+      url: `${ApiConstants.PAYMENT}/${id}`,
+      method: "GET",
+    });
+  },
+  getPaymentListForUser: async (id) => {
+    return ApiOperation.request({
+      url: `${ApiConstants.PAYMENT_USER}/${id}`,
+      method: "GET",
+    });
+  },
+  updatePaymentDetail: async (id,txtNo) => {
+    return ApiOperation.request({
+      url: `${ApiConstants.PAYMENT}${id}`,
+      method: "PUT",
+      data: {
+        status : 2,
+        txtNo: txtNo
+      }
     });
   },
 };

@@ -7,7 +7,7 @@ export const NotificationProvider = ({ children }) => {
     const { user } = useContext(AuthContext);
     const [notifications, setNotifications] = useState([]);
 
-    const compareTimestamps = (a, b) => b.createdAt.toDate().getTime() - a.createdAt.toDate().getTime();
+    const compareTimestamps = (a, b) => b.createdAt?.toDate().getTime() - a.createdAt?.toDate().getTime();
     // Hàm để bắt đầu lắng nghe thay đổi đối với collection 'notifications'
     const startNotificationListener = useCallback(() => {
         // Đảm bảo người dùng đã đăng nhập và có đối tượng user

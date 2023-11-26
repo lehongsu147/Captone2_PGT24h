@@ -30,7 +30,7 @@ const CardPgt = (props) => {
                     <div className="channel__data__text">
                         <div className="channel__subdata">
                             <div className="channel__views">
-                                {data?.listgame.map((item, index) => (
+                                {data?.listgame.slice(0,4).map((item, index) => (
                                     <Chanel item={item} key={index} />
                                 ))}
                             </div>

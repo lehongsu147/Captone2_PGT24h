@@ -11,6 +11,7 @@ import { createUserWithEmailAndPassword, sendEmailVerification } from "firebase/
 
 import { auth } from "../../firebase";
 import { toast } from "react-toastify";
+import { ToastNotiError } from "../../utils/Utils";
 
 const Register = (props) => {
   const [userInput, setUserInput] = useState({
@@ -76,26 +77,39 @@ const Register = (props) => {
 
   const registerWithCredentials = async ({ email, password }) => {
     try {
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      const user = userCredential.user;
-      if (user) {
-        await sendEmailVerification(user);
-        const response = await AccountFactories.requestLSignUp(userInput);
-        if (response?.status === 200) {
-          toast.success('Đăng ký thành công! Vui lòng kiểm tra email để xác thực tài khoản.')
-        }
-        else{
-          toast.success('Có lỗi xảy ra. Vui lòng thử lại sau.')
-        }
+      const response = await AccountFactories.requestLSignUp(userInput);
+      if (response?.status === 200) {
+        toast.success('Đăng ký thành công.')
+        navigator('/login');
       }
-      navigator('/login');
+      else if(response?.status === 210 ) {
+        toast.error(response?.message)
+      }
     } catch (error) {
-      setShowMessage({
-        status: true,
-        type: "error",
-        content: `Đăng ký thất bại: Địa chỉ email đã được sử dụng`,
-      });
+       ToastNotiError();  
     }
+
+    // try {
+    //   const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+    //   const user = userCredential.user;
+    //   if (user) {
+    //     // await sendEmailVerification(user);
+    //     const response = await AccountFactories.requestLSignUp(userInput);
+    //     if (response?.status === 200) {
+    //       toast.success('Đăng ký thành công! Vui lòng kiểm tra email để xác thực tài khoản.')
+    //     }
+    //     else{
+    //       toast.success('Có lỗi xảy ra. Vui lòng thử lại sau.')
+    //     }
+    //   }
+    //   navigator('/login');
+    // } catch (error) {
+    //   setShowMessage({
+    //     status: true,
+    //     type: "error",
+    //     content: `Đăng ký thất bại: Địa chỉ email đã được sử dụng`,
+    //   });
+    // }
   }
 
 

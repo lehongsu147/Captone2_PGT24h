@@ -12,7 +12,6 @@ import ForgotPassword from "../pages/ForgotPassword/ForgotPassword";
 import ResetPassword from "../pages/ForgotPassword/ResetPassword";
 import Chat from "../pages/Chat/Chat";
 import NotFound from "../pages/NotFound/NotFound";
-import PageDetail from "../pages/Details/PageEntDetail/PageDetail";
 import HomeAdmin from "../pages/Admin/HomeAdmin";
 import PaymentResult from "../pages/Payment/PaymentResult";
 import BookingDetails from "../pages/Booking/BookingDetails";
@@ -89,21 +88,19 @@ const Router = () => {
               <ProtectedRoute Component={Chat} />
             </LayoutHeader>}
         />
-        <Route
-          path="ents/:id"
-          element=
-          {
-            <LayoutHeader>
-              <ProtectedRoute Component={PageDetail} />
-            </LayoutHeader>
-          }
-        />
+      
         <Route
           path="/setting"
           element={
             <LayoutHeader>
               <ProtectedRoute Component={Profile} />
             </LayoutHeader>}
+        />
+        <Route
+          path="/vnpay/return"
+          element={<LayoutHeader>
+            <ProtectedRoute Component={PaymentResult} />
+          </LayoutHeader>}
         />
         <Route
           path="/bookings/:id"
@@ -122,10 +119,7 @@ const Router = () => {
           path="/admin"
           element=<ProtectedRoute Component={HomeAdmin} role={"ADMIN"} />
         />
-        <Route
-          path="/vnpay/return"
-          element={<ProtectedRoute Component={PaymentResult} />}
-        />
+
       </Routes>
     </BrowserRouter>
   );

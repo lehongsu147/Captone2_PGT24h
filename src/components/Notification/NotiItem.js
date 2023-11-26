@@ -2,7 +2,6 @@ import { Button, Modal } from "antd";
 import classes from "./Notification.module.css";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import BookingDetail from "../../pages/Booking/BookingDetail";
 
 export default function NotiItem({ noti, onClickBookingId = () => { } }) {
   const [daysPassed, setDaysPassed] = useState(null);
@@ -10,7 +9,7 @@ export default function NotiItem({ noti, onClickBookingId = () => { } }) {
   useEffect(() => {
     const calculateDaysPassed = () => {
       const currentTimestamp = Math.floor(new Date().getTime() / 1000);
-      const createdAtTimestamp = noti?.createdAt.seconds;
+      const createdAtTimestamp = noti?.createdAt?.seconds;
       const secondsDifference = currentTimestamp - createdAtTimestamp;
       const daysDifference = Math.floor(secondsDifference / (24 * 60 * 60));
       setDaysPassed(daysDifference);
@@ -30,9 +29,12 @@ export default function NotiItem({ noti, onClickBookingId = () => { } }) {
   };
 
   function handleNavigate() {
-    // navigate(`/chat/${noti?.userId}`);
-    navigate(`/chat/1`);
-    // window.location.replace(`/chat/${id}`)
+    const user_id =  noti?.type === 1 ?  noti?.user_id : noti?.pgt_id;
+    navigate(`/chat`, {
+      state: {
+        user_id: user_id,
+      }
+    })
   }
 
   function showModalFeedback() {
@@ -56,7 +58,7 @@ export default function NotiItem({ noti, onClickBookingId = () => { } }) {
         className={classes["item-btn"]}
       >
         {(noti?.type === 1 || noti?.type === 2) && <>
-          <Button type='default' onClick={handleNavigate}>
+          <Button type='default' onClick={()=>handleNavigate()}>
             Nhắn  tin ngay
           </Button>
           <Button type='primary' onClick={handleClickBookingDetail}>

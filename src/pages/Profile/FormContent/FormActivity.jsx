@@ -8,8 +8,6 @@ import { WalletTwoTone } from "@ant-design/icons";
 export default function FormActivity() {
   const user = JSON.parse(localStorage.getItem("user"));
   const [dateTable, setDataTable] = useState();
-  const [monthSelect, setMonthSelect] = useState("");
-  const [nameKOL, setNameKOL] = useState("");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -73,13 +71,14 @@ export default function FormActivity() {
       key: "category_link",
       align: 'center',
       width: 120,
-      render: (text, data) => (
+      render: (text, data) => 
+        data.status === 2 && (
         <Button style={{ width: 170 }} onClick={() => handleAddMonney(data)} type="primary" icon={<WalletTwoTone width={70} />} size={'large'} >
           <span>
             Thanh Toán
           </span>
         </Button>
-      ),
+        )
     },
   ];
 
@@ -90,7 +89,8 @@ export default function FormActivity() {
         amount: value?.price,
         bookingId: value?.id,
         pgtName: value?.pgt_name,
-        pgtId: value?.PgtId,
+        pgtId: value?.pgt_id,
+        userId: user?.id,
       }
       const resp = await PaymentFactories.createVnPayPayment(data)
       if (resp.status === 200) {
@@ -104,12 +104,6 @@ export default function FormActivity() {
     console.log(e);
   };
 
-  const handleOnChangeMonth = (e) => {
-    setMonthSelect(e.target.value);
-  };
-  const handleOnChangeInput = (e) => {
-    setNameKOL(e.target.value);
-  };
 
   return (
     <div className="booking-container">

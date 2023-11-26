@@ -1,65 +1,17 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import styles from './Payment.module.scss'
 import { Button, Input, Row, Space, Table, message } from 'antd';
 import { toast } from 'react-toastify';
-import { DownloadOutlined, EyeInvisibleOutlined, EyeTwoTone, MoneyCollectTwoTone, WalletTwoTone } from '@ant-design/icons';
 import Title from 'antd/es/typography/Title';
-import Temp from '../../../../utils/temp';
 import PaymentFactories from '../../../../services/PaymentFactories';
+import { AuthContext } from '../../../../context/auth.context';
+import { ToastNotiError, convertStringToNumber, getDate } from '../../../../utils/Utils';
+import { MoneyCollectTwoTone, WalletTwoTone } from '@ant-design/icons';
 const PaymentWallett = () => {
-    const [profile, setProfile] = useState({});
-    const [loading, setLoading] = useState(false);
-    const [messageApi, contextHolder] = message.useMessage();
-    const [passwordVisible, setPasswordVisible] = React.useState(true);
-
-    const validateFormData = (formData) => {
-        let res = true;
-        let errMsg = "";
-        if (!formData.pass) {
-            errMsg = "Vui lòng nhập tên của bạn!";
-        } else if (!formData.confirmpass) {
-            errMsg = "Vui lòng nhập họ của bạn!";
-        } else if (!formData.newPass) {
-            errMsg = "Vui lòng nhập địa chỉ cụ thể!";
-        }
-        if (errMsg) {
-            messageApi.open({
-                type: 'warning',
-                content: errMsg,
-            });
-            res = false;
-        }
-        return res;
-    };
-
-    function onUpdate(event) {
-        if (!validateFormData(profile)) return;
-        setLoading(true);
-        // updateEntProfile(profile).then(
-        //     (res) => {
-        //         console.log(res);
-        //     }
-        //     // messageApi.open({
-        //     //     type: 'success',
-        //     //     content: "Cập nhật thành công!",
-        //     // })
-        // )
-        toast.success('🦄 Lưu dữ liệu thành công!', {
-            position: "top-right",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "light",
-        });
-    }
-
     const columns = [
         {
             title: "Mã giao dịch",
-            dataIndex: "code",
+            dataIndex: "txn_ref",
             width: 100,
             render: (text) => (
                 <div className="text-data">
@@ -72,22 +24,22 @@ const PaymentWallett = () => {
             dataIndex: "date",
             key: "date",
             width: 140,
-            render: (text) => <div className="text-data">{text}</div>,
+            render: (text) => <div className="text-data">{getDate(text, 2)}</div>,
         },
         {
             title: "Nội dung",
-            dataIndex: "content",
-            key: "content",
+            dataIndex: "description",
+            key: "description",
             width: 140,
-            render: (text,data) => <div className="text-data">{text}</div>,
+            render: (text, data) => <div className="text-data">{text}</div>,
         },
         {
             title: "Số tiền",
-            dataIndex: "money",
-            key: "money",
+            dataIndex: "amount",
+            key: "amount",
             align: 'right',
             width: 140,
-            render: (text,data) => <div className="text-money" >{text} </div>,
+            render: (text, data) => <div className="text-money" >{convertStringToNumber(text)} </div>,
         },
         {
             title: "Trạng thái",
@@ -95,39 +47,56 @@ const PaymentWallett = () => {
             key: "status",
             align: 'right',
             width: 140,
-            render: (text,data) => <div className="text-money" style={{ color: data?.status === 1 ? 'red' : 'rgb(102, 166, 240)'}}> { data?.status === 2 ? 'Thành công' : 'Thất bại'} </div>,
+            render: (text, data) => <div className="text-money" style={{ color: data?.status === 1 ? 'red' : 'rgb(102, 166, 240)' }}> {data?.status === 2 ? 'Thành công' : 'Thất bại'} </div>,
         },
     ];
     const [historyWallet, setHistoryWallet] = useState([]);
+    const { user } = useContext(AuthContext);
 
-    useEffect(() => {
-        // const getData = async () => {
-        //     setHistoryWallet([]);
-        // };
-        // getData();
-    }, []);
-
-    const handleAddMonney = async()=>{
+    async function fetchDate(id) {
         try {
-            const data ={
-                amount: 19999,
-            }
-            const resp = await PaymentFactories.createVnPayPayment(data) 
-            if ( resp.status === 200){
-                window.location.href = resp?.url;
+            const resp = await PaymentFactories.getPaymentListForUser(user?.id);
+            if (resp?.status === 200) {
+                setHistoryWallet(resp.data);
             }
         } catch (error) {
-            
+            ToastNotiError(error);
         }
     }
+    useEffect(() => {
+        fetchDate(user?.id);
+    }, [user?.id]);
+
     return (
         <main className={'booking-container'} >
             <div className={styles.formInfo}>
-                <Title level={1} style={{color: 'red'}}> Lịch sử giao dịch</Title>
+                <Title level={1}>Ví & Lịch sử thanh toán</Title>
+                <Space direction="horizontal" className={styles.spaceContent}  >
+                    <Space direction="vertical" >
+                        <span className={styles.textCoin}                            >
+                            Số dư hiện tại
+                        </span>
+                        <span className={styles.textCoinValue}                            >
+                            1.000.000 VND
+                        </span>
+                    </Space>
+                    <Space direction="vertical">
+                        <Button style={{ width: 170 }} type="primary" icon={<WalletTwoTone width={70} />} size={'large'} >
+                            <span>
+                                Nạp tiền
+                            </span>
+                        </Button>
+                        <Button style={{ width: 170 }} type="primary" icon={<MoneyCollectTwoTone width={30} />} size={'large'} >
+                            <span>
+                                Rút tiền
+                            </span>
+                        </Button>
+                    </Space>
+                </Space>
                 <div className="booking-table">
                     <Table
                         columns={columns}
-                        dataSource={Temp.walletHistory} />
+                        dataSource={historyWallet} />
                 </div>
             </div>
         </main >

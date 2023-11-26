@@ -174,7 +174,7 @@ const ProfileUser = ({ type }) => {
         }
     }, [fileUploadLink])
     function updateImageProfileUser() {
-        const data = { image: fileUploadLink, }
+        const data = { avatar: fileUploadLink, }
         fetchDataUpdate(data)
     }
     function handleChangeImage(file) {
@@ -212,10 +212,10 @@ const ProfileUser = ({ type }) => {
                                         className={styles.uploadInput}
                                         style={{ display: 'none' }}
                                         onChange={(e) => handleChangeImage(e.target.files[0])}
-                                    />
+                                    />  
                                 </div>
                                 <Avatar
-                                    src={userInfo?.image}
+                                    src={userInfo?.avatar}
                                     alt="avatar"
                                     style={{ width: 200, height: 200 }}
                                     photoList={userInfo?.listImage ?? ''}

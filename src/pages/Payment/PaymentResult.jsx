@@ -4,19 +4,42 @@ import classes from "./PaymentResult.module.css";
 import { Col, Row } from "antd";
 import { CheckCircleFilled, CloseCircleFilled } from "@ant-design/icons";
 import { useContext } from "react";
-import { MessageContext } from "../../context/Message.context.js";
-import { formatDate } from "../../services/DateTimeUtil.js";
 import { formatCurrency } from "../../services/CurrencyUtil.js";
 import Footer from "../../components/Footer/Footer.jsx";
 import { AuthContext } from "../../context/auth.context.js";
+import PaymentFactories from "../../services/PaymentFactories.js";
+import { ToastNotiError } from "../../utils/Utils.js";
+import { createNotification } from "../../services/ChatService.js";
 
-let count = 0;
 function PaymentResult() {
   const { user } = useContext(AuthContext);
-  const { sendPrivateNotification, connect } = useContext(MessageContext);
   const [params, setParams] = useSearchParams();
   const [payment, setPayment] = useState({});
-  const [kol, setKol] = useState({});
+  const [pgt, setPgt] = useState();
+
+  async function updateStatusPayment(paymentResult) {
+    try {
+      const resp = await PaymentFactories.getPaymentDetail(paymentResult.txnRef);
+      if (resp?.status === 200) {
+        const paymentData = resp.data;
+        setPgt(paymentData?.pgt_name)
+        if (paymentResult?.status === 'SUCCESS') {
+          try {
+            await PaymentFactories.updatePaymentDetail(paymentResult.txnRef, paymentResult?.txnNo);
+          } catch (error) {
+            ToastNotiError('Có lỗi xảy ra, liên hệ với Admin')
+          }
+          createNotification(paymentData?.user_id, 6, paymentData?.booking_id, "Thanh toán thành công", `Thanh toán thành công cho lượt booking PGT ${paymentData?.pgt_name}`);
+          createNotification(paymentData?.pgt_id, 6, paymentData?.booking_id, "Thanh toán thành công", `Người dùng ${paymentData?.user_name} thanh toán thành công cho lượt booking `);
+        }
+      }
+      else {
+        ToastNotiError();
+      }
+    } catch (error) {
+      ToastNotiError();
+    }
+  }
 
   useEffect(() => {
     const paymentResult = {
@@ -31,38 +54,16 @@ function PaymentResult() {
       txnRef: params.get("vnp_TxnRef"),
     };
     setPayment(paymentResult);
-    console.log("🚀 ~ file: PaymentResult.jsx:33 ~ useEffect ~ paymentResult:", paymentResult)
-    // getBookingByTxnRef(paymentResult.txnRef).then((res) => {
-    //   const booking = res[0];
-    //   createPayment(booking.id, paymentResult)
-    //   // .then(res => console.log(res));
-    //   setKol(booking.kol);
-    //   if (paymentResult.status === "SUCCESS") {
-    //     updateBookingStatus(booking.id, "PAID")
-    //       .then(res => {
-    //         setTimeout(() => {
-    //           connect();
-    //           if (count === 0) {
-    //             sendPrivateNotification({
-    //               type: "BOOKING",
-    //               bookingId: booking.id,
-    //               content: `${user.firstName} đã thanh toán phí hợp tác cho bạn.`,
-    //               timestamp: formatDate(new Date()),
-    //               userId: booking.kol.userId,
-    //             });
-    //             count++;
-    //           } else {
-    //             count = 0;
-    //           }
-    //           console.log('NOTIFICATION SENT')
-    //         }, 3000);
-    //       })
-    //   }
-    // });
-  }, []);
+  }, [params]);
+  
+  useEffect(() => {
+    if (payment?.txnRef){
+      updateStatusPayment(payment);
+    }
+  }, [payment])
 
   return (
-    <>
+    <div style={{width: '100%'}}>
       <div className={classes.payment}>
         <Row>
           <Col offset={4}></Col>
@@ -84,7 +85,7 @@ function PaymentResult() {
                 <p>
                   Quý doanh nghiệp đã thanh toán thành công{" "}
                   <b>{formatCurrency("vi-VN", "VND", payment.amount / 100)}</b>{" "}
-                  cho PGT <b>{`${kol.firstName} ${kol.lastName}`}</b>. Mã giao
+                  cho PGT <b>{pgt}</b>. Mã giao
                   dịch <b>{payment.txnNo}</b>.
                 </p>
               )}
@@ -105,7 +106,7 @@ function PaymentResult() {
         </Row>
       </div>
       <Footer />
-    </>
+    </div>
   );
 }
 

@@ -8,7 +8,7 @@ import FormPayment from "../FormContent/FormPayment";
 import PaymentWallett from "../FormContent/Payment/PaymentWallett";
 import RequestBooking from "../FormContent/Book/RequestBooking";
 
-const componentKOL = [
+const componentPgt = [
   { key: "1", component: <FormProfilepGT /> },
   { key: "sub1", component: <FormEmail /> },
   { key: "sub2", component: <FormPassword /> },
@@ -18,7 +18,7 @@ const componentKOL = [
 
 ];
 
-const componentEnt = [
+const componentUser = [
   { key: "1", component: <FormProfileUser /> },
   { key: "sub1", component: <FormEmail /> },
   { key: "sub2", component: <FormPassword /> },
@@ -32,8 +32,9 @@ const SubContext = (props) => {
     <div className="sub-context" style={{ width: "100%"  , height: 'calc(100vh - 60px)' , overflow: 'scroll' }}>
       {props.user.role_id === 2 &&
         Object.keys(props.changeContent).length === 0 && <FormProfilepGT />}
+
       {props.user.role_id === 2 &&
-        componentKOL.map((component) => {
+        componentPgt.map((component) => {
           if (component.key === props.changeContent) return component.component;
         })}
 
@@ -42,7 +43,7 @@ const SubContext = (props) => {
           <FormProfileUser />
         )}
       {props.user.role_id === 1 &&
-        componentEnt.map((component) => {
+        componentUser.map((component) => {
           if (component.key === props.changeContent) return component.component;
         })}
     </div>

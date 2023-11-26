@@ -13,7 +13,7 @@ const destroyAll = () => {
     Modal.destroyAll();
 };
 
-const DropDownBookingRequest = ({ status,booking, icon, options, id, onFetchData = () => { }, type = 'user' }) => {
+const DropDownBookingRequest = ({ status, booking, icon, options, id, onFetchData = () => { }, type = 'user' }) => {
     const { user, setUser } = useContext(AuthContext);
 
     const [isOpen, setIsOpen] = useState(false);
@@ -22,7 +22,7 @@ const DropDownBookingRequest = ({ status,booking, icon, options, id, onFetchData
     }
     const dropRef = useRef();
 
-    
+
     const fetchDataUpdateBooking = async (id, type) => {
         try {
             const user_id = booking?.user_id
@@ -30,7 +30,15 @@ const DropDownBookingRequest = ({ status,booking, icon, options, id, onFetchData
             if (response?.status === 200) {
                 toast.success('Cập nhật yêu cầu booking thành công.')
                 if (type === 2) {
-                    createNotification(user_id, 2, id, "PGT đã chấp nhận yêu cầu booking của bạn", "Liên hệ với PGT để biết thêm chi tiết.");
+                    createNotification(
+                        user_id,
+                        2,
+                        id,
+                        "PGT đã chấp nhận yêu cầu booking của bạn", "Liên hệ với PGT để biết thêm chi tiết.",
+                        booking?.user_id,
+                        booking?.pgt_id,
+                    );
+
                     sendNewMessageToNewUser(
                         user_id,
                         parseInt(booking?.user_id),
@@ -39,12 +47,19 @@ const DropDownBookingRequest = ({ status,booking, icon, options, id, onFetchData
                         user?.avatar,
                         '',
                         'Xin chào bạn! Cảm ơn bạn đã sử dụng dịch vụ của mình. Nếu bạn có bất kỳ câu hỏi hoặc yêu cầu gì, đừng ngần ngại nói cho tôi biết. Mình luôn sẵn sàng hỗ trợ bạn một cách tốt nhất.',
-                      );
+                        booking?.user_id,
+                        booking?.pgt_id,
+                    );
                 }
-                else if (type === 3 ) {
-                    createNotification(user_id, 2, id, "PGT đã từ chối yêu cầu booking của bạn", "Liên hệ với PGT để biết thêm chi tiết.");
+                else if (type === 3) {
+                    createNotification(
+                        user_id, 2, id,
+                        "PGT đã từ chối yêu cầu booking của bạn", "Liên hệ với PGT để biết thêm chi tiết.",
+                        booking?.user_id,
+                        booking?.pgt_id,
+                    );
                 }
-                else if (type === 4){
+                else if (type === 4) {
                     createNotification(user_id, 5, id, "Lượt booking đã hoàn thành", "Vui lòng đánh giá cho PGT.");
                 }
                 onFetchData();

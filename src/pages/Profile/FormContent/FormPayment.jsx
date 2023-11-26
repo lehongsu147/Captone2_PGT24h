@@ -1,8 +1,11 @@
 import { Table } from "antd";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 // import { getPaymentHistory } from "../../../services/getApiProfile";
 import { displayDateTime } from "../../../services/DateTimeUtil";
 import { formatCurrency } from "../../../services/CurrencyUtil";
+import PaymentFactories from "../../../services/PaymentFactories";
+import { ToastNotiError } from "../../../utils/Utils";
+import { AuthContext } from "../../../context/auth.context";
 
 const columns = [
   {
@@ -48,20 +51,18 @@ const columns = [
 
 export default function FormActivity(props) {
   const [payment, setPayment] = useState();
+  const { user} = useContext(AuthContext);
 
-  // useEffect(() => {
-  //   getPaymentHistory()
-  //     .then((res) => {
-  //       if (!res.ok) {
-  //         return Promise.reject(res);
-  //       }
-  //       return res.json();
-  //     })
-  //     .then((data) => {
-  //       console.log(data);
-  //       setPayment(data);
-  //     });
-  // }, []);
+  useEffect(() => {
+    try {
+      const resp  = PaymentFactories.getPaymentListForUser(user?.id);      
+      if (resp?.status === 200){
+        setPayment(resp.data);
+      }
+    } catch (error) {
+      ToastNotiError(error);
+    }
+  }, []);
 
   return (
     <>

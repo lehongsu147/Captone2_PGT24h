@@ -9,7 +9,6 @@ const { Search } = Input;
 
 const ChatBox = (props) => {
     const { chatInfo, userId, isNewChat = false, id } = props;
-    console.log("🚀 ~ file: ChatBox.js:12 ~ ChatBox ~ isNewChat:", isNewChat)
     const [messageList, setMessageList] = useState([]);
     const [messageInput, setMessageInput] = useState("");
     const [userNameMes, setUseNameMes] = useState("");
@@ -40,7 +39,7 @@ const ChatBox = (props) => {
         const userAvatar = userId === chatInfo?.firstUserId ? chatInfo?.secondAvatar : chatInfo?.firstAvatar;
         setUseAvatarMes(userAvatar);
         setUseNameMes(userName);
-    }, [chatInfo?.chatId]);
+    }, [chatInfo]);
 
     function handleSendMessage() {
         if (messageInput && isNewChat) {

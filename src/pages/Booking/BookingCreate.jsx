@@ -10,6 +10,7 @@ import { db } from "../../firebase";
 import BookingFactories from "../../services/BookingFactories";
 import moment from "moment";
 import dayjs, { Dayjs } from "dayjs";
+import { createNotification } from "../../services/ChatService";
 
 const BookingCreate = (props) => {
   const user = JSON.parse(localStorage.getItem("user"));
@@ -93,29 +94,19 @@ const BookingCreate = (props) => {
     }
   }, [rangeTimeBooking])
 
-  const createNotification = async (toUserId, type, action_id, title, body) => {
-    try {
-      await addDoc(collection(db, "notifications"), {
-        toUserId: toUserId,
-        title: title,
-        body: body,
-        createdAt: serverTimestamp(),
-        type: type,
-        action_id: action_id,
-        read: false,
-      });
-      console.log("Thông báo yêu cầu booking mới");
-    } catch (e) {
-      console.error("Lỗi khi tạo thông báo: ", e);
-    }
-  };
 
   const requestBooking = async (data) => {
     try {
       const response = await BookingFactories.requestBooking(data);
       if (response.status === 200) {
-        createNotification(data?.pgtId, 1, response?.data[0].id, "Bạn có yêu cầu booking mới", "Vui lòng xác nhận yêu cầu booking trong vòng 5 phút.");
-        toast.success('Tạo lượt booking thành công, PGT sẽ phàn hồi lại trong 5 phút.')
+        createNotification(data?.pgtId, 1,
+          response?.data[0].id, "Bạn có yêu cầu booking mới",
+          "Vui lòng xác nhận yêu cầu booking trong vòng 5 phút.",
+          data?.userId,
+          data?.pgtId
+        );
+        toast.success('Tạo lượt booking thành công, PGT sẽ phàn hồi lại trong 5 phút.',
+        );
         props.onCancelOpenHandler();
       }
       else if (response.status === 201) {
@@ -186,7 +177,7 @@ const BookingCreate = (props) => {
               style={{ width: '100%' }} />
           </Form.Item>
           <Form.Item label="Thời gian" name="timefrom"
-            // rules={[{ required: true, message: 'Bắt buộc chọn giờ' }]}
+          // rules={[{ required: true, message: 'Bắt buộc chọn giờ' }]}
           >
             <Space.Compact block >
               <TimePicker.RangePicker

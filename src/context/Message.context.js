@@ -8,7 +8,7 @@ export const MessageContext = createContext();
 export const MessageProvider = ({ children }) => {
   const { user } = useContext(AuthContext);
   const [messengerList, setMessengerList] = useState([]);
-  const compareTimestamps = (a, b) => b.createdAt.toDate().getTime() - a.createdAt.toDate().getTime();
+  const compareTimestamps = (a, b) => b.createdAt?.toDate().getTime() - a.createdAt?.toDate().getTime();
   // Hàm để bắt đầu lắng nghe thay đổi đối với collection 'messengerList'
   
   const userId = String(user?.id); 

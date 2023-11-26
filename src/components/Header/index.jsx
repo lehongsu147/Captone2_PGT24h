@@ -22,8 +22,8 @@ const Header = (props) => {
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const { logout } = useContext(AuthContext)
+  const { user, setUser } = useContext(AuthContext);
 
-  const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")));
   useEffect(() => {
     const handleStorageChange = () => {
       setUser({ ...JSON.parse(localStorage.getItem("user")) });
