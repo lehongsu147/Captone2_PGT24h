@@ -10,6 +10,7 @@ const Chanel = ({ item }) => {
     )
 }
 
+
 const CardPgt = (props) => {
     const data = props.pgt;
     const navigate = useNavigate();
