@@ -10,7 +10,6 @@ import useOnClickOutside from "../../hook/use-onclick-outside";
 import BookingDetail from "../../pages/Booking/BookingDetail";
 
 export default function Notification(props) {
-  const { countNotification } = props
   const { notifications } = useContext(NotificationContext);
   const user = JSON.parse(localStorage.getItem("user"));
   const [isActive, setIsActive] = useState(false);

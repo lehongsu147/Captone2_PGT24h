@@ -5,8 +5,9 @@ import ChatBox from "../../components/ChatBox/ChatBox";
 import { FaDotCircle } from "react-icons/fa";
 import { useLocation } from "react-router-dom";
 import { MessageContext } from "../../context/Message.context";
-import { serverTimestamp } from "firebase/firestore";
+import { collection, getDocs, query, serverTimestamp, where, writeBatch } from "firebase/firestore";
 import PgtFactories from "../../services/PgtFatories";
+import { db } from "../../firebase";
 
 const Chat = (props) => {
   const user = JSON.parse(localStorage.getItem("user"));
@@ -91,8 +92,31 @@ const Chat = (props) => {
   const handleClickMessageId = (value) => {
     startTransition(() => {
       setMessageId(value)
+      updateMesToRead(value)
     })
   }
+
+  
+  const updateMesToRead = async (value) => {
+    const notificationsQuery = query(
+      collection(db, "chats"),
+      where("chatId", "==", String(value)),
+      where("read", "==", false)
+    );
+
+    try {
+      const querySnapshot = await getDocs(notificationsQuery);
+      const batch = writeBatch(db);
+
+      querySnapshot.forEach((doc) => {
+        batch.update(doc.ref, { read: true });
+      });
+      await batch.commit();
+    } catch (e) {
+      console.error("Lỗi khi cập nhật thông báo đã đọc: ", e);
+    }
+  };
+
 
   return (
     <div className={classes.messenger}>

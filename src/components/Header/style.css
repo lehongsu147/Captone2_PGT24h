@@ -84,6 +84,15 @@
   border-radius: 50px;
 }
 
+.icon-room-guest button {
+  width: 45px;
+  height: 45px;
+  border-radius: 50px;
+  display: block;
+  background-color: #eff5f7;
+  position: relative;
+  border: none;
+}
 .icon-room-guest a {
   width: 45px;
   height: 45px;

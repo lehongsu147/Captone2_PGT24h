@@ -41,7 +41,6 @@ const ChatBox = (props) => {
     }, [chatInfo]);
 
     function handleSendMessage() {
-        console.log('goij ham');
         if (messageInput && isNewChat) {
             sendNewMessageToNewUser(
                 chatInfo?.firstUserId,

@@ -1,11 +1,14 @@
 import { Modal, Tabs, Tooltip } from "antd";
 import no1_top_frame from '../../../assets/images/no1_top_frame.png'
-import React, { useEffect, useState } from "react";
-import { NavLink } from "react-router-dom";
+import React, { useContext, useEffect, useRef, useState } from "react";
+import { NavLink, useNavigate } from "react-router-dom";
 import './styleModal.scss'
 import Temp from "../../../utils/temp";
-import { ToastNotiError, convertStringToNumber } from "../../../utils/Utils";
+import { ToastInfo, ToastNotiError, convertStringToNumber } from "../../../utils/Utils";
 import BookingFactories from '../../../services/BookingFactories';
+import { MessageContext } from "../../../context/Message.context";
+import { collection, getDocs, query, where, writeBatch } from "firebase/firestore";
+import { db } from "../../../firebase";
 
 
 const ItemTrend = (props) => {
@@ -30,7 +33,22 @@ const ItemTrend = (props) => {
 const MenuGuest = ({ icons }) => {
   const [user, setUser] = useState();
   const [isShowModal, setIsShowModal] = useState();
-  const TodayList = Temp.Trendtoday;
+  const [countMes, setCountMes] = useState();
+  const { messengerList } = useContext(MessageContext);
+  const countMesRef = useRef(countMes);
+
+  useEffect(() => {
+    if (messengerList) {
+      const unreadMessages = messengerList.filter(message => message.read === false);
+      const numUnreadMessages = unreadMessages.length;
+      // if (countMesRef.current === 0 && numUnreadMessages > 0) {
+      //   ToastInfo(unreadMessages[unreadMessages.length - 1].lastMessage)
+      // }
+      setCountMes(numUnreadMessages);
+      countMesRef.current = numUnreadMessages;
+    }
+  }, [messengerList]);
+
   useEffect(() => {
     setUser(JSON.parse(localStorage.getItem("user")));
   }, []);
@@ -38,6 +56,12 @@ const MenuGuest = ({ icons }) => {
     setIsShowModal(true);
   }
 
+  const navigator = useNavigate();
+  function handleClickMessenger(){
+    navigator('/chat')
+  }
+
+  
   const [data, setData] = useState();
   const fetchDataTop = async (year, month) => {
     try {
@@ -200,15 +224,20 @@ const MenuGuest = ({ icons }) => {
         {user && (
           <li className="icon-room-guest">
             <Tooltip title="Nhắn tin" >
-              <NavLink
-                to="/chat"
+              <button
+                // to="/chat"
+                onClick={handleClickMessenger}
                 className={({ isActive }) => (isActive ? "active" : undefined)}
               >
                 <img src={icons[2]} alt="" />
-              </NavLink>
+                {countMes > 0 && (
+                  <span className={"noti-badge-mes"}>{countMes}</span>
+                )}
+              </button>
             </Tooltip>
           </li>
         )}
+
       </ul>
     </>
 

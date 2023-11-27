@@ -37,7 +37,20 @@
         line-height: 25px;
     }
 }
-
+.noti-badge-mes{
+    background-color: var(--color-primary-1);
+    position: absolute;
+    right: -4px;
+    top: 5px;
+    display: block;
+    border-radius: 50px;
+    height: 15px;
+    width: 15px;
+    color: #fff;
+    font-size: 11px;
+    text-align: center;
+  }
+  
 .pull-left {
     float: left !important;
     gap: 20px;
