@@ -55,51 +55,21 @@ export default function FormActivity() {
       key: "status",
       align: "left",
       render: (text, data) =>
-        data.status === 4 ? (
-          <Badge status="success" text="Hoàn thành" />
-        ) : data.status === 3 ? (
-          <Badge status="error" text="PGT Đã từ chối" />
-        ) : data.status === 2 ? (
-          <Badge status="processing" text="PGT Đã xác nhận" />
-        ) : data.status === 1 ? (
-          <Badge status="warning" text="Chờ xác nhận" />
-        ) : null,
-    },
-    {
-      title: "Thanh toán",
-      dataIndex: "category_link",
-      key: "category_link",
-      align: 'center',
-      width: 120,
-      render: (text, data) => 
-        data.status === 2 && (
-        <Button style={{ width: 170 }} onClick={() => handleAddMonney(data)} type="primary" icon={<WalletTwoTone width={70} />} size={'large'} >
-          <span>
-            Thanh Toán
-          </span>
-        </Button>
+        data.status === 5 ? (
+          <Badge status="success" text="PGT và User xác nhận hoàn thành" />
         )
+          : data.status === 4 ? (
+            <Badge status="success" text="PGT xác nhận hoàn thành" />
+          ) : data.status === 3 ? (
+            <Badge status="error" text="PGT Đã từ chối" />
+          ) : data.status === 2 ? (
+            <Badge status="processing" text="PGT Đã xác nhận" />
+          ) : data.status === 1 ? (
+            <Badge status="warning" text="Chờ xác nhận" />
+          ) : null,
     },
   ];
 
-
-  const handleAddMonney = async (value) => {
-    try {
-      const data = {
-        amount: value?.price,
-        bookingId: value?.id,
-        pgtName: value?.pgt_name,
-        pgtId: value?.pgt_id,
-        userId: user?.id,
-      }
-      const resp = await PaymentFactories.createVnPayPayment(data)
-      if (resp.status === 200) {
-        window.location.href = resp?.url;
-      }
-    } catch (error) {
-
-    }
-  };
   const handleOnChangeDate = (e) => {
     console.log(e);
   };

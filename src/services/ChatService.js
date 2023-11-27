@@ -28,13 +28,33 @@ export const createNotification = async (toUserId, type, action_id, title, body,
     }
 };
 
+export const sendMessage = async (firstUserId, secondUserId, firstName, secondName, firstAvatar, secondAvatar, message) => {
+    const chatId = `${firstUserId}_${secondUserId}`;
+    const chatId2 = `${secondUserId}_${firstUserId}`;
+
+    // Check if the chat already exists
+    const chatQuery = query(collection(db, "chats"), where("chatId", "==", chatId));
+    const chatQuery2 = query(collection(db, "chats"), where("chatId", "==", chatId2));
+    const chatQuerySnapshot = await getDocs(chatQuery);
+    const chatQuerySnapshot2 = await getDocs(chatQuery2);
+
+    if (!chatQuerySnapshot.empty || !chatQuerySnapshot2.empty) {
+        await sendNewMessageToExistingUser(chatId, firstUserId, secondUserId, message);
+    }
+    else{
+        await sendNewMessageToNewUser(firstUserId, secondUserId, firstName, secondName, firstAvatar, secondAvatar, message);
+    }
+};
+
+
 export const sendNewMessageToNewUser = async (firstUserId, secondUserId, firstName, secondName, firstAvatar, secondAvatar, message) => {
+    console.log('newUsert');
     
     // Create a new chat document in the "chat" collection
     await addDoc(collection(db, "chats"), {
         chatId: `${firstUserId}_${secondUserId}`,
-        firstUserId: firstUserId,
-        secondUserId: secondUserId,
+        firstUserId: Number(firstUserId),
+        secondUserId: Number(secondUserId),
         firstName: firstName,
         secondName: secondName,
         firstAvatar: firstAvatar,
@@ -55,6 +75,7 @@ export const sendNewMessageToNewUser = async (firstUserId, secondUserId, firstNa
 };
 
 export const sendNewMessageToExistingUser = async (chatId, userId, recipientUserId, message) => {
+    console.log('idexxit');
     const q = query(collection(db, "chats"), where("chatId", "==", chatId));
     const querySnapshot = await getDocs(q);
     querySnapshot.forEach(async (doc) => {

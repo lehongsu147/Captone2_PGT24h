@@ -12,6 +12,7 @@ const ApiConstants = {
     BOOKING_CHART :`/booking/chart`,
     BOOKING_TOP :`/booking/top`,
     BOOKING_TIME :`/booking/time`,
+    PGT_FEEDBACK :`/pgt/feedback`,
     PGT :`/pgt`,
     BANNER :`/banner`,
     ACCOUNT:  '/account', 

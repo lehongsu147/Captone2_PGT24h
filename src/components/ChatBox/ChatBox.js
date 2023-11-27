@@ -41,6 +41,7 @@ const ChatBox = (props) => {
     }, [chatInfo]);
 
     function handleSendMessage() {
+        console.log('goij ham');
         if (messageInput && isNewChat) {
             sendNewMessageToNewUser(
                 chatInfo?.firstUserId,
@@ -59,7 +60,7 @@ const ChatBox = (props) => {
 
     return (
         <>
-            {!loading ? (
+            {(!loading || !userAvatarMes) ? (
                 <>
                     <Row className={styles.header}>
                         <span className={styles.userName}>{userNameMes ?? ''}</span>
@@ -69,7 +70,9 @@ const ChatBox = (props) => {
                         <div className={styles.messageBox}>
                             <div className={`${styles.welcomeMes}`}>
                                 <div className={`${styles.textMes} ${styles.Kol}`}>
-                                    <img src={userAvatarMes ?? ''} alt='imageAlt' />
+                                    {userAvatarMes && 
+                                        <img src={userAvatarMes ?? ''} alt='imageAlt' />
+                                    }
                                     <span>Chào mừng bạn đến với cuộc trò chuyện.</span>
                                 </div>
                             </div>
@@ -96,6 +99,7 @@ const ChatBox = (props) => {
                             <Search onChange={(e) => setMessageInput(e.target.value)}
                                 onSearch={() => handleSendMessage()} placeholder="Nhập tin nhắn"
                                 enterButton="Gửi"
+                                disabled={!userAvatarMes ? true : false }
                                 value={messageInput}
                             // loading={sending}
                             />

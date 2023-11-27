@@ -1,6 +1,6 @@
 import React, { createContext, useEffect, useState, useContext, useCallback } from "react";
 import { AuthContext } from "./auth.context";
-import { collection, onSnapshot, orderBy, query, where } from "firebase/firestore";
+import { collection, getDocs, onSnapshot, orderBy, query, where } from "firebase/firestore";
 import { db } from "../firebase";
 
 export const MessageContext = createContext();
@@ -8,32 +8,65 @@ export const MessageContext = createContext();
 export const MessageProvider = ({ children }) => {
   const { user } = useContext(AuthContext);
   const [messengerList, setMessengerList] = useState([]);
+  console.log("🚀 ~ file: Message.context.js:11 ~ MessageProvider ~ messengerList:", messengerList)
   const compareTimestamps = (a, b) => b.createdAt?.toDate().getTime() - a.createdAt?.toDate().getTime();
-  // Hàm để bắt đầu lắng nghe thay đổi đối với collection 'messengerList'
-  
-  const userId = String(user?.id); 
+  const userId = Number(user?.id);
+  console.log("🚀 ~ file: Message.context.js:14 ~ MessageProvider ~ userId:", userId)
+
   const startMessengerListListener = useCallback(() => {
     if (user) {
-      const notificationsQuery = query(
-        collection(db,"chats"),
-        where("chatId", ">=", userId)
-        // where("chatId", "array-contains", userId),
-        // orderBy("createdAt", "desc")
+      const messagesRef = collection(db, "chats");
+  
+      const firstUserMessagesQuery = query(
+        messagesRef,
+        where("firstUserId", "==", userId)
       );
-      // Lắng nghe thay đổi và cập nhật state
-      return onSnapshot(notificationsQuery, (querySnapshot) => {
-        const updatedMessengerList = querySnapshot.docs.map(doc => ({
-          ...doc.data(),
-          id: doc.id
-        }));
-        // const sortMessengerList = updatedMessengerList.sort(compareTimestamps);
-        setMessengerList(updatedMessengerList);
+  
+      const secondUserMessagesQuery = query(
+        messagesRef,
+        where("secondUserId", "==", userId)
+      );
+  
+      // Combine the results of the two queries
+      Promise.all([
+        getDocs(firstUserMessagesQuery),
+        getDocs(secondUserMessagesQuery),
+      ]).then(([firstUserMessages, secondUserMessages]) => {
+        const combinedMessages = [];
+  
+        firstUserMessages.forEach((doc) => {
+          combinedMessages.push({ ...doc.data(), id: doc.id });
+        });
+  
+        secondUserMessages.forEach((doc) => {
+          combinedMessages.push({ ...doc.data(), id: doc.id });
+        });
+  
+        // Update the state with the combined messages
+        setMessengerList(combinedMessages);
       });
+  
+      // Listen for changes and update state
+      const unsubscribe = onSnapshot(
+        messagesRef,
+        (querySnapshot) => {
+          const combinedMessages = [];
+  
+          querySnapshot.forEach((doc) => {
+            combinedMessages.push({ ...doc.data(), id: doc.id });
+          });
+  
+          // Update the state with the combined messages
+          setMessengerList(combinedMessages);
+        }
+      );
+  
+      return () => unsubscribe && unsubscribe();
     } else {
       setMessengerList([]);
       return undefined;
     }
-  }, [user]);
+  }, [user, userId, setMessengerList]);
 
   useEffect(() => {
     const unsubscribe = startMessengerListListener();

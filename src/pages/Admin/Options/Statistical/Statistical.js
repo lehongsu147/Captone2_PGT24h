@@ -27,7 +27,7 @@ const Statistical = () => {
         <div style={{ float: 'right', display: 'flex', gap: 15 }}>
           <DatePicker onChange={handleChangeYear} picker="year" placeholder="Năm" />
           <DatePicker onChange={handleChangeMonth} picker="month"  placeholder="Tháng"  />
-          <DatePicker onChange={handleChangeWeek} picker="week"  placeholder="Ngày" />
+          {/* <DatePicker onChange={handleChangeWeek} picker="week"  placeholder="Ngày" /> */}
         </div>
       </div>
 

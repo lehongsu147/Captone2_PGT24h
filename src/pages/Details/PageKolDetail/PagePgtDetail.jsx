@@ -13,7 +13,7 @@ import BookingCreate from "../../Booking/BookingCreate";
 import Temp from "../../../utils/temp";
 import PgtFactories from "../../../services/PgtFatories";
 import { toast } from "react-toastify";
-import { convertStringToNumber } from "../../../utils/Utils";
+import { convertStringToNumber, getDate } from "../../../utils/Utils";
 
 const PagePgtDetail = () => {
   const { user } = useContext(AuthContext);
@@ -23,6 +23,26 @@ const PagePgtDetail = () => {
   const [open, setOpen] = useState(false);
   const [statusPGT, setStatus] = useState("");
   const { isCollapse } = useContext(CollapseContext);
+  const [dataFeedback, setDataFeedback] = useState();
+  const [rate, setRate] = useState();
+
+  async function fetchFeedbackData(id) {
+    try {
+      const resp = await PgtFactories.getPGTFeedbackList(id);
+      if (resp.status === 200) {
+        setDataFeedback(resp.data);
+        setRate(resp.rate)
+      }
+    } catch (error) {
+
+    }
+  }
+
+  useEffect(() => {
+    if (id) {
+      fetchFeedbackData(id);
+    }
+  }, [id])
 
   const onCancelOpenHandler = () => {
     setOpen(false);
@@ -112,35 +132,24 @@ const PagePgtDetail = () => {
   };
 
   const renderFeedBack = () => {
-    const onShowSizeChange = (current, pageSize) => {
-      console.log(current, pageSize);
-    };
-    const handleChange = (e) => {
-      console.log(e)
-    }
     return (
       <>
-        {Temp?.FeedBack?.map((item, index) => (
+        {dataFeedback?.map((item, index) => (
           <Feedback
             key={index}
             avatar={item?.avatar}
-            userName={item?.userName}
+            userName={item?.user_name}
             comment={item?.comment}
-            star={item?.star}
-            date={item?.date}
-            timeRental={item?.timeRental}
-            time={item?.time}
+            star={item?.rate}
+            timeRental={1}
+            date={getDate(item?.date)}
           />
         ))}
 
         <div className={styles.boxPagination} >
           <Pagination
-            showSizeChanger
-            // onShowSizeChange={onShowSizeChange}
-            defaultCurrent={10}
-            onChange={(e) => handleChange(e)}
-            total={100}
-          // responsive
+            defaultCurrent={1}
+            total={dataFeedback?.length}
           />
         </div>
       </>
@@ -190,7 +199,7 @@ const PagePgtDetail = () => {
                     {statusPGT === 1 ? 'Đang làm việc' : 'Đang tạm nghỉ'}
                   </div>
                 </div>
-                <span className={styles.dateFrom}>Ngay tham gia: 22/06/2023</span>
+                {/* <span className={styles.dateFrom}>Ngay tham gia: 22/06/2023</span> */}
               </div>
             </div>
           </div>
@@ -214,10 +223,10 @@ const PagePgtDetail = () => {
 
                 <div className={styles.boxPropertie}>
                   <span className={styles.namePropertie}>
-                    ĐÃ ĐƯỢC THUÊ
+                    LƯỢT THUÊ
                   </span>
                   <span className={styles.number}>
-                    {pgtInfo?.countRental}
+                    {dataFeedback?.length}
                   </span>
                 </div>
 
@@ -226,7 +235,7 @@ const PagePgtDetail = () => {
                     TỶ LỆ HOÀN THÀNH
                   </span>
                   <span className={styles.number}>
-                    {pgtInfo?.rate}%
+                    {parseInt(rate)  ?? ''}%
                   </span>
                 </div>
               </div>

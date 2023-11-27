@@ -6,7 +6,6 @@ import { FaDotCircle } from "react-icons/fa";
 import { useLocation } from "react-router-dom";
 import { MessageContext } from "../../context/Message.context";
 import { serverTimestamp } from "firebase/firestore";
-import AccountFactories from "../../services/AccountFactories";
 import PgtFactories from "../../services/PgtFatories";
 
 const Chat = (props) => {
@@ -16,14 +15,11 @@ const Chat = (props) => {
   const [messageId, setMessageId] = useState();
 
   const id = location.state?.chatId;
-  const toUserAvatar = location.state?.toUserAvatar;
-  const toUserName = location.state?.toUserName;
-
   const [secondUserInfo, setSecondUserInfo] = useState();
   const [chatList, setChatList] = useState();
   const [newChatInfo, setNewChatInfo] = useState();
   const [chatInfoExits, setChatInfoExist] = useState();
-  const [isNewChat, setIsNewChat] = useState();
+  const [isNewChat, setIsNewChat] = useState(false);
 
   const isUserInMesList = (mesList, id) => {
     return mesList.some(item =>
@@ -31,6 +27,12 @@ const Chat = (props) => {
     );
   };
 
+  const findChatIdByUserId = (mesList, id) => {
+    const foundItem = mesList.find(item =>
+      parseInt(item.firstUserId) === parseInt(id) || parseInt(item.secondUserId) === parseInt(id)
+    );
+    return foundItem ? foundItem.chatId : null;
+  };
   useEffect(() => {
     async function fetchdata() {
       const resp = await PgtFactories.getPGTDetail(id);
@@ -46,9 +48,9 @@ const Chat = (props) => {
       const exitsChat = isUserInMesList(messengerList, id);
       if (!exitsChat) {
         const newChat = {
-          chatId: `${user?.id}_${parseInt(id)}`,
+          chatId: `${user?.id}_${(id)}`,
           firstUserId: user?.id,
-          secondUserId: id,
+          secondUserId: parseInt(id),
           firstName: user?.userName,
           secondName: secondUserInfo?.user_name,
           firstAvatar: user?.avatar,
@@ -62,17 +64,16 @@ const Chat = (props) => {
       } else {
         setChatList(messengerList)
         setIsNewChat(false);
-
-        const chatId =  `${user?.id}_${parseInt(id)}`
-        const chatInfo = messengerList?.find(item => item?.chatId === chatId);
-        setChatInfoExist(chatInfo)
+        const newMesId = findChatIdByUserId(messengerList, id);
+        setMessageId(newMesId);
       }
     }
     else {
       setChatList(messengerList)
+     
       setIsNewChat(false);
     }
-  }, [id, secondUserInfo])
+  }, [secondUserInfo?.id])
 
   useEffect(() => {
     const chatInfo = messengerList?.find(item => item?.chatId === messageId)

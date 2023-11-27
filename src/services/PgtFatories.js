@@ -25,6 +25,12 @@ const PgtFactories = {
       method: "GET",
     });
   },
+  getPGTFeedbackList: async data => {
+    return ApiOperation.request({
+      url: `${ApiConstants.PGT_FEEDBACK}/${data}`,
+      method: "GET",
+    });
+  },
   requestBooking: async data => {
     return ApiOperation.request({
       url: ApiConstants.BOOKING_PGT,

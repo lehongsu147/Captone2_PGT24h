@@ -44,7 +44,11 @@ export default class Constants {
     },
     {
         value: 4,
-        label: 'Hoàn thành'
+        label: 'PGT xác nhận hoàn thành'
+    },
+    {
+        value: 5,
+        label: 'User + PGT xác nhận hoàn thành'
     },
   ];
 
@@ -63,7 +67,11 @@ export default class Constants {
     },
     {
         value: 4,
-        text: 'Hoàn thành'
+        text: 'PGT Hoàn thành'
+    },
+    {
+      value: 5,
+      text: 'User + PGT xác nhận hoàn thành'
     },
   ];
 

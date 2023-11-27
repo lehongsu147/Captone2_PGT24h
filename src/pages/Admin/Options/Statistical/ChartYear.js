@@ -1,14 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { Bar } from 'react-chartjs-2';
+import { Chart, registerables } from 'chart.js';
 import BookingFactories from '../../../../services/BookingFactories';
 import { ToastNotiError } from '../../../../utils/Utils';
+import { Spin } from 'antd';
+Chart.register(...registerables);
 
 const ChartYear = (props) => {
     const { year, month } = props;
-    const [barData1, setBarData1] = useState({});
+    const [barData1, setBarData1] = useState();
     const [barData2, setBarData2] = useState();
     const [barData3, setBarData3] = useState();
-
+    const [loading, setLoading] = useState(true);
     const fetchDataYear = async (year, month) => {
         try {
             const response = await BookingFactories.getBookingChart(year, month);
@@ -61,24 +64,95 @@ const ChartYear = (props) => {
                     labels: labels,
                     datasets: [
                         {
-                            label: "Top PGT",
-                            backgroundColor: "rgb(255, 99, 132)",
+                            label: "Top PGT Có số giờ booking cao nhất",
+                            backgroundColor: "rgb(75, 192, 192)", // Teal
                             data: totalTime
                         }
                     ]
                 };
                 setBarData3(barData3);
+                setLoading(false);
             }
         } catch (error) {
             ToastNotiError();
+            setLoading(false);
         }
     };
     useEffect(() => {
+        setLoading(true);
         fetchDataYear(year, month);
         fetchDataTop(year, month);
     }, [year, month]);
 
-    const options = {
+    const options1 = {
+        scales: {
+            y: {
+                beginAtZero: true
+            }
+        },
+        tooltips: {
+            callbacks: {
+                label: function (tooltipItem, data) {
+                    let label = data.datasets[tooltipItem.datasetIndex].label || '';
+                    if (label) {
+                        label += ': ';
+                    }
+                    label += ' Lần'
+                    return label;
+                }
+            }
+        },
+        plugins: {
+            tooltip: {
+                callbacks: {
+                    label: function (context) {
+                        let label = context.dataset.label || '';
+                        if (label) {
+                            label += ': ';
+                        }
+                        label += (context.raw);
+                        label += ' Lần';
+                        return label;
+                    }
+                }
+            }
+        }
+    };
+    const options3 = {
+        scales: {
+            y: {
+                beginAtZero: true
+            }
+        },
+        tooltips: {
+            callbacks: {
+                label: function (tooltipItem, data) {
+                    let label = data.datasets[tooltipItem.datasetIndex].label || '';
+                    if (label) {
+                        label += ': ';
+                    }
+                    label += ' h'
+                    return label;
+                }
+            }
+        },
+        plugins: {
+            tooltip: {
+                callbacks: {
+                    label: function (context) {
+                        let label = context.dataset.label || '';
+                        if (label) {
+                            label += ': ';
+                        }
+                        label += (context.raw);
+                        label += ' h';
+                        return label;
+                    }
+                }
+            }
+        }
+    };
+    const options2 = {
         scales: {
             y: {
                 beginAtZero: true
@@ -121,33 +195,39 @@ const ChartYear = (props) => {
             }
         }
     };
-
     return (
         <>
+            {loading ? <Spin /> :
+                <div style={{ display: 'flex', flexDirection: 'row', width: '100%', gap: 40 }}>
+                    <div style={{ display: 'flex', flexDirection: 'column' }}>
+                        {barData1?.labels &&
+                            <Bar
+                                style={{ height: '40vh' }}
+                                data={barData1}
+                                options={options1}
+                            />
+                        }
+                        {barData2?.labels &&
+                            <Bar
+                                style={{ height: '40vh' ,marginTop: 10 }}
+                                data={barData2}
+                                options={options2}
+                            />
+                        }
 
-            <div style={{ display: 'flex', flexDirection: 'column' }}>
-                {barData1?.labels &&
-                    <Bar
-                        style={{ height: 300, width: "100%" }}
-                        data={barData1}
-                        options={options}
-                    />
-                }
-                {barData2?.labels &&
-                    <Bar
-                        style={{ height: 300, width: "100%" }}
-                        data={barData2}
-                        options={options}
-                    />
-                }
-                {barData3?.labels &&
-                    <Bar
-                        style={{ height: 300, width: "100%" }}
-                        data={barData3}
-                    // options={options}
-                    />
-                }
-            </div>
+                    </div>
+                    {barData3?.labels &&
+                        <div>
+                            <Bar
+                                style={{ height: '40vh'  }}
+                                data={barData3}
+                                options={options3}
+                            />
+                        </div>
+                    }
+                </div>
+            }
+
         </>
     );
 };

@@ -6,7 +6,7 @@ import useOnClickOutside from '../../../hook/use-onclick-outside';
 import { Button, Modal, message } from 'antd';
 import BookingFactories from '../../../services/BookingFactories';
 import { toast } from 'react-toastify';
-import { createNotification, sendNewMessageToNewUser } from '../../../services/ChatService';
+import { createNotification, sendMessage, sendNewMessageToNewUser } from '../../../services/ChatService';
 import { AuthContext } from '../../../context/auth.context';
 import PaymentFactories from '../../../services/PaymentFactories';
 import PgtFactories from '../../../services/PgtFatories';
@@ -51,7 +51,7 @@ const DropDownBookingRequest = ({ status, booking, icon, options, id, onFetchDat
                         booking?.pgt_id,
                     );
 
-                    sendNewMessageToNewUser(
+                    sendMessage(
                         user?.id,
                         parseInt(user_id),
                         user?.userName,
