@@ -23,11 +23,13 @@ export const createNotification = async (toUserId, type, action_id, title, body,
 
         });
     } catch (e) {
+
         console.error("Lỗi khi tạo thông báo: ", e);
     }
 };
 
 export const sendNewMessageToNewUser = async (firstUserId, secondUserId, firstName, secondName, firstAvatar, secondAvatar, message) => {
+    
     // Create a new chat document in the "chat" collection
     await addDoc(collection(db, "chats"), {
         chatId: `${firstUserId}_${secondUserId}`,

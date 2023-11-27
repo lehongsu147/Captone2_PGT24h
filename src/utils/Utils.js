@@ -58,7 +58,7 @@ export const ToastNotiError = (mes = 'Hệ thống lỗi') => {
     });
 }
 
-export const getDate = (timestamp, type = 1) => {
+export const getDate = (timestamp, type = 3) => {
     if (timestamp == null) {
         return null;
     }

@@ -21,7 +21,7 @@ const ItemTrend = (props) => {
         </div>
       </div>
       <div className="pull-right">
-        <span> {(props?.time)} phút </span>
+        <span> {(props?.time)} giờ </span>
       </div>
     </li>
   );

@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import styles from './Payment.module.scss'
-import { Button, Input, Row, Space, Table, message } from 'antd';
+import { Button, Input, InputNumber, Modal, Row, Space, Table, message } from 'antd';
 import { toast } from 'react-toastify';
 import Title from 'antd/es/typography/Title';
 import PaymentFactories from '../../../../services/PaymentFactories';
@@ -24,7 +24,7 @@ const PaymentWallett = () => {
             dataIndex: "date",
             key: "date",
             width: 140,
-            render: (text) => <div className="text-data">{getDate(text, 2)}</div>,
+            render: (text) => <div className="text-data">{getDate(text, 3)}</div>,
         },
         {
             title: "Nội dung",
@@ -51,13 +51,14 @@ const PaymentWallett = () => {
         },
     ];
     const [historyWallet, setHistoryWallet] = useState([]);
-    const { user } = useContext(AuthContext);
-
+    const [money, setMoney] = useState();
+    const { user } = useContext(AuthContext)
     async function fetchDate(id) {
         try {
             const resp = await PaymentFactories.getPaymentListForUser(user?.id);
             if (resp?.status === 200) {
                 setHistoryWallet(resp.data);
+                setMoney(resp.money);
             }
         } catch (error) {
             ToastNotiError(error);
@@ -67,8 +68,45 @@ const PaymentWallett = () => {
         fetchDate(user?.id);
     }, [user?.id]);
 
+    const handleAddMonney = async (value) => {
+        try {
+            const data = {
+                amount: value,
+                userId: user?.id,
+            }
+            const resp = await PaymentFactories.createVnPayPayment(data)
+            if (resp.status === 200) {
+                window.location.href = resp?.url;
+            }
+        } catch (error) {
+        }
+    };
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [value, setValue] = useState();
+    const showModal = () => {
+        setIsModalOpen(true);
+    };
+    const handleOk = () => {
+        handleAddMonney(value);
+        setIsModalOpen(false);
+    };
+    const handleCancel = () => {
+        setIsModalOpen(false);
+    };
+
     return (
         <main className={'booking-container'} >
+            <Modal title="Nhập số tiền cần nạp" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
+                <InputNumber
+                placeholder="Nhập số tiền"
+                addonAfter="VND"
+                style={{ width: '100%' }}
+                value={value}
+                onChange={(value) => setValue(value)}
+                formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                parser={value => value.replace(/\$\s?|(,*)/g, '')}
+              />
+            </Modal>
             <div className={styles.formInfo}>
                 <Title level={1}>Ví & Lịch sử thanh toán</Title>
                 <Space direction="horizontal" className={styles.spaceContent}  >
@@ -77,18 +115,14 @@ const PaymentWallett = () => {
                             Số dư hiện tại
                         </span>
                         <span className={styles.textCoinValue}                            >
-                            1.000.000 VND
+                        {money ? convertStringToNumber(money) : '0 VND'}
                         </span>
                     </Space>
                     <Space direction="vertical">
-                        <Button style={{ width: 170 }} type="primary" icon={<WalletTwoTone width={70} />} size={'large'} >
+
+                        <Button style={{ width: 170 }} onClick={showModal} type="primary" icon={<WalletTwoTone width={70} />} size={'large'} >
                             <span>
                                 Nạp tiền
-                            </span>
-                        </Button>
-                        <Button style={{ width: 170 }} type="primary" icon={<MoneyCollectTwoTone width={30} />} size={'large'} >
-                            <span>
-                                Rút tiền
                             </span>
                         </Button>
                     </Space>

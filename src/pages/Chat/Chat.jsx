@@ -18,7 +18,6 @@ const Chat = (props) => {
   const id = location.state?.chatId;
   const toUserAvatar = location.state?.toUserAvatar;
   const toUserName = location.state?.toUserName;
-  const chat_user_id = location.state?.user_id;
 
   const [secondUserInfo, setSecondUserInfo] = useState();
   const [chatList, setChatList] = useState();
@@ -32,24 +31,24 @@ const Chat = (props) => {
     );
   };
 
-  useEffect(()=>{
-    async function fetchdata (){
-      const resp = await PgtFactories.getPGTDetail(chat_user_id);
+  useEffect(() => {
+    async function fetchdata() {
+      const resp = await PgtFactories.getPGTDetail(id);
       setSecondUserInfo(resp[0]);
     }
-    if ( chat_user_id){
+    if (id) {
       fetchdata();
-    } 
-  },[chat_user_id])
+    }
+  }, [id])
 
   useEffect(() => {
-    if (secondUserInfo ) {
+    if (secondUserInfo) {
       const exitsChat = isUserInMesList(messengerList, id);
       if (!exitsChat) {
         const newChat = {
-          chatId: `${user?.id}_${parseInt(chat_user_id)}`,
+          chatId: `${user?.id}_${parseInt(id)}`,
           firstUserId: user?.id,
-          secondUserId: chat_user_id,
+          secondUserId: id,
           firstName: user?.userName,
           secondName: secondUserInfo?.user_name,
           firstAvatar: user?.avatar,
@@ -63,13 +62,17 @@ const Chat = (props) => {
       } else {
         setChatList(messengerList)
         setIsNewChat(false);
+
+        const chatId =  `${user?.id}_${parseInt(id)}`
+        const chatInfo = messengerList?.find(item => item?.chatId === chatId);
+        setChatInfoExist(chatInfo)
       }
     }
     else {
       setChatList(messengerList)
       setIsNewChat(false);
     }
-  }, [id,secondUserInfo])
+  }, [id, secondUserInfo])
 
   useEffect(() => {
     const chatInfo = messengerList?.find(item => item?.chatId === messageId)

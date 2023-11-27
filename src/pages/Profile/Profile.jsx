@@ -1,16 +1,17 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Col, Row } from "antd";
 import MenuProfile from "./Menu/MenuProfile";
 import SubContext from "./SubContext/SubContext";
+import { useLocation } from "react-router-dom";
 
 const Profile = () => {
   const [changeContent, setChangeContent] = useState({});
   const user = JSON.parse(localStorage.getItem("user"));
-
-  const onChangeContentHandler = (data) => {
-    setChangeContent(data);
-  };
-
+  const location = useLocation();
+  const id = location.pathname.split("/")[2];
+  useEffect(()=>{
+    setChangeContent(id)
+  },[id])
   return (
     <>
       <div style={{ width: '100%', backgroundColor: "#fff" }}>
@@ -21,7 +22,6 @@ const Profile = () => {
             <MenuProfile
               // style={{marginTop: '-64px'}}
               user={user}
-              onChangeContentHandler={onChangeContentHandler}
             />
           </Col>
           <Col span={20}>

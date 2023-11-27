@@ -77,7 +77,7 @@ const PagePgtDetail = () => {
     navigate(`/chat`, {
       state: {
         chatId: id,
-        toUserAvatar: pgtInfo?.image,
+        toUserAvatar: pgtInfo?.avatar,
         toUserName: pgtInfo?.user_name,
       }
     })
@@ -179,7 +179,7 @@ const PagePgtDetail = () => {
             <div className={styles.stickyProfile}>
               <div className={styles.profileContainer}>
                 <Avatar
-                  avatar={pgtInfo?.image ?? ''}
+                  avatar={pgtInfo?.avatar ?? ''}
                   photoList={pgtInfo?.listImage ?? ''}
                 />
               </div>

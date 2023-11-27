@@ -9,6 +9,7 @@ import {
 import { Menu } from "antd";
 
 import classes from "./MenuProfile.module.css";
+import { useNavigate } from "react-router-dom";
 
 function getItem(label, key, icon, children, type) {
   return {
@@ -21,8 +22,9 @@ function getItem(label, key, icon, children, type) {
 }
 
 const MenuProfile = (props) => {
+  const navigate = useNavigate();
   const onClick = (e) => {
-    props.onChangeContentHandler(e.key);
+    navigate(`/setting/${e.key}`);
   };
   let item = [
     getItem("Thông tin cá nhân", "1", <UserOutlined />),

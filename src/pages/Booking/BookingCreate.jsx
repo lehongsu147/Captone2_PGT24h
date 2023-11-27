@@ -22,12 +22,14 @@ const BookingCreate = (props) => {
   const [errorMessage, setErrorMessage] = useState('');
   const [errorDate, setErrorDate] = useState(false);
   const [timeBooking, setTimeBooking] = useState(1);
-  const [dateBooking, setDateBooking] = useState(moment());
+  const [dateBooking, setDateBooking] = useState();
   const [rangeTimeBooking, setRangeTimeBooking] = useState();
 
   const [note, setNote] = useState();
   const [priceTotalShow, setPriceShow] = useState(convertStringToNumber(parseInt(pgt?.price)));
   const [priceTotal, setPrice] = useState();
+
+  useEffect(() => { setDateBooking(dayjs()) }, [])
   useEffect(() => {
     setPriceShow(convertStringToNumber(parseInt(pgt?.price) * timeBooking))
     setPrice(pgt?.price * timeBooking)
@@ -74,12 +76,11 @@ const BookingCreate = (props) => {
   }
 
   useEffect(() => {
-    // setErrorMessage('')
     if (rangeTimeBooking) {
       checkTimePgt();
       const newTime = rangeTimeBooking[1]?.$H - rangeTimeBooking[0]?.$H;
-      const startTime = rangeTimeBooking[0]?.$d;
-      const timeCurrent = new Date();
+      // const startTime = rangeTimeBooking[0]?.$d;
+      // const timeCurrent = new Date();
       // if ( startTime < timeCurrent){
       //   setErrorMessage('Thời gian bắt đầu phải là thời gian trong tương lai.');
       // }
@@ -113,14 +114,18 @@ const BookingCreate = (props) => {
         toast.error(response?.messsage);
         setErrorMessage(response?.messsageError);
       }
+      else if (response.status === 220) {
+        toast.error(response?.message);
+        navigator('/setting/4')
+      }
       else {
-        toast.error('Hệ thống lỗi, vui lòng thử lại sau')
+        // toast.error('Hệ thống lỗi, vui lòng thử lại sau')
       }
     } catch (error) {
-      toast.error('Hệ thống lỗi, vui lòng thử lại sau')
+      // toast.error('Hệ thống lỗi, vui lòng thử lại sau')
     }
   };
-
+  const navigator = useNavigate();
   const onSubmit = () => {
     if (user?.id === pgt?.id) {
       ToastNotiError('Không thể tự tạo booking cho bản thân')
@@ -172,7 +177,6 @@ const BookingCreate = (props) => {
               placeholder="Chọn ngày"
               mode='date'
               onChange={(e) => setDateBooking(e)}
-              defaultValue={dayjs()}
               value={dateBooking}
               style={{ width: '100%' }} />
           </Form.Item>
@@ -183,7 +187,7 @@ const BookingCreate = (props) => {
               <TimePicker.RangePicker
                 format='HH:mm'
                 placeholder={['Bắt đầu', 'Kết thúc']}
-                onChange={(e) => setRangeTimeBooking(e)} />
+                onChange={(e) =>  setRangeTimeBooking(e)} />
             </Space.Compact>
             {errorMessage !== '' && <span style={{ color: 'red' }}> {errorMessage}</span>}
           </Form.Item>

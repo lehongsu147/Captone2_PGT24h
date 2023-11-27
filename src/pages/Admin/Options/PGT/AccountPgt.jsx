@@ -131,30 +131,23 @@ const AccountPgt = () => {
       },
       render: (data) => <AvatarGroup list={data} maxCount={4} />
     },
-    {
-      title: 'Người theo dõi',
-      dataIndex: 'follower',
-      width: 150,
-      // defaultSortOrder: 'descend',
-      sorter: (a, b) => a.follow - b.follow,
-    },
-    {
-      title: 'Tỷ lệ',
-      width: 160,
-      dataIndex: 'rate',
-      key: '7',
-      // defaultSortOrder: 'descend',
-      sorter: (a, b) => a.rateDone - b.rateDone,
-    },
-    {
-      title: 'Đánh giá',
-      dataIndex: 'star',
-      width: 140,
-      key: '7',
-      defaultSortOrder: 'descend',
-      sorter: (a, b) => a.star - b.star,
-      render: (star) => <StarRating starCount={star} />
-    },
+    // {
+    //   title: 'Tỷ lệ',
+    //   width: 160,
+    //   dataIndex: 'rate',
+    //   key: '7',
+    //   // defaultSortOrder: 'descend',
+    //   sorter: (a, b) => a.rateDone - b.rateDone,
+    // },
+    // {
+    //   title: 'Đánh giá',
+    //   dataIndex: 'star',
+    //   width: 140,
+    //   key: '7',
+    //   defaultSortOrder: 'descend',
+    //   sorter: (a, b) => a.star - b.star,
+    //   render: (star) => <StarRating starCount={star} />
+    // },
     {
       title: 'Trạng thái',
       dataIndex: 'flag',

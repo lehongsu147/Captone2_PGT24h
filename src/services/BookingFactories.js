@@ -45,10 +45,12 @@ const BookingFactories = {
       data: data,
     });
   },
-  updateBooking: async (id,type,rate,comment) => {
+  updateBooking: async (id,type,rate,comment,pgt_id,amount) => {
     const data ={
       rate : rate,
-      comment: comment
+      comment: comment,
+      pgt_id: pgt_id,
+      amount: amount,
     }
     return ApiOperation.request({
       url: `${ApiConstants.BOOKING}/${id}`,
@@ -59,6 +61,7 @@ const BookingFactories = {
       }
     });
   },
+
   deleteBookingId: async (id) => {
     return ApiOperation.request({
       url: `${ApiConstants.BOOKING}/${id}`,

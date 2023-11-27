@@ -32,14 +32,29 @@ const PaymentFactories = {
       method: "GET",
     });
   },
-  updatePaymentDetail: async (id,txtNo) => {
+  updatePaymentDetail: async (id, txtNo, amount, userId) => {
     return ApiOperation.request({
-      url: `${ApiConstants.PAYMENT}${id}`,
+      url: `${ApiConstants.PAYMENT}/${id}`,
       method: "PUT",
       data: {
-        status : 2,
-        txtNo: txtNo
+        status: 2,
+        txtNo: txtNo,
+        userId: userId,
+        amount: amount
       }
+    });
+  },
+  updateMoneyToAccId: async (type, id, amount) => {
+    // type == 10 , hoàn tiền
+    // type == 20 , cộng tiền cho acc pgt
+    const data = {
+      type: type,
+      amount: amount,
+    }
+    return ApiOperation.request({
+      url: `${ApiConstants.PAYMENT}/user/${id}`,
+      method: "PUT",
+      data: data,
     });
   },
 };

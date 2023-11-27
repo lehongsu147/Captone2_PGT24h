@@ -41,7 +41,7 @@ export default function FormActivity() {
       key: "date",
       dataIndex: "date",
       align: "left",
-      render: (text, data) => <div>{getDate(data?.date, 1)}</div>,
+      render: (text, data) => <div>{getDate(data?.date)}</div>,
     },
     {
       title: "Thời gian",

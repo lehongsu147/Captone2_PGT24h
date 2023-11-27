@@ -23,7 +23,6 @@ const ChatBox = (props) => {
                 setLoading(false);
             };
             const unsubscribe = getMessagesForChat(id, updateMessages);
-
             return () => {
                 unsubscribe(); // Unsubscribe when the component is unmounted or when id changes
             };

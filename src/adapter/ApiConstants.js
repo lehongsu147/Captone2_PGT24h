@@ -6,7 +6,7 @@ const ApiConstants = {
     
     PAYMENT_URL: 'payment/create_payment_url',
     PAYMENT_USER: 'payment/user',
-    PAYMENT: 'payment/',
+    PAYMENT: 'payment',
 
     BOOKING :`/booking`,
     BOOKING_CHART :`/booking/chart`,

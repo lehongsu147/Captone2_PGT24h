@@ -20,7 +20,7 @@ const CardPgt = (props) => {
         <div className="card" onClick={handleClickCard}>
             <div className="card__view">
                 <div className="card__view__data">
-                    <img className='card_imgage' alt='card__view__data' src={data?.image} />
+                    <img className='card_imgage' alt='card__view__data' src={data?.avatar} />
                 </div>
             </div>
             <div className="card__content">

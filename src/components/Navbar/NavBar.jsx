@@ -73,7 +73,7 @@ const NavBar = (props) => {
     ),
     getItem(
       <>
-        <Link style={{}} to="/setting" >
+        <Link style={{}} to="/setting/1" >
           Quản lý tài khoản
         </Link>
       </>, '2',
@@ -134,7 +134,7 @@ const NavBar = (props) => {
       ]),
       getItem(
         <>
-          <Link style={{}} to='/setting'>
+          <Link style={{}} to='/setting/1'>
             Quản lý booking
           </Link>
         </>, '2',

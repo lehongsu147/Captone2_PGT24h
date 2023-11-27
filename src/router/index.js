@@ -25,7 +25,6 @@ import SearchPgt from "../pages/SearchPgt/SearchPgt";
 import PagePgtDetail from "../pages/Details/PageKolDetail/PagePgtDetail";
 
 const Router = () => {
-
   return (
     <BrowserRouter>
       <Routes>
@@ -90,7 +89,7 @@ const Router = () => {
         />
       
         <Route
-          path="/setting"
+          path="/setting/:id"
           element={
             <LayoutHeader>
               <ProtectedRoute Component={Profile} />

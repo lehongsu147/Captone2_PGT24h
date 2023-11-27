@@ -6,11 +6,25 @@ import { ToastNoti, ToastNotiError, convertStringToNumber, getDate, getTime } fr
 import { toast } from "react-toastify";
 import BookingFactories from "../../services/BookingFactories";
 import { createNotification, sendNewMessageToExistingUser, sendNewMessageToNewUser } from "../../services/ChatService";
+import PaymentFactories from "../../services/PaymentFactories";
+import PgtFactories from "../../services/PgtFatories";
 
 const BookingDetail = (props) => {
   const { bookingId, isHaveComment } = props;
   const [booking, setBooking] = useState();
   const user = JSON.parse(localStorage.getItem("user"))
+  const [userBookingAvatar, setUserBookingAvatar] = useState();
+
+  useEffect(() => {
+    async function fetchdata() {
+      const resp = await PgtFactories.getPGTDetail(booking?.user_id);
+      setUserBookingAvatar(resp[0]?.avatar);
+    }
+    if (booking?.user_id) {
+      fetchdata();
+    }
+  }, [booking?.user_id])
+
 
   const fetchData = async (bookingId) => {
     try {
@@ -52,7 +66,7 @@ const BookingDetail = (props) => {
           user?.userName,
           booking?.user_name,
           user?.avatar,
-          '',
+          userBookingAvatar,
           'Xin chào bạn! Cảm ơn bạn đã sử dụng dịch vụ của mình. Nếu bạn có bất kỳ câu hỏi hoặc yêu cầu gì, đừng ngần ngại nói cho tôi biết. Mình luôn sẵn sàng hỗ trợ bạn một cách tốt nhất.',
         );
         onCloseModal();
@@ -67,11 +81,12 @@ const BookingDetail = (props) => {
       const response = await BookingFactories.updateBooking(bookingId, 3);
       if (response?.status === 200) {
         toast.success('Đã từ chối yêu cầu booking.')
-        createNotification(booking?.user_id, 2, response?.data[0].id,
+        createNotification(booking?.user_id, 2, booking?.id,
           "PGT đã từ chối yêu cầu booking của bạn", "Liên hệ với PGT để biết thêm chi tiết.",
           booking?.user_id,
           booking?.pgt_id);
       }
+      await PaymentFactories.updateMoneyToAccId(10,booking?.user_id,booking?.price);
       onCloseModal();
     } catch (error) {
       toast.error('Hệ thống lỗi, vui lòng thử lại sau.')
@@ -84,7 +99,7 @@ const BookingDetail = (props) => {
 
   async function submitComment() {
     try {
-      const response = await BookingFactories.updateBooking(bookingId, 5, valueRate, valueComment);
+      const response = await BookingFactories.updateBooking(bookingId, 5, valueRate, valueComment,booking?.pgt_id,booking?.price);
       if (response?.status === 200) {
         ToastNoti();
         setBooking(response?.data);
@@ -95,6 +110,7 @@ const BookingDetail = (props) => {
     } catch (error) {
       ToastNotiError();
     }
+    onCloseModal();
   }
   return (
     <Modal
@@ -162,7 +178,7 @@ const BookingDetail = (props) => {
               <div style={{ display: 'flex', gap: 20, float: 'right', marginTop: 20 }}>
                 {booking?.status === 4 &&
                   <Button onClick={(e) => submitComment()} type="primary" >
-                    Gửi đánh giá
+                    Xác nhận hoàn thành
                   </Button>
                 }
               </div>
