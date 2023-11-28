@@ -174,7 +174,7 @@ const BookingDetail = (props) => {
           {isHaveComment ? <>
             <Form.Item label="Đánh giá">
               <span style={{ float: 'right' }}>
-                <Rate tooltips={desc} onChange={setValueRate} value={booking?.rate ? booking?.rate : valueRate} />
+                <Rate tooltips={desc} onChange={setValueRate} value={ ( booking?.status !== 4 &&  booking?.rate)  ?booking?.rate : valueRate} />
                 {valueRate ? <span className="ant-rate-text">{desc[valueRate - 1]}</span> : ''}
               </span>
             </Form.Item>
