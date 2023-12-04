@@ -196,7 +196,7 @@ const Fields = () => {
     }
     return (
         <div className="booking-container" style={{ height: '100vh', overflow: 'scroll' }}>
-            <div className="booking-title"><span>Nổi Bật</span></div>
+            <div className="booking-title"><span>Lĩnh vực</span></div>
             <div className="booking-search">
                 <Input
                     placeholder="Tìm kiếm lĩnh vực"

@@ -3,7 +3,7 @@ import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
 import { CollapseContext } from '../../../../context/collapse.context';
 import { AuthContext } from '../../../../context/auth.context';
 import Feedback from '../../../../components/Feedback/Feedback';
-import { Alert, Avatar, BackTop, Button, Input, InputNumber, Pagination, Tabs, Upload, message } from 'antd';
+import { Alert, Avatar, BackTop, Button, Input, InputNumber, Modal, Pagination, Tabs, Upload, message } from 'antd';
 import IntroduceKOL from '../../PageKolDetail/IntroduceKOL/IntroduceKOL';
 import styles from './Profile.module.scss'
 import CardType from '../../../../components/catgegory/CardType';
@@ -11,13 +11,14 @@ import StarRating from '../../../../components/start-rating/StarRating';
 import { EditFilled, UploadOutlined } from '@ant-design/icons';
 import Temp from '../../../../utils/temp';
 import useWindowSize from '../../../../hook/use-window-size';
-import { convertStringToNumber } from '../../../../utils/Utils';
+import { ToastNoti, ToastNotiError, convertStringToNumber } from '../../../../utils/Utils';
 import PgtFactories from '../../../../services/PgtFatories';
 import { toast } from 'react-toastify';
 import AccountFactories from '../../../../services/AccountFactories';
-import { getDownloadURL, ref, uploadBytes } from "firebase/storage"
+import { getDownloadURL, list, ref, uploadBytes } from "firebase/storage"
 import { storage, uploadImage } from '../../../../firebase';
 import { v4 } from 'uuid';
+import AvatarCustom from '../../../../components/Avatar/Avatar';
 
 const ProfileUser = ({ type }) => {
     const { user, setUser } = useContext(AuthContext);
@@ -25,7 +26,6 @@ const ProfileUser = ({ type }) => {
     const [items, setItems] = useState();
     const [editPrice, setEditPrice] = useState();
     const [pricePgt, setPricePgt] = useState();
-    const [loading, setLoading] = useState(false);
     const { isCollapse } = useContext(CollapseContext)
 
     const fetchData = async () => {
@@ -177,20 +177,115 @@ const ProfileUser = ({ type }) => {
         const data = { avatar: fileUploadLink, }
         fetchDataUpdate(data)
     }
-    function handleChangeImage(file) {
+    async function firebaseUpload(file) {
+        try {
+            const uniqueFileName = `${file.name}_${v4()}`;
+            const imageRef = ref(storage, `avatar/${uniqueFileName}`);
+            const snapshot = await uploadBytes(imageRef, file);
+            const downloadURL = await getDownloadURL(snapshot.ref);
+            return downloadURL;
+        } catch (error) {
+            console.error('Error uploading file:', error);
+            throw error; // Propagate the error for handling in the calling function
+        }
+    }
+
+    async function handleChangeImage(file) {
         if (file === null || !file) {
             console.log('No file selected.');
             return;
         }
-        const uniqueFileName = `${file.name}_${v4()}`;
-        const imageRef = ref(storage, `avatar/${uniqueFileName}`);
-        uploadBytes(imageRef, file).then((snapshot) => {
-            getDownloadURL(snapshot.ref).then((downloadURL) => {
-                setFileUploadLink(downloadURL)
-            });
-        }).catch((error) => {
-            console.error('Error uploading file:', error);
-        });
+        try {
+            const downloadURL = await firebaseUpload(file);
+            setFileUploadLink(downloadURL);
+        } catch (error) {
+            console.error('Error handling image change:', error);
+        }
+    }
+
+    const [previewOpen, setPreviewOpen] = useState(false);
+    const [editListImage, setEditListImage] = useState(false);
+    const [previewImage, setPreviewImage] = useState('');
+    const [fileList, setFileList] = useState([]);
+
+    const handleSaveImage = async () => {
+        const newListImage = fileList?.map((item)=> item.url || item?.xhr);
+        const UserId = user?.id;
+        try {
+            const resp = await AccountFactories.requestUpdatePhotoList(UserId,newListImage)
+            if (resp.status === 200){
+                ToastNoti();
+                setEditListImage(false);
+                fetchData();
+            }
+        } catch (error) {
+            console.log("🚀 ~ file: ProfileUser.js:217 ~ handleSaveImage ~ error:", error)
+        }
+    }
+    const handleEditFieldListImage = () => {
+        setEditListImage(!editListImage)
+        const listImage = userInfo?.listImage;
+        const newList = listImage?.map((item, index) => ({
+            uid: `-${index + 1}`,
+            status: 'done',
+            url: item?.link
+        }))
+        setFileList(newList)
+    };
+
+    const handleCancel = () => setPreviewOpen(false);
+    const uploadButton = (
+        <div>
+            <PlusOutlined />
+            <div
+                style={{
+                    marginTop: 8,
+                }}
+            >
+                Upload
+            </div>
+        </div>
+    );
+    const handlePreview = async (file) => {
+        setPreviewImage(file.url || file.xhr);
+        setPreviewOpen(true);
+    };
+
+
+    function beforeUpload(file) {
+        const isImage = file.type.indexOf('image/') === 0;
+        if (!isImage) {
+            ToastNotiError('You can only upload image file!');
+        }
+
+        // You can remove this validation if you want
+        const isLt5M = file.size / 1024 / 1024 < 5;
+        if (!isLt5M) {
+            ToastNotiError('Image must smaller than 5MB!');
+        }
+        return isImage && isLt5M;
+    }
+
+    const handleChange = async ({ fileList: newFileList }) => {
+        setFileList(newFileList);
+    };
+    const handleRemote =  ( value ) => {
+        // xoas anh link firebase 
+        // xoas link anh trong csdl
+    };
+    
+    const customUpload =async ({ onError, onSuccess, file }) => {
+        try {
+            const uniqueFileName = `${file.name}_${v4()}`;
+            const imageRef = ref(storage, `avatar/${uniqueFileName}`);
+            const snapshot = await uploadBytes(imageRef, file);
+            const downloadURL = await getDownloadURL(snapshot.ref);
+
+            // lưu ảnh vào csdl cho user id gọi api   
+            onSuccess(null, downloadURL);
+        } catch (e) {
+            onError(e);
+        }
     }
     return (
         <>
@@ -212,7 +307,7 @@ const ProfileUser = ({ type }) => {
                                         className={styles.uploadInput}
                                         style={{ display: 'none' }}
                                         onChange={(e) => handleChangeImage(e.target.files[0])}
-                                    />  
+                                    />
                                 </div>
                                 <Avatar
                                     src={userInfo?.avatar}
@@ -221,7 +316,6 @@ const ProfileUser = ({ type }) => {
                                     photoList={userInfo?.listImage ?? ''}
                                 />
                             </div>
-
                             {user?.role_id === 2 && (<>
                                 <div className={styles.statusInfo}>
                                     <div className={` ${styles.boxStatus} ${user?.status === 1 ? '' : styles.Pause}  `} >
@@ -231,6 +325,40 @@ const ProfileUser = ({ type }) => {
                                     </div>
                                 </div>
                             </>)}
+                            {editListImage ?
+                                <div className={styles.profileContainer} style={{ padding: 20 }}>
+                                    <Upload
+                                        listType="picture-card"
+                                        fileList={fileList}
+                                        onPreview={handlePreview}
+                                        beforeUpload={beforeUpload}
+                                        onChange={handleChange}
+                                        onRemove={handleRemote}
+                                        customRequest={customUpload}
+                                    >
+                                        {fileList?.length >= 8 ? null : uploadButton}
+                                    </Upload>
+                                    <Modal open={previewOpen} footer={null} onCancel={handleCancel}>
+                                        <img
+                                            alt="example"
+                                            style={{
+                                                width: '100%',
+                                            }}
+                                            src={previewImage}
+                                        />
+                                    </Modal>
+                                    <Button type='primary' onClick={handleSaveImage}>Lưu</Button>
+                                </div>
+                                :
+                                <div className={styles.profileContainer}>
+                                    <AvatarCustom
+                                        isShowAvatar={false}
+                                        avatar={userInfo?.avatar ?? ''}
+                                        photoList={userInfo?.listImage ?? ''}
+                                    />
+                                    <Button type='primary' onClick={handleEditFieldListImage}>Chỉnh sửa</Button>
+                                </div>
+                            }
                         </div>
                     </div>
 
@@ -244,14 +372,14 @@ const ProfileUser = ({ type }) => {
                             </div>
 
                             <div className={styles.properties}>
-                                <div className={styles.boxPropertie}>
+                                {/* <div className={styles.boxPropertie}>
                                     <span className={styles.namePropertie}>
                                         SỐ NGƯỜI THEO DÕI
                                     </span>
                                     <span className={styles.number}>
                                         {userInfo?.follower ?? 0} người
                                     </span>
-                                </div>
+                                </div> */}
                                 {user?.role_id === 2 &&
                                     <>
                                         <div className={styles.boxPropertie}>

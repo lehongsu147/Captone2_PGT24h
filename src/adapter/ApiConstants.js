@@ -16,6 +16,7 @@ const ApiConstants = {
     PGT :`/pgt`,
     BANNER :`/banner`,
     ACCOUNT:  '/account', 
+    ACCOUNT_PHOTO:  '/account/photo', 
     ACCOUNT_PGT:  '/account/pgt', 
     LOGIN:  '/account/login', 
     SIGNUP:  '/account/signup', 

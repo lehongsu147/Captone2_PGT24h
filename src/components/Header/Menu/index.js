@@ -13,7 +13,7 @@ import { db } from "../../../firebase";
 
 const ItemTrend = (props) => {
   return (
-    <li style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }} >
+    <li style={{ borderRadius: 10,display: 'flex', alignItems: 'center', justifyContent: 'space-between',background: 'aliceblue' , padding: 5}} >
       <div className="pull-left">
         <div className="rank-stt"> {props?.stt} </div>
         <div className="avt-rank">
@@ -94,58 +94,6 @@ const MenuGuest = ({ icons }) => {
 
   const item =
     [
-      // {
-      //   label: 'Hôm nay',
-      //   key: 1,
-      //   children:
-      //     <div className="tab-content">
-      //       <div className="top-info-section">
-      //         <div className="top-1-frame">
-      //           <img className="imgTop1" src={TodayList[0]?.avatar} />
-      //           <img className="imgTop1Frame" src={no1_top_frame} />
-      //         </div>
-      //         <span className="moneyTop1">{convertStringToNumber(TodayList[0]?.money)} </span>
-      //       </div>
-      //       <div className="rank-list">
-      //         {TodayList?.map((item) => (
-      //           <ItemTrend
-      //             key={item?.stt}
-      //             stt={item?.stt}
-      //             avatar={item?.avatar}
-      //             userName={item?.userName}
-      //             money={item?.money}
-      //           />
-      //         ))
-      //         }
-      //       </div>
-      //     </div >
-      // },
-      // {
-      //   label: '7 ngày qua',
-      //   key: 2,
-      //   children:
-      //     <div className="tab-content">
-      //       <div className="top-info-section">
-      //         <div className="top-1-frame">
-      //           <img className="imgTop1" src={TodayList[0]?.avatar} />
-      //           <img className="imgTop1Frame" src={no1_top_frame} />
-      //         </div>
-      //         <span className="moneyTop1">{convertStringToNumber(TodayList[0]?.money)} </span>
-      //       </div>
-      //       <div className="rank-list">
-      //         {TodayList?.map((item) => (
-      //           <ItemTrend
-      //             key={item?.stt}
-      //             stt={item?.stt}
-      //             avatar={item?.avatar}
-      //             userName={item?.userName}
-      //             money={item?.money}
-      //           />
-      //         ))
-      //         }
-      //       </div>
-      //     </div >
-      // },
       {
         // label: 'Tháng này',
         label: '',
@@ -159,7 +107,7 @@ const MenuGuest = ({ icons }) => {
                     <img className="imgTop1" src={data[0].avatar} />
                     <img className="imgTop1Frame" src={no1_top_frame} />
                   </div>
-                  <span className="moneyTop1">{parseInt(data[0]?.total_duration_minutes, 10)} phút </span>
+                  <span className="moneyTop1">{parseInt(data[0]?.total_duration_minutes, 10)} giờ </span>
                 </>
               }
             </div>

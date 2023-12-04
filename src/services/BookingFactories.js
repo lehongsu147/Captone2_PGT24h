@@ -45,12 +45,13 @@ const BookingFactories = {
       data: data,
     });
   },
-  updateBooking: async (id,type,rate,comment,pgt_id,amount) => {
+  updateBooking: async (id,type,rate,comment,pgt_id,amount,userName) => {
     const data ={
       rate : rate,
       comment: comment,
       pgt_id: pgt_id,
       amount: amount,
+      user_name: userName,
     }
     return ApiOperation.request({
       url: `${ApiConstants.BOOKING}/${id}`,

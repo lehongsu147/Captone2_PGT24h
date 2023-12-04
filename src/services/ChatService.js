@@ -75,11 +75,13 @@ export const sendNewMessageToNewUser = async (firstUserId, secondUserId, firstNa
 };
 
 export const sendNewMessageToExistingUser = async (chatId, userId, recipientUserId, message) => {
-    console.log('idexxit');
-    const q = query(collection(db, "chats"), where("chatId", "==", chatId));
-    const querySnapshot = await getDocs(q);
-    querySnapshot.forEach(async (doc) => {
+
+    const chatQuery = query(collection(db, "chats"), where("chatId", "==", chatId));
+    const chatQuerySnapshot = await getDocs(chatQuery);
+
+    chatQuerySnapshot.forEach(async (doc) => {
         const existingChatDocRef = doc.ref;
+        // Update the specific chat with the provided chatId
         await updateDoc(existingChatDocRef, {
             read: false,
             lastMessage: message,

@@ -109,7 +109,7 @@ const BookingDetail = (props) => {
 
   async function submitComment() {
     try {
-      const response = await BookingFactories.updateBooking(bookingId, 5, valueRate, valueComment,booking?.pgt_id,booking?.price);
+      const response = await BookingFactories.updateBooking(bookingId, 5, valueRate, valueComment,booking?.pgt_id,booking?.price,user.userName);
       if (response?.status === 200) {
         ToastNoti();
         setBooking(response?.data);

@@ -39,7 +39,7 @@ const ChartYear = (props) => {
                     labels: labels,
                     datasets: [
                         {
-                            label: "Tổng doanh thu",
+                            label: "Tổng doanh thu (VND)",
                             backgroundColor: "rgb(255, 99, 132)",
                             data: totalPriceData
                         }

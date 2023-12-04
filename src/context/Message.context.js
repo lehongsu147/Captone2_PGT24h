@@ -8,6 +8,8 @@ export const MessageContext = createContext();
 export const MessageProvider = ({ children }) => {
   const { user } = useContext(AuthContext);
   const [messengerList, setMessengerList] = useState([]);
+  const [refreshMessengerList, setRefreshMessengerList] = useState(false);
+
   const compareTimestamps = (a, b) => b.createdAt?.toDate().getTime() - a.createdAt?.toDate().getTime();
   const userId = Number(user?.id);
 
@@ -44,37 +46,24 @@ export const MessageProvider = ({ children }) => {
         setMessengerList(combinedMessages);
       });
   
-      // Listen for changes and update state
-      // const unsubscribe = onSnapshot(
-      //   messagesRef,
-      //   (querySnapshot) => {
-      //     const combinedMessages = [];
-  
-      //     querySnapshot.forEach((doc) => {
-      //       combinedMessages.push({ ...doc.data(), id: doc.id });
-      //     });
-  
-      //     // Update the state with the combined messages
-      //     setMessengerList(combinedMessages);
-      //     console.log("🚀 ~ file: Message.context.js:59 ~ startMessengerListListener ~ combinedMessages:", combinedMessages)
-      //   }
-      // );
-  
-      // return () => unsubscribe && unsubscribe();
     } else {
       setMessengerList([]);
       return undefined;
     }
-  }, [userId]);
+  }, [userId,refreshMessengerList]);
 
+  const reloadMessengerList = () => {
+    // Set the state to trigger the useEffect and reload the list
+    setRefreshMessengerList((prev) => !prev);
+  };
   useEffect(() => {
-    console.log('sdsd');
     const unsubscribe = startMessengerListListener();
     return () => unsubscribe && unsubscribe();
-  }, [startMessengerListListener]);
+  }, [startMessengerListListener,refreshMessengerList]);
 
   const value = {
     messengerList,
+    reloadMessengerList,
   };
 
   return (

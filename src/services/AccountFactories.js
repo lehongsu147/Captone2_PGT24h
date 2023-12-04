@@ -23,6 +23,13 @@ const AccountFactories = {
       data: data
     });
   },
+  requestUpdatePhotoList: async (id, data) => {
+    return ApiOperation.request({
+      url: `${ApiConstants.ACCOUNT_PHOTO}/${id}`,
+      method: "PUT",
+      data: data
+    });
+  },
   requestPgt: async (id, data) => {
     return ApiOperation.request({
       url: `${ApiConstants.PGT}/${id}`,

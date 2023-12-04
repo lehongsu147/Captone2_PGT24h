@@ -1,5 +1,5 @@
 import { useEffect, useLayoutEffect, useState } from "react";
-import { Col, Row, Select } from "antd";
+import { Col, Input, Row, Select } from "antd";
 
 import classes from "./Form.module.css";
 import Message from "../../../components/UI/Message/Message";
@@ -8,6 +8,7 @@ import CategoriesFactories from "../../../services/CategoriesFatories";
 import AccountFactories from "../../../services/AccountFactories";
 import { ToastNoti, ToastNotiError } from "../../../utils/Utils";
 import PgtFactories from "../../../services/PgtFatories";
+import axios from "axios";
 
 export default function FormProfileUser(props) {
   const [user] = useState(JSON.parse(localStorage.getItem("user")));
@@ -17,6 +18,8 @@ export default function FormProfileUser(props) {
     type: "",
     content: "",
   });
+
+
 
   useEffect(() => {
     const fetchData = async () => {
@@ -37,23 +40,38 @@ export default function FormProfileUser(props) {
     setShowMessage({ status: true, type: "error", content: msg });
   };
 
+  const validatePhoneNumber = (number) => {
+    const pattern = /^(0\d{9})$/;
+    return pattern.test(number);
+
+  };
+
   const validateFormData = (formData) => {
     let res = true;
     let errMsg = "";
-    // if (!formData.firstName) {
-    //   errMsg = "Vui lòng nhập tên của bạn!";
-    // } else if (!formData.lastName) {
-    //   errMsg = "Vui lòng nhập họ của bạn!";
-    // } else if (!formData.name) {
-    //   errMsg = "Vui lòng nhập tên doanh nghiệp!";
-    // } else if (!formData.phone) {
-    //   errMsg = "Vui lòng nhập số điện thoại của bạn!";
-    // if (!formData.province) {
-    //   errMsg = "Vui lòng chọn tỉnh/thành phố địa chỉ!";
-    // } else 
-    if (!formData.listGame && user?.role_id === 2) {
+    if (!formData.last_name) {
+      errMsg = "Vui lòng nhập tên của bạn!";
+    }
+    else if (!formData.first_name) {
+      errMsg = "Vui lòng nhập họ của bạn!";
+    } 
+    else if (!formData.phone ) {
+      errMsg = "Vui lòng nhập số điện thoại của bạn!";
+    }
+    else if (!formData.province) {
+      errMsg = "Vui lòng chọn tỉnh/thành phố địa chỉ!";
+    }
+    else if (!formData.district) {
+      errMsg = "Vui lòng chọn quận/huyên!";
+    }
+    else if (!formData.ward) {
+      errMsg = "Vui lòng chọn phường/xã!";
+    }
+    else if (!formData.listGame && user?.role_id === 2) {
       errMsg = "Vui lòng chọn lĩnh vực hoạt động!";
     }
+    else if (!validatePhoneNumber(formData?.phone)) {
+      errMsg = "Số điện thoại không hợp lệ!";}
     if (errMsg) {
       createErrorMessage(errMsg);
       res = false;
@@ -76,10 +94,12 @@ export default function FormProfileUser(props) {
         phone: profile?.phone,
         flag: profile?.flag,
         province: profile?.province,
+        district: profile?.district,
+        ward: profile?.ward,
         listgame: profile?.listgame,
       }
       const response = await AccountFactories.requestUpdate(user?.id, data);
-      if (response?.status === 210){
+      if (response?.status === 210) {
         ToastNotiError(response?.message);
       }
       else if (response) {
@@ -101,10 +121,33 @@ export default function FormProfileUser(props) {
   };
 
   const onChangeCityHandler = (value) => {
+    setSelectedProvince(value);
     setProfile((prevState) => {
       return {
         ...prevState,
+        districts: null,
         province: value,
+      };
+    });
+  };
+
+  const onChangeDistricts = (value) => {
+    setSelectedDistrict(value);
+    setWards([]);
+    setProfile((prevState) => {
+      return {
+        ...prevState,
+        district: value,
+      };
+    });
+  };
+
+  const onChangeWard = (value) => {
+    setSelectedWard(value);
+    setProfile((prevState) => {
+      return {
+        ...prevState,
+        ward: value,
       };
     });
   };
@@ -117,14 +160,6 @@ export default function FormProfileUser(props) {
       };
     });
   };
-  const onChangeFieldsHandler = (value) => {
-    setProfile((prevState) => {
-      return {
-        ...prevState,
-        listGame: value
-      };
-    });
-  };
 
   const [fields, setFields] = useState()
   useLayoutEffect(() => {
@@ -133,7 +168,7 @@ export default function FormProfileUser(props) {
       setFields(response);
     };
     fetchData();
-    // setFields(Constants.optionsCategory)
+
   }, []);
   const optionCategory = fields?.map((field) => {
     return {
@@ -141,6 +176,81 @@ export default function FormProfileUser(props) {
       label: field.name,
     };
   });
+
+
+  const [provinces, setProvinces] = useState([]);
+  const [districts, setDistricts] = useState([]);
+  const [wards, setWards] = useState([]);
+  const [selectedProvince, setSelectedProvince] = useState();
+  const [selectedDistrict, setSelectedDistrict] = useState("");
+  const [SelectedWard, setSelectedWard] = useState("");
+
+  useEffect(() => {
+    if (profile?.ward) {
+      setSelectedProvince(profile.province);
+      setSelectedDistrict(profile.district);
+      setSelectedWard(profile.ward);
+    }
+  }, [profile?.ward])
+
+  // Gọi API để lấy danh sách tỉnh
+  useEffect(() => {
+    axios
+      .get("https://provinces.open-api.vn/api/p/")
+      .then((response) => {
+        const newList = response?.data?.map((item) => ({
+          label: item.name,
+          value: item.code,
+        }))
+        setProvinces(newList);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }, []);
+
+
+  // Gọi API để lấy danh sách quận dựa trên tỉnh đã chọn
+  useEffect(() => {
+    if (selectedProvince) {
+      axios
+        .get(`https://provinces.open-api.vn/api/p/${selectedProvince}?depth=2`)
+        .then((response) => {
+          const newList = response?.data?.districts.map((item) => ({
+            label: item.name,
+            value: item.code,
+          }))
+          setDistricts(newList);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    } else {
+      setDistricts([]);
+    }
+  }, [selectedProvince]);
+
+
+  // Gọi API để lấy danh sách huyện dựa trên quận đã chọn
+  useEffect(() => {
+    if (selectedDistrict) {
+      axios
+        .get(`https://provinces.open-api.vn/api/d/${selectedDistrict}?depth=2`)
+        .then((response) => {
+          const newList = response?.data?.wards.map((item) => ({
+            label: item.name,
+            value: item.code,
+          }))
+          setWards(newList);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    } else {
+      setWards([]);
+    }
+  }, [selectedDistrict]);
+
 
   return (
     <form className={classes.form} onSubmit={submitHandler}>
@@ -154,7 +264,7 @@ export default function FormProfileUser(props) {
           />
           <h1>Thông tin cá nhân</h1>
           <Row className={classes.form_control}>
-            <Col span={7}>Tên:</Col>
+            <Col span={7}><p>Tên *</p> </Col>
             <Col span={17}>
               <input
                 className={classes.input_profile}
@@ -167,7 +277,7 @@ export default function FormProfileUser(props) {
           </Row>
 
           <Row className={classes.form_control}>
-            <Col span={7}>Họ:</Col>
+            <Col span={7}>Họ *</Col>
             <Col span={17}>
               <input
                 placeholder="Nhập họ"
@@ -179,7 +289,7 @@ export default function FormProfileUser(props) {
             </Col>
           </Row>
           <div className={classes.form_control}>
-            <Col span={7}>Giới tính:</Col>
+            <Col span={7}>Giới tính</Col>
             <Col span={17}>
               <Select
                 placeholder="Giới tính"
@@ -192,9 +302,9 @@ export default function FormProfileUser(props) {
             </Col>
           </div>
           <Row className={classes.form_control}>
-            <Col span={7}>Số điện thoại:</Col>
+            <Col span={7}>Số điện thoại *</Col>
             <Col span={17}>
-              <input
+              <Input
                 placeholder="Số điện thoại"
                 className={classes.input_profile}
                 onChange={(e) => inputChangeHandler(e, 'phone')}
@@ -206,7 +316,7 @@ export default function FormProfileUser(props) {
 
           {user?.role === 2 &&
             <Row className={classes.form_control}>
-              <Col span={7}>Lĩnh vực:</Col>
+              <Col span={7}>Lĩnh vực *</Col>
               <Col span={17}>
                 <Select
                   mode="multiple"
@@ -219,16 +329,46 @@ export default function FormProfileUser(props) {
           }
 
           <Row className={classes.form_control}>
-            <Col span={7}>Tỉnh/Thành phố:</Col>
+            <Col span={7}>Tỉnh/Thành phố *</Col>
             <Col span={17}>
               <Row>
                 <Select
                   style={{
                     width: "66.5%",
                   }}
-                  options={Constants.vietnamProvinces}
+                  options={provinces ?? []}
                   onChange={onChangeCityHandler}
                   value={profile?.province}
+                />
+              </Row>
+            </Col>
+          </Row>
+          <Row className={classes.form_control}>
+            <Col span={7}>Quận/Huyện *</Col>
+            <Col span={17}>
+              <Row>
+                <Select
+                  style={{
+                    width: "66.5%",
+                  }}
+                  options={districts ?? []}
+                  onChange={onChangeDistricts}
+                  value={profile?.district}
+                />
+              </Row>
+            </Col>
+          </Row>
+          <Row className={classes.form_control}>
+            <Col span={7}>Phường/Xã *</Col>
+            <Col span={17}>
+              <Row>
+                <Select
+                  style={{
+                    width: "66.5%",
+                  }}
+                  options={wards ?? []}
+                  onChange={onChangeWard}
+                  value={profile?.ward}
                 />
               </Row>
             </Col>

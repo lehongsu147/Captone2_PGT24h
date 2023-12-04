@@ -44,16 +44,16 @@ const HotPgtAdmin = () => {
         </div>
       ),
     },
-    {
-      title: "Lượt theo dõi",
-      dataIndex: "follower",
-      align: 'right',
-      key: "follower",
-      render: text =>
-        <div>
-          {parseStringToNumber(text)}
-        </div>
-    },
+    // {
+    //   title: "Lượt theo dõi",
+    //   dataIndex: "follower",
+    //   align: 'right',
+    //   key: "follower",
+    //   render: text =>
+    //     <div>
+    //       {parseStringToNumber(text)}
+    //     </div>
+    // },
     {
       title: "Lượt booking",
       align: 'right',

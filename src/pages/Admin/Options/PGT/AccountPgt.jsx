@@ -207,10 +207,9 @@ const AccountPgt = () => {
           <Table
             columns={columns}
             dataSource={pgtList ?? []}
-            scroll={{
-              x: 1800,
-              y: 'calc(100vh - 220px)'
-            }}
+            // scroll={{
+            //   y: 'calc(100vh - 220px)'
+            // }}
           />
         </div>
       </div>

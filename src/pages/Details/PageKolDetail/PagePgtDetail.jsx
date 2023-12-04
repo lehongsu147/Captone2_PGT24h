@@ -7,7 +7,7 @@ import { CollapseContext } from "../../../context/collapse.context";
 import CardType from "../../../components/catgegory/CardType";
 import Feedback from "../../../components/Feedback/Feedback";
 import { BackTop, Button, Pagination, Tabs } from 'antd';
-import Avatar from "../../../components/Avatar/Avatar";
+import AvatarCustom from "../../../components/Avatar/Avatar";
 import StarRating from "../../../components/start-rating/StarRating";
 import BookingCreate from "../../Booking/BookingCreate";
 import Temp from "../../../utils/temp";
@@ -187,7 +187,7 @@ const PagePgtDetail = () => {
           <div className={styles.profile}>
             <div className={styles.stickyProfile}>
               <div className={styles.profileContainer}>
-                <Avatar
+                <AvatarCustom
                   avatar={pgtInfo?.avatar ?? ''}
                   photoList={pgtInfo?.listImage ?? ''}
                 />

@@ -10,6 +10,7 @@ import AccountFactories from "../../../services/AccountFactories";
 import { ToastNoti, ToastNotiError } from "../../../utils/Utils";
 import Constants from "../../../utils/constants";
 import CategoriesFactories from "../../../services/CategoriesFatories";
+import axios from "axios";
 
 export default function FormProfilePgt(props) {
   const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")));
@@ -29,15 +30,6 @@ export default function FormProfilePgt(props) {
     });
   };
 
-  useEffect(() => {
-    const newListGame = profile?.listgame?.map((item) => item?.id);
-    setProfile((prevState) => {
-      return {
-        ...prevState,
-        listGame: newListGame,
-      }
-    });
-}, [profile]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -57,10 +49,43 @@ export default function FormProfilePgt(props) {
   };
 
   const onChangeCityHandler = (value) => {
+    setSelectedProvince(value);
     setProfile((prevState) => {
       return {
         ...prevState,
+        districts: null,
         province: value,
+      };
+    });
+  };
+
+  useEffect(() => {
+    if (profile?.listgame) {
+      setProfile((prevState) => {
+        return {
+          ...prevState,
+          listGame: profile.listgame?.map((item)=> item?.id)
+        };
+      });
+    }
+  }, [profile?.id])
+  const onChangeDistricts = (value) => {
+    setSelectedDistrict(value);
+    setWards([]);
+    setProfile((prevState) => {
+      return {
+        ...prevState,
+        district: value,
+      };
+    });
+  };
+
+  const onChangeWard = (value) => {
+    setSelectedWard(value);
+    setProfile((prevState) => {
+      return {
+        ...prevState,
+        ward: value,
       };
     });
   };
@@ -112,6 +137,8 @@ export default function FormProfilePgt(props) {
         phone: profile?.phone,
         flag: profile?.flag,
         province: profile?.province,
+        district: profile?.district,
+        ward: profile?.ward,
         listgame: profile?.listGame,
         facebook: profile?.facebook,
         youtube: profile?.youtube,
@@ -138,12 +165,87 @@ export default function FormProfilePgt(props) {
     };
     fetchData();
   }, []);
+
   const optionCategory = fields?.map((field) => {
     return {
       value: field.id,
       label: field.name,
     };
   });
+
+
+
+  const [provinces, setProvinces] = useState([]);
+  const [districts, setDistricts] = useState([]);
+  const [wards, setWards] = useState([]);
+  const [selectedProvince, setSelectedProvince] = useState();
+  const [selectedDistrict, setSelectedDistrict] = useState("");
+  const [SelectedWard, setSelectedWard] = useState("");
+
+  useEffect(() => {
+    if (profile?.ward) {
+      setSelectedProvince(profile.province);
+      setSelectedDistrict(profile.district);
+      setSelectedWard(profile.ward);
+    }
+  }, [profile?.ward])
+
+  // Gọi API để lấy danh sách tỉnh
+  useEffect(() => {
+    axios
+      .get("https://provinces.open-api.vn/api/p/")
+      .then((response) => {
+        const newList = response?.data?.map((item) => ({
+          label: item.name,
+          value: item.code,
+        }))
+        setProvinces(newList);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }, []);
+
+
+  // Gọi API để lấy danh sách quận dựa trên tỉnh đã chọn
+  useEffect(() => {
+    if (selectedProvince) {
+      axios
+        .get(`https://provinces.open-api.vn/api/p/${selectedProvince}?depth=2`)
+        .then((response) => {
+          const newList = response?.data?.districts.map((item) => ({
+            label: item.name,
+            value: item.code,
+          }))
+          setDistricts(newList);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    } else {
+      setDistricts([]);
+    }
+  }, [selectedProvince]);
+  // Gọi API để lấy danh sách huyện dựa trên quận đã chọn
+  useEffect(() => {
+    if (selectedDistrict) {
+      axios
+        .get(`https://provinces.open-api.vn/api/d/${selectedDistrict}?depth=2`)
+        .then((response) => {
+          const newList = response?.data?.wards.map((item) => ({
+            label: item.name,
+            value: item.code,
+          }))
+          setWards(newList);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    } else {
+      setWards([]);
+    }
+  }, [selectedDistrict]);
+
   return (
     <form className={classes.form} onSubmit={submitHandler}>
       <Row>
@@ -156,7 +258,7 @@ export default function FormProfilePgt(props) {
           />
           <h1>Thông tin cá nhân</h1>
           <Row className={classes.form_control}>
-            <Col span={6}>Tên:</Col>
+            <Col span={6}>Tên *</Col>
             <Col span={17}>
               <input
                 className={classes.input_profile}
@@ -169,7 +271,7 @@ export default function FormProfilePgt(props) {
           </Row>
 
           <Row className={classes.form_control}>
-            <Col span={6}>Họ:</Col>
+            <Col span={6}>Họ *</Col>
             <Col span={17}>
               <input
                 placeholder="Nhập họ"
@@ -196,7 +298,7 @@ export default function FormProfilePgt(props) {
           </Row>
 
           <Row className={classes.form_control}>
-            <Col span={6}>Số điện thoại:</Col>
+            <Col span={6}>Số điện thoại *</Col>
             <Col span={17}>
               <input
                 placeholder="Số điện thoại"
@@ -209,23 +311,53 @@ export default function FormProfilePgt(props) {
           </Row>
 
           <Row className={classes.form_control}>
-            <Col span={6}>Tỉnh/Thành phố:</Col>
+            <Col span={6}>Tỉnh/Thành phố *</Col>
             <Col span={17}>
               <Row>
                 <Select
                   style={{
                     width: "66.5%",
                   }}
-                  options={Constants.vietnamProvinces}
+                  options={provinces ?? []}
                   onChange={onChangeCityHandler}
                   value={profile?.province}
                 />
               </Row>
             </Col>
           </Row>
+          <Row className={classes.form_control}>
+          <Col span={6}>Quận/Huyện *</Col>
+            <Col span={17}>
+              <Row>
+                <Select
+                  style={{
+                    width: "66.5%",
+                  }}
+                  options={districts ?? []}
+                  onChange={onChangeDistricts}
+                  value={profile?.district}
+                />
+              </Row>
+            </Col>
+          </Row>
+          <Row className={classes.form_control}>
+            <Col span={6}>Phường/Xã *</Col>
+            <Col span={17}>
+              <Row>
+                <Select
+                  style={{
+                    width: "66.5%",
+                  }}
+                  options={wards ?? []}
+                  onChange={onChangeWard}
+                  value={profile?.ward}
+                />
+              </Row>
+            </Col>
+          </Row>
 
           <Row className={classes.form_control}>
-            <Col span={6}>Địa chỉ cụ thể:</Col>
+            <Col span={6}>Địa chỉ cụ thể</Col>
             <Col span={17}>
               <input
                 placeholder="Địa chỉ cụ thể"
@@ -238,7 +370,7 @@ export default function FormProfilePgt(props) {
           </Row>
 
           <Row className={classes.form_control}>
-            <Col span={6}>Lĩnh vực:</Col>
+            <Col span={6}>Lĩnh vực *</Col>
             <Col span={17}>
               <Select
                 mode="multiple"
@@ -247,14 +379,14 @@ export default function FormProfilePgt(props) {
                 }}
                 placeholder="Chọn lĩnh Vực"
                 onChange={onChangeFieldsHandler}
-                value={profile?.listgame?.map((item) => item.id)}
+                value={profile?.listGame}
                 options={optionCategory}
               />
             </Col>
           </Row>
 
           <Row className={classes.form_control}>
-            <Col span={6}>Facebook url:</Col>
+            <Col span={6}>Facebook url </Col>
             <Col span={18}>
               <input
                 placeholder="Link trang Facebook cá nhân"
@@ -269,7 +401,7 @@ export default function FormProfilePgt(props) {
           </Row>
 
           <Row className={classes.form_control}>
-            <Col span={6}>Youtube url:</Col>
+            <Col span={6}>Youtube url </Col>
             <Col span={18}>
               <input
                 placeholder="Link kênh Youtube cá nhân"
@@ -284,7 +416,7 @@ export default function FormProfilePgt(props) {
           </Row>
 
           <Row className={classes.form_control}>
-            <Col span={6}>Instagram url:</Col>
+            <Col span={6}>Instagram url </Col>
             <Col span={18}>
               <input
                 placeholder="Link kênh Instargram cá nhân"
@@ -299,7 +431,7 @@ export default function FormProfilePgt(props) {
           </Row>
 
           <Row className={classes.form_control}>
-            <Col span={6}>TikTok url:</Col>
+            <Col span={6}>TikTok url </Col>
             <Col span={18}>
               <input
                 placeholder="Link trang TikTok cá nhân"

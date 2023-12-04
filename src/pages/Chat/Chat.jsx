@@ -11,7 +11,7 @@ import { db } from "../../firebase";
 
 const Chat = (props) => {
   const user = JSON.parse(localStorage.getItem("user"));
-  const { messengerList } = useContext(MessageContext);
+  const { messengerList ,reloadMessengerList } = useContext(MessageContext);
   const location = useLocation();
   const [messageId, setMessageId] = useState();
 
@@ -112,6 +112,7 @@ const Chat = (props) => {
         batch.update(doc.ref, { read: true });
       });
       await batch.commit();
+      reloadMessengerList(); 
     } catch (e) {
       console.error("Lỗi khi cập nhật thông báo đã đọc: ", e);
     }

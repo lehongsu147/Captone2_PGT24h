@@ -82,16 +82,6 @@ const ChatBox = (props) => {
                                     </div>
                                 </div>
                             ))}
-                            {/* {typing &&
-                                <div className={`${styles.alignMessage} ${styles.mesReciver}  `}  >
-                                    <div className={styles['chat-bubble']}>
-                                        <div className={styles['typing']}>
-                                            <div className={styles['dot']}></div>
-                                            <div className={styles['dot']}></div>
-                                            <div className={styles['dot']}></div>
-                                        </div>
-                                    </div>
-                                </div>} */}
                         </div>
 
                         <Row className={styles.sendBox}>
