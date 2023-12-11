@@ -30,19 +30,19 @@ const componentUser = [
 const SubContext = (props) => {
   return (
     <div className="sub-context" style={{ width: "100%"  , height: 'calc(100vh - 60px)' , overflow: 'scroll' }}>
-      {props.user.role_id === 2 &&
+      {props.user?.role_id === 2 &&
         Object.keys(props.changeContent).length === 0 && <FormProfilepGT />}
 
-      {props.user.role_id === 2 &&
+      {props.user?.role_id === 2 &&
         componentPgt.map((component) => {
           if (component.key === props.changeContent) return component.component;
         })}
 
-      {props.user.role_id === 1 &&
+      {props.user?.role_id === 1 &&
         Object.keys(props.changeContent).length === 0 && (
           <FormProfileUser />
         )}
-      {props.user.role_id === 1 &&
+      {props.user?.role_id === 1 &&
         componentUser.map((component) => {
           if (component.key === props.changeContent) return component.component;
         })}

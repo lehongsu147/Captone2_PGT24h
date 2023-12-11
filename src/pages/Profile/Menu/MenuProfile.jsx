@@ -35,7 +35,7 @@ const MenuProfile = (props) => {
     getItem("Ví & Lịch sử thanh toán", "4", <HistoryOutlined />),
     getItem("Lịch sử booking", "3", <ClockCircleOutlined />),
   ];
-  if (props?.user.role_id === 2) {
+  if (props?.user?.role_id === 2) {
     item = item.concat(
       getItem("Yêu cầu booking", "5", <PicRightOutlined />),
     )

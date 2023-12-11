@@ -68,17 +68,8 @@ const BookingDetail = (props) => {
           user?.avatar,
           userBookingAvatar,
           'Xin chào bạn! Cảm ơn bạn đã sử dụng dịch vụ của mình. Nếu bạn có bất kỳ câu hỏi hoặc yêu cầu gì, đừng ngần ngại nói cho tôi biết. Mình luôn sẵn sàng hỗ trợ bạn một cách tốt nhất.',
-        
+          user?.id
         )
-        // sendNewMessageToNewUser(
-        //   user?.id,
-        //   parseInt(booking?.user_id),
-        //   user?.userName,
-        //   booking?.user_name,
-        //   user?.avatar,
-        //   userBookingAvatar,
-        //   'Xin chào bạn! Cảm ơn bạn đã sử dụng dịch vụ của mình. Nếu bạn có bất kỳ câu hỏi hoặc yêu cầu gì, đừng ngần ngại nói cho tôi biết. Mình luôn sẵn sàng hỗ trợ bạn một cách tốt nhất.',
-        // );
         onCloseModal();
       }
     } catch (error) {

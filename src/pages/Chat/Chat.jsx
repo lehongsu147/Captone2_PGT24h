@@ -1,4 +1,4 @@
-import React, { startTransition, useContext, useEffect, useState } from "react";
+import React, { startTransition, useContext, useEffect, useId, useState } from "react";
 import classes from "./Chat.module.scss";
 import { AutoComplete, Avatar, Col, Input, Row } from "antd";
 import ChatBox from "../../components/ChatBox/ChatBox";
@@ -9,7 +9,7 @@ import { collection, getDocs, query, serverTimestamp, where, writeBatch } from "
 import PgtFactories from "../../services/PgtFatories";
 import { db } from "../../firebase";
 
-const Chat = (props) => {
+const Chat = () => {
   const user = JSON.parse(localStorage.getItem("user"));
   const { messengerList ,reloadMessengerList } = useContext(MessageContext);
   const location = useLocation();
@@ -187,7 +187,7 @@ const MessageItem = ({ userId, index, message, messageChoseId, onClick }) => {
                 <span className={classes.textLastMessage} > {message?.lastMessage}</span>
               </Row>
             </Col>
-            {!message?.read &&
+            {( parseInt(userId) !== parseInt(message.userSendId) && !message?.read )&&
               <Col span={2} className={classes.readBox}>
                 <FaDotCircle style={{ color: '#186ade' }} />
               </Col>

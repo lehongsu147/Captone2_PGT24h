@@ -3,7 +3,6 @@ import React, { useEffect, useState } from 'react';
 import styles from './ChatBox.module.scss';
 import { Input } from 'antd';
 import { Spin } from 'antd';
-import Temp from '../../utils/temp';
 import { getMessagesForChat, sendNewMessageToExistingUser, sendNewMessageToNewUser } from '../../services/ChatService';
 const { Search } = Input;
 
@@ -49,10 +48,11 @@ const ChatBox = (props) => {
                 chatInfo?.secondName,
                 chatInfo?.firstAvatar,
                 chatInfo?.secondAvatar,
-                messageInput
+                messageInput,
+                userId
             );
         } else {
-            sendNewMessageToExistingUser(chatInfo?.chatId,  userId, chatInfo?.secondUserId, messageInput);
+            sendNewMessageToExistingUser(chatInfo?.chatId,  userId, chatInfo?.secondUserId, messageInput,userId);
         }
         setMessageInput("");
     }

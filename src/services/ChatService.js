@@ -23,12 +23,11 @@ export const createNotification = async (toUserId, type, action_id, title, body,
 
         });
     } catch (e) {
-
         console.error("Lỗi khi tạo thông báo: ", e);
     }
 };
 
-export const sendMessage = async (firstUserId, secondUserId, firstName, secondName, firstAvatar, secondAvatar, message) => {
+export const sendMessage = async (firstUserId, secondUserId, firstName, secondName, firstAvatar, secondAvatar, message,userId) => {
     const chatId = `${firstUserId}_${secondUserId}`;
     const chatId2 = `${secondUserId}_${firstUserId}`;
 
@@ -39,17 +38,15 @@ export const sendMessage = async (firstUserId, secondUserId, firstName, secondNa
     const chatQuerySnapshot2 = await getDocs(chatQuery2);
 
     if (!chatQuerySnapshot.empty || !chatQuerySnapshot2.empty) {
-        await sendNewMessageToExistingUser(chatId, firstUserId, secondUserId, message);
+        await sendNewMessageToExistingUser(chatId, firstUserId, secondUserId, message,userId);
     }
     else{
-        await sendNewMessageToNewUser(firstUserId, secondUserId, firstName, secondName, firstAvatar, secondAvatar, message);
+        await sendNewMessageToNewUser(firstUserId, secondUserId, firstName, secondName, firstAvatar, secondAvatar, message,userId);
     }
 };
 
 
-export const sendNewMessageToNewUser = async (firstUserId, secondUserId, firstName, secondName, firstAvatar, secondAvatar, message) => {
-    console.log('newUsert');
-    
+export const sendNewMessageToNewUser = async (firstUserId, secondUserId, firstName, secondName, firstAvatar, secondAvatar, message,userId) => {
     // Create a new chat document in the "chat" collection
     await addDoc(collection(db, "chats"), {
         chatId: `${firstUserId}_${secondUserId}`,
@@ -60,8 +57,10 @@ export const sendNewMessageToNewUser = async (firstUserId, secondUserId, firstNa
         firstAvatar: firstAvatar,
         secondAvatar: secondAvatar,
         createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp(), 
         lastMessage: message,
         read: false,
+        userSendId: userId,
     });
 
     // Send a new message to the newly created chat
@@ -70,11 +69,12 @@ export const sendNewMessageToNewUser = async (firstUserId, secondUserId, firstNa
         senderId: firstUserId,
         message: message,
         createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp(), 
         read: false,
     });
 };
 
-export const sendNewMessageToExistingUser = async (chatId, userId, recipientUserId, message) => {
+export const sendNewMessageToExistingUser = async (chatId, userId, recipientUserId, message,userSendId) => {
 
     const chatQuery = query(collection(db, "chats"), where("chatId", "==", chatId));
     const chatQuerySnapshot = await getDocs(chatQuery);
@@ -85,6 +85,8 @@ export const sendNewMessageToExistingUser = async (chatId, userId, recipientUser
         await updateDoc(existingChatDocRef, {
             read: false,
             lastMessage: message,
+            updatedAt: serverTimestamp(), 
+            userSendId: userSendId,
         });
     });
 
@@ -93,6 +95,7 @@ export const sendNewMessageToExistingUser = async (chatId, userId, recipientUser
         senderId: userId,
         message: message,
         createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp(), 
         read: false,
     });
 };
@@ -119,7 +122,6 @@ export const getMessagesForChat = (chatId, callback) => {
 
         return unsubscribe; // Return the unsubscribe function
     } else {
-        console.error("Invalid chatId. Cannot create Firestore query.");
         return () => { }; // Return a dummy unsubscribe function if chatId is undefined
     }
 };      

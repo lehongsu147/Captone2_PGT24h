@@ -1,9 +1,8 @@
-import { current } from "@reduxjs/toolkit";
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 import { getMessaging, getToken, onMessage } from "firebase/messaging";
-import { getStorage,  ref as storageRef, uploadBytes, getDownloadURL } from "firebase/storage";
+import { getStorage } from "firebase/storage";
 const firebaseConfig = {
     apiKey: "AIzaSyCgMTIxR4XvDbsbcnI-PSujI_F2FGgjBNQ",
     authDomain: "pgt-capton2.firebaseapp.com",

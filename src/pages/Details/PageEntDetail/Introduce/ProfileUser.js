@@ -20,6 +20,13 @@ import { storage, uploadImage } from '../../../../firebase';
 import { v4 } from 'uuid';
 import AvatarCustom from '../../../../components/Avatar/Avatar';
 
+const getBase64 = (file) =>
+    new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = (error) => reject(error);
+    });
 const ProfileUser = ({ type }) => {
     const { user, setUser } = useContext(AuthContext);
     const [userInfo, setUserInfo] = useState();
@@ -209,17 +216,16 @@ const ProfileUser = ({ type }) => {
     const [fileList, setFileList] = useState([]);
 
     const handleSaveImage = async () => {
-        const newListImage = fileList?.map((item)=> item.url || item?.xhr);
+        const newListImage = fileList?.map((item) => item.url || item?.xhr);
         const UserId = user?.id;
         try {
-            const resp = await AccountFactories.requestUpdatePhotoList(UserId,newListImage)
-            if (resp.status === 200){
+            const resp = await AccountFactories.requestUpdatePhotoList(UserId, newListImage)
+            if (resp.status === 200) {
                 ToastNoti();
                 setEditListImage(false);
                 fetchData();
             }
         } catch (error) {
-            console.log("🚀 ~ file: ProfileUser.js:217 ~ handleSaveImage ~ error:", error)
         }
     }
     const handleEditFieldListImage = () => {
@@ -228,7 +234,7 @@ const ProfileUser = ({ type }) => {
         const newList = listImage?.map((item, index) => ({
             uid: `-${index + 1}`,
             status: 'done',
-            url: item?.link
+            url: item?.link 
         }))
         setFileList(newList)
     };
@@ -247,7 +253,10 @@ const ProfileUser = ({ type }) => {
         </div>
     );
     const handlePreview = async (file) => {
-        setPreviewImage(file.url || file.xhr);
+        if (!file.url && !file.preview) {
+            file.preview = await getBase64(file.originFileObj);
+        }
+        setPreviewImage(file.url || file.xhr || file.preview);
         setPreviewOpen(true);
     };
 
@@ -269,12 +278,12 @@ const ProfileUser = ({ type }) => {
     const handleChange = async ({ fileList: newFileList }) => {
         setFileList(newFileList);
     };
-    const handleRemote =  ( value ) => {
+    const handleRemote = (value) => {
         // xoas anh link firebase 
         // xoas link anh trong csdl
     };
-    
-    const customUpload =async ({ onError, onSuccess, file }) => {
+
+    const customUpload = async ({ onError, onSuccess, file }) => {
         try {
             const uniqueFileName = `${file.name}_${v4()}`;
             const imageRef = ref(storage, `avatar/${uniqueFileName}`);
@@ -328,7 +337,8 @@ const ProfileUser = ({ type }) => {
                             {editListImage ?
                                 <div className={styles.profileContainer} style={{ padding: 20 }}>
                                     <Upload
-                                        listType="picture-card"
+                                        action="https://run.mocky.io/v3/435e224c-44fb-4773-9faf-380c5e6a2188"
+                                         listType="picture-card"
                                         fileList={fileList}
                                         onPreview={handlePreview}
                                         beforeUpload={beforeUpload}

@@ -6,7 +6,7 @@ import useOnClickOutside from '../../../hook/use-onclick-outside';
 import { Button, Modal, message } from 'antd';
 import BookingFactories from '../../../services/BookingFactories';
 import { toast } from 'react-toastify';
-import { createNotification, sendMessage, sendNewMessageToNewUser } from '../../../services/ChatService';
+import { createNotification, sendMessage } from '../../../services/ChatService';
 import { AuthContext } from '../../../context/auth.context';
 import PaymentFactories from '../../../services/PaymentFactories';
 import PgtFactories from '../../../services/PgtFatories';
@@ -61,6 +61,7 @@ const DropDownBookingRequest = ({ status, booking, icon, options, id, onFetchDat
                         'Xin chào bạn! Cảm ơn bạn đã sử dụng dịch vụ của mình. Nếu bạn có bất kỳ câu hỏi hoặc yêu cầu gì, đừng ngần ngại nói cho tôi biết. Mình luôn sẵn sàng hỗ trợ bạn một cách tốt nhất.',
                         booking?.user_id,
                         booking?.pgt_id,
+                        user?.id
                     );
                 }
                 else if (type === 3) {

@@ -3,13 +3,9 @@ import no1_top_frame from '../../../assets/images/no1_top_frame.png'
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import './styleModal.scss'
-import Temp from "../../../utils/temp";
-import { ToastInfo, ToastNotiError, convertStringToNumber } from "../../../utils/Utils";
+import {  ToastNotiError} from "../../../utils/Utils";
 import BookingFactories from '../../../services/BookingFactories';
 import { MessageContext } from "../../../context/Message.context";
-import { collection, getDocs, query, where, writeBatch } from "firebase/firestore";
-import { db } from "../../../firebase";
-
 
 const ItemTrend = (props) => {
   return (
@@ -39,7 +35,9 @@ const MenuGuest = ({ icons }) => {
 
   useEffect(() => {
     if (messengerList) {
-      const unreadMessages = messengerList.filter(message => message.read === false);
+      const unreadMessages = messengerList.filter(message => {
+        return ( message?.userSendId === user?.id &&  message.read === false)
+      })
       const numUnreadMessages = unreadMessages.length;
       // if (countMesRef.current === 0 && numUnreadMessages > 0) {
       //   ToastInfo(unreadMessages[unreadMessages.length - 1].lastMessage)
