@@ -44,7 +44,6 @@ export default function Notification(props) {
       });
       await batch.commit();
     } catch (e) {
-      console.error("Lỗi khi cập nhật thông báo đã đọc: ", e);
     }
   };
 

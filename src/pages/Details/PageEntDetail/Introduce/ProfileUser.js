@@ -19,6 +19,7 @@ import { getDownloadURL, list, ref, uploadBytes } from "firebase/storage"
 import { storage, uploadImage } from '../../../../firebase';
 import { v4 } from 'uuid';
 import AvatarCustom from '../../../../components/Avatar/Avatar';
+import { useDropzone } from 'react-dropzone';
 
 const getBase64 = (file) =>
     new Promise((resolve, reject) => {
@@ -234,7 +235,7 @@ const ProfileUser = ({ type }) => {
         const newList = listImage?.map((item, index) => ({
             uid: `-${index + 1}`,
             status: 'done',
-            url: item?.link 
+            url: item?.link,
         }))
         setFileList(newList)
     };
@@ -289,13 +290,41 @@ const ProfileUser = ({ type }) => {
             const imageRef = ref(storage, `avatar/${uniqueFileName}`);
             const snapshot = await uploadBytes(imageRef, file);
             const downloadURL = await getDownloadURL(snapshot.ref);
-
             // lưu ảnh vào csdl cho user id gọi api   
             onSuccess(null, downloadURL);
         } catch (e) {
             onError(e);
         }
     }
+    const onDrop = async (acceptedFiles) => {
+        try {
+            for (const file of acceptedFiles) {
+                await customUpload({
+                    onError: (error) => console.error('Error uploading image:', error),
+                    onSuccess: (file, downloadURL) => {
+                        setFileList((prevFileList) => [
+                            ...prevFileList,
+                            {
+                                uid: v4(),
+                                status: 'done',
+                                url: downloadURL,
+                            },
+                        ]);
+                    },
+                    file,
+                });
+            }
+        } catch (error) {
+            console.error('Error uploading image:', error);
+        }
+    };
+    const handleRemove = (uid) => {
+        setFileList((prevImages) => prevImages.filter((image) => image.uid !== uid));
+    };
+
+
+    const { getRootProps, getInputProps } = useDropzone({ onDrop });
+
     return (
         <>
             <main className={styles["main-details"]} >
@@ -334,31 +363,29 @@ const ProfileUser = ({ type }) => {
                                     </div>
                                 </div>
                             </>)}
+
                             {editListImage ?
-                                <div className={styles.profileContainer} style={{ padding: 20 }}>
-                                    <Upload
-                                        action="https://run.mocky.io/v3/435e224c-44fb-4773-9faf-380c5e6a2188"
-                                         listType="picture-card"
-                                        fileList={fileList}
-                                        onPreview={handlePreview}
-                                        beforeUpload={beforeUpload}
-                                        onChange={handleChange}
-                                        onRemove={handleRemote}
-                                        customRequest={customUpload}
-                                    >
-                                        {fileList?.length >= 8 ? null : uploadButton}
-                                    </Upload>
-                                    <Modal open={previewOpen} footer={null} onCancel={handleCancel}>
-                                        <img
-                                            alt="example"
-                                            style={{
-                                                width: '100%',
-                                            }}
-                                            src={previewImage}
-                                        />
-                                    </Modal>
-                                    <Button type='primary' onClick={handleSaveImage}>Lưu</Button>
-                                </div>
+                                <>
+                                    <div className={styles.dropzone} >
+                                        <div {...getRootProps()} >
+                                            <input {...getInputProps()} />
+                                            <Button >Kéo và thả ảnh hoặc nhấn để chọn ảnh</Button>
+                                        </div>
+                                        <div className={styles.imageList}  >
+                                            {fileList.map((image, index) => (
+                                                <div key={index} className={styles.imgContainer} >
+                                                    <img
+                                                        src={(image.url)}
+                                                        alt={`Uploaded ${index + 1}`}
+                                                        className={styles.Image}
+                                                    />
+                                                    <Button onClick={() => handleRemove(image?.uid)}>Xóa</Button>
+                                                </div>
+                                            ))}
+                                        </div>
+                                        <Button style={{marginLeft: 70, marginTop: 70 }} type='primary' onClick={handleSaveImage}>Lưu</Button>
+                                    </div>
+                                </>
                                 :
                                 <div className={styles.profileContainer}>
                                     <AvatarCustom

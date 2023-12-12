@@ -287,3 +287,44 @@
   display: flex;
   justify-content: flex-end;
 }
+
+.dropzone {
+  border-radius: 4px;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  max-width: 300px;
+  height: 30px;
+  margin-left: 40;
+}
+
+.imageList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  row-gap: 53px;
+  margin-top: 20px;
+  width: 130%;
+}
+
+.imgContainer {
+  margin-right: 10px;
+  height: 100px;
+  width: 100px;
+}
+
+.Image {
+  max-height: 100px;
+  max-width: 100px;
+  object-fit: cover;
+  margin-bottom: 5px;
+  border-radius: 10px;
+}
+
+.delete-icon {
+  top: 5px;
+  right: 5px;
+  color: red;
+  cursor: pointer;
+}

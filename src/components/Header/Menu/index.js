@@ -3,7 +3,7 @@ import no1_top_frame from '../../../assets/images/no1_top_frame.png'
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import './styleModal.scss'
-import {  ToastNotiError} from "../../../utils/Utils";
+import {  ToastInfo, ToastNotiError} from "../../../utils/Utils";
 import BookingFactories from '../../../services/BookingFactories';
 import { MessageContext } from "../../../context/Message.context";
 
@@ -36,11 +36,11 @@ const MenuGuest = ({ icons }) => {
   useEffect(() => {
     if (messengerList) {
       const unreadMessages = messengerList.filter(message => {
-        return ( message?.userSendId === user?.id &&  message.read === false)
+        return ( parseInt(message?.userSendId) !== parseInt(user?.id) &&  message.read === false)
       })
       const numUnreadMessages = unreadMessages.length;
       // if (countMesRef.current === 0 && numUnreadMessages > 0) {
-      //   ToastInfo(unreadMessages[unreadMessages.length - 1].lastMessage)
+      //   ToastInfo(unreadMessages[unreadMessages.length - 1].lastMessage unreadMessages[unreadMessages.length - 1].lastMessage)
       // }
       setCountMes(numUnreadMessages);
       countMesRef.current = numUnreadMessages;

@@ -114,7 +114,6 @@ const Chat = () => {
       await batch.commit();
       reloadMessengerList(); 
     } catch (e) {
-      console.error("Lỗi khi cập nhật thông báo đã đọc: ", e);
     }
   };
 
