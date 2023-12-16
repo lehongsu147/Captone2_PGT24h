@@ -152,9 +152,9 @@
       .properties {
         display: flex;
         align-items: center;
-        justify-content: space-between;
+        justify-content: flex-start;
         margin: 20px 0px;
-
+        gap: 200px;
         .boxPropertie {
           height: 60px;
           display: flex;

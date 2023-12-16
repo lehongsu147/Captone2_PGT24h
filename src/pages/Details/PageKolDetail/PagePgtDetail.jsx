@@ -212,14 +212,14 @@ const PagePgtDetail = () => {
               </div>
 
               <div className={styles.properties}>
-                <div className={styles.boxPropertie}>
+                {/* <div className={styles.boxPropertie}>
                   <span className={styles.namePropertie}>
                     SỐ NGƯỜI THEO DÕI
                   </span>
                   <span className={styles.number}>
                     {pgtInfo?.follower}
                   </span>
-                </div>
+                </div> */}
 
                 <div className={styles.boxPropertie}>
                   <span className={styles.namePropertie}>

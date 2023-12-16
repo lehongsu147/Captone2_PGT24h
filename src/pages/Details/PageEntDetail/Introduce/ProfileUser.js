@@ -28,14 +28,33 @@ const getBase64 = (file) =>
         reader.onload = () => resolve(reader.result);
         reader.onerror = (error) => reject(error);
     });
-const ProfileUser = ({ type }) => {
+const ProfileUser = () => {
     const { user, setUser } = useContext(AuthContext);
     const [userInfo, setUserInfo] = useState();
     const [items, setItems] = useState();
     const [editPrice, setEditPrice] = useState();
+    const [editUserName, setEditUserName] = useState();
+    const [userName, setUserName] = useState();
     const [pricePgt, setPricePgt] = useState();
     const { isCollapse } = useContext(CollapseContext)
+    const [dataFeedback, setDataFeedback] = useState();
+    const [rate, setRate] = useState();
 
+    async function fetchFeedbackData(id) {
+        try {
+            const resp = await PgtFactories.getPGTFeedbackList(id);
+            if (resp.status === 200) {
+                setDataFeedback(resp.data);
+                setRate(resp.rate)
+            }
+        } catch (error) {
+        }
+    }
+    useEffect(() => {
+        if (user?.id) {
+            fetchFeedbackData(user?.id);
+        }
+    }, [user?.id])
     const fetchData = async () => {
         try {
             const response = await PgtFactories.getPGTDetail(user?.id);
@@ -168,9 +187,19 @@ const ProfileUser = ({ type }) => {
         fetchDataUpdate(data)
         setEditPrice(!editPrice);
     };
+
+    const onSubmitChangeUserName = () => {
+        const data = { user_name: userName }
+        fetchDataUpdate(data)
+        setEditUserName(!editUserName);
+    };
     const handleChagePrice = () => {
-        setEditPrice(pricePgt);
         setEditPrice(!editPrice);
+    };
+
+    const handleChageUserName = () => {
+        setUserName(userInfo.user_name);
+        setEditUserName(!editUserName);
     };
 
     const { width, height } = useWindowSize();
@@ -383,7 +412,7 @@ const ProfileUser = ({ type }) => {
                                                 </div>
                                             ))}
                                         </div>
-                                        <Button style={{marginLeft: 70, marginTop: 70 }} type='primary' onClick={handleSaveImage}>Lưu</Button>
+                                        <Button style={{ marginLeft: 70, marginTop: 70 }} type='primary' onClick={handleSaveImage}>Lưu</Button>
                                     </div>
                                 </>
                                 :
@@ -403,7 +432,25 @@ const ProfileUser = ({ type }) => {
                         <div className={styles.profileInfo}>
                             <div className={styles.title}>
                                 <span className={` ${styles.userName}  `} >
-                                    {userInfo?.user_name}
+                                    {editUserName ?
+                                        <div>
+                                            <Input
+                                                style={{ width: '100%' }}
+                                                value={userName}
+                                                onChange={(e) => setUserName(e.target.value)}
+                                            />
+                                            <div className={styles.editbtn}>
+                                                <Button onClick={handleChageUserName} >Hủy</Button>
+                                                <Button onClick={onSubmitChangeUserName}>Lưu</Button>
+                                            </div>
+                                        </div>
+                                        :
+                                        <>
+                                            {userInfo?.user_name}{" "}
+                                            <EditFilled width={50} onClick={handleChageUserName} />
+                                        </>
+
+                                    }
                                 </span>
 
                             </div>
@@ -424,7 +471,7 @@ const ProfileUser = ({ type }) => {
                                                 ĐÃ ĐƯỢC THUÊ
                                             </span>
                                             <span className={styles.number}>
-                                                {userInfo?.countRental} lượt
+                                                {dataFeedback?.length} lượt
                                             </span>
                                         </div>
 
@@ -433,7 +480,7 @@ const ProfileUser = ({ type }) => {
                                                 TỶ LỆ HOÀN THÀNH
                                             </span>
                                             <span className={styles.number}>
-                                                {userInfo?.rate} %
+                                                {rate} %
                                             </span>
                                         </div>
                                     </>}
@@ -479,12 +526,11 @@ const ProfileUser = ({ type }) => {
                                             </>
 
                                         }
-
                                     </div>
-                                    <div className={styles['rateting-style']}>
+                                    {/* <div className={styles['rateting-style']}>
                                         <StarRating starCount={4} />
                                         <span> 67 Đánh giá</span>
-                                    </div>
+                                    </div> */}
 
                                 </div>
                             </div>
