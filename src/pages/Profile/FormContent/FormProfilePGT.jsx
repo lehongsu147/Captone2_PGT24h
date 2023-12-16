@@ -64,7 +64,7 @@ export default function FormProfilePgt(props) {
       setProfile((prevState) => {
         return {
           ...prevState,
-          listGame: profile.listgame?.map((item)=> item?.id)
+          listGame: profile.listgame?.map((item) => item?.id)
         };
       });
     }
@@ -110,11 +110,38 @@ export default function FormProfilePgt(props) {
     setShowMessage({ status: true, type: "error", content: msg });
   };
 
+  const validatePhoneNumber = (number) => {
+    const pattern = /^(0\d{9})$/;
+    return pattern.test(number);
+
+  };
+
   const validateFormData = (formData) => {
     let res = true;
     let errMsg = "";
-    if (!formData.listGame && user?.role_id === 2) {
+    if (!formData.last_name) {
+      errMsg = "Vui lòng nhập tên của bạn!";
+    }
+    else if (!formData.first_name) {
+      errMsg = "Vui lòng nhập họ của bạn!";
+    }
+    else if (!formData.phone) {
+      errMsg = "Vui lòng nhập số điện thoại của bạn!";
+    }
+    else if (!formData.province) {
+      errMsg = "Vui lòng chọn tỉnh/thành phố địa chỉ!";
+    }
+    else if (!formData.district) {
+      errMsg = "Vui lòng chọn quận/huyên!";
+    }
+    else if (!formData.ward) {
+      errMsg = "Vui lòng chọn phường/xã!";
+    }
+    else if (!formData.listGame && user?.role_id === 2) {
       errMsg = "Vui lòng chọn lĩnh vực hoạt động!";
+    }
+    else if (!validatePhoneNumber(formData?.phone)) {
+      errMsg = "Số điện thoại không hợp lệ!";
     }
     if (errMsg) {
       createErrorMessage(errMsg);
@@ -122,6 +149,7 @@ export default function FormProfilePgt(props) {
     }
     return res;
   };
+
 
   const submitHandler = async (event) => {
     event.preventDefault();
@@ -326,7 +354,7 @@ export default function FormProfilePgt(props) {
             </Col>
           </Row>
           <Row className={classes.form_control}>
-          <Col span={6}>Quận/Huyện *</Col>
+            <Col span={6}>Quận/Huyện *</Col>
             <Col span={17}>
               <Row>
                 <Select

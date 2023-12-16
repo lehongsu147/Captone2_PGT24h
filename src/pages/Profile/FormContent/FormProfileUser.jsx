@@ -19,8 +19,6 @@ export default function FormProfileUser(props) {
     content: "",
   });
 
-
-
   useEffect(() => {
     const fetchData = async () => {
       const response = await PgtFactories.getPGTDetail(user?.id);
