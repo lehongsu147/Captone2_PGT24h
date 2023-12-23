@@ -125,7 +125,7 @@ const Chat = () => {
           <Row>
             <span className={classes.label} >Chat</span>
           </Row>
-          <Row>
+          {/* <Row>
             <AutoComplete
               style={{ width: '100%', margin: 10 }}
               onSearch={handleSearch}
@@ -133,7 +133,7 @@ const Chat = () => {
             >
               <Input.Search size="large" placeholder="Tìm kiếm" enterButton />
             </AutoComplete>
-          </Row>
+          </Row> */}
           <div className={classes.mesageList}>
             {chatList?.map((message, index) => (
               <MessageItem
